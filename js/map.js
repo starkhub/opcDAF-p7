@@ -64,15 +64,12 @@ window.restaurantsJson = function (restaurants) {
     let ratingsAvg = ratingsSum / ratingsArray.length;
 
     let infowindow = new google.maps.InfoWindow();
-    marker.addListener('mouseover', function () {
+    marker.addListener('click', function () {
       infowindow.setContent(
         '<h1>' + restaurants.mainList[i].restaurantName + '</h1>' +
         '<p> Moyenne des notes : </p>' + ratingsAvg
         );
       infowindow.open(map, marker);
-    });
-    marker.addListener('mouseout', function() {
-      infowindow.close();
     });
 
   }
