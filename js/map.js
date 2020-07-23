@@ -4,8 +4,9 @@
       // locate you.
       var api_key = config.secret_key;
       var map, infoWindow, marker;
+      var markerIcon = './css/images/user-marker-64.png'
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
           center: {lat: -34.397, lng: 150.644},
           zoom: 15
         });
@@ -19,12 +20,16 @@
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
-            marker = new google.maps.Marker({position: pos, map: map});
-/*
+            marker = new google.maps.Marker({
+              position: pos,
+              map: map,
+              icon: markerIcon
+            });
+
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
+            infoWindow.setContent('Vous êtes ici !');
             infoWindow.open(map);
-*/
+
             map.setCenter(pos);
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
