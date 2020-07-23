@@ -4,13 +4,19 @@
       // locate you.
       var api_key = config.secret_key;
       var map, infoWindow, marker;
-      var markerIcon = './css/images/user-marker-64.png'
+      var markerIcon = './css/images/user-marker-64.png';
+
+
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
           center: {lat: -34.397, lng: 150.644},
           zoom: 15
         });
         infoWindow = new google.maps.InfoWindow;
+
+        var restaurantsList = document.createElement('script');
+        restaurantsList.src = 'js/restaurantsList.js';
+        document.getElementsByTagName('head')[0].appendChild(restaurantsList);
         
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
@@ -25,18 +31,31 @@
               map: map,
               icon: markerIcon
             });
-
-            infoWindow.setPosition(pos);
+           
+            infoWindow.setPosition(pos);//Popup info que l'user peut fermer
             infoWindow.setContent('Vous êtes ici !');
             infoWindow.open(map);
 
             map.setCenter(pos);
+
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
         } else {
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
+        }
+
+
+      }
+
+      window.restaurantsJson = function(restaurants){
+        for (let i=0;i < restaurants.mainList.length;i++) {
+          let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long);
+          let marker = new google.maps.Marker({
+            position : latLng,
+            map : map
+          });
         }
       }
 
@@ -48,10 +67,11 @@
         infoWindow.open(map);
       }
 
-      function loadjs() {
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
-        document.body.appendChild(script);
+      function loadjs() { //Chargement du fichier de config
+        var loadMap = document.createElement("script");
+        loadMap.type = "text/javascript";
+        loadMap.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
+        document.body.appendChild(loadMap);
      }
+
      window.onload = loadjs();
