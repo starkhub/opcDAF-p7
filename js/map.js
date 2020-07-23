@@ -6,19 +6,24 @@ var api_key = config.secret_key;
 var map, infoWindow, marker;
 var markerIcon = './css/images/user-marker-64.png';
 
+var restaurantsListDiv = document.getElementById('restaurants-list');
 
 function initMap() {
+  
+  //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera !");
+
   map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
     center: { lat: -34.397, lng: 150.644 },
     zoom: 15
   });
+
   infoWindow = new google.maps.InfoWindow;
 
   var restaurantsList = document.createElement('script');
   restaurantsList.src = 'js/restaurantsList.js';
   document.getElementsByTagName('head')[0].appendChild(restaurantsList);
 
-  // Try HTML5 geolocation.
+  // Try HTML5 geolocation
   if (navigator.geolocation) {
 
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -45,34 +50,41 @@ function initMap() {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
   }
-
 }
 
-window.restaurantsJson = function (restaurants) {
-  for (let i = 0; i < restaurants.mainList.length; i++) {
-    let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long);
-    let marker = new google.maps.Marker({
+window.restaurantsJson = function (restaurants) { //GESTION DE LA LISTE DES RESTAURANTS
+
+  for (let i = 0; i < restaurants.mainList.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+    let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
+    let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
       position: latLng,
       map: map
     });
-
-    let ratingsArray = restaurants.mainList[i].ratings;
+    let restaurantName = restaurants.mainList[i].restaurantName;
+    let ratingsArray = restaurants.mainList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
     let ratingsSum = 0;
     ratingsArray.forEach(
       star => ratingsSum += star.stars
-      );
+    );
+
     let ratingsAvg = ratingsSum / ratingsArray.length;
 
-    let infowindow = new google.maps.InfoWindow();
+    let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
     marker.addListener('click', function () {
       infowindow.setContent(
-        '<h1>' + restaurants.mainList[i].restaurantName + '</h1>' +
+        '<h1>' + restaurantName + '</h1>' +
         '<p> Moyenne des notes : </p>' + ratingsAvg
-        );
+      );
       infowindow.open(map, marker);
     });
 
-  }
+    var restaurantsListContent = document.createElement('div');
+    restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
+    restaurantsListContent.innerHTML ='<h2>' + restaurantName + '</h2>'+
+    '<p>Moyenne des notes : ' + ratingsAvg;
+    
+    
+    }
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {

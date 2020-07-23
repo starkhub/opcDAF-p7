@@ -1,14 +1,21 @@
-.main-section{
-    height:500px;
-    width:500px;
-}
-
-#map {
-    height: 100%;
-  }
   /* Optional: Makes the sample page fill the window. */
   html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+  }
+
+  .main-section{
+    display:flex;
+    flex-direction: row;;
+}
+
+#map {
+    width:500px;
+    height: 500px;
+  }
+
+  #restaurants-list{
+    width:500px;
+    height:500px;
   }
