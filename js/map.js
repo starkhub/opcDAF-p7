@@ -3,13 +3,14 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 var api_key = config.secret_key;
-var map, infoWindow, marker;
+var map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
 
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
 function initMap() {
-  
+
+  console.log(2)
   //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera !");
 
   map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
@@ -37,11 +38,16 @@ function initMap() {
         icon: markerIcon
       });
 
+      mapLat = position.coords.latitude;
+      mapLng = position.coords.longitude;
+
       infoWindow.setPosition(pos);//Popup info que l'user peut fermer
       infoWindow.setContent('Vous êtes ici !');
       infoWindow.open(map);
 
       map.setCenter(pos);
+
+      loadRestaurants();
 
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -52,7 +58,12 @@ function initMap() {
   }
 }
 
-window.restaurantsJson = function (restaurants) { //GESTION DE LA LISTE DES RESTAURANTS
+function loadRestaurants() {
+  //GESTION DE LA LISTE DES RESTAURANTS
+
+  bounds = new google.maps.LatLngBounds();
+
+  var restaurants = restaurantsList[0];
 
   for (let i = 0; i < restaurants.mainList.length; i++) { //ON PARCOURT LA LISTE DES AVIS
     let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
@@ -80,12 +91,13 @@ window.restaurantsJson = function (restaurants) { //GESTION DE LA LISTE DES REST
 
     var restaurantsListContent = document.createElement('div');
     restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
-    restaurantsListContent.innerHTML ='<h2>' + restaurantName + '</h2>'+
-    '<p>Moyenne des notes : ' + ratingsAvg;
-    
-    
-    }
+    restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
+      '<p>Moyenne des notes : ' + ratingsAvg;
+
+  }
+
 }
+
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
