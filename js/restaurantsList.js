@@ -99,30 +99,6 @@ var restaurantsList = [{
          ]
       },
       {
-         "restaurantName": "Le 702",
-         "address": "1 Impasse de l'Auberte, 83260 La Farlède",
-         "lat": 43.1601039,
-         "long": 6.0423806,
-         "ratings": [
-            {
-               "stars": 5,
-               "comment": "Pour une première fois et sûrement pas la dernière,  Les meilleurs Sushi que j'ai mangé depuis longtemps Et en plus une livraison rapide!! Au top !!!"
-            },
-            {
-               "stars": 4,
-               "comment": "Très bruyant. Dommage car les plats sont excellents"
-            },
-            {
-               "stars": 5,
-               "comment": "Très bon accueil, produits très frais, plats délicieux 🙏"
-            },
-            {
-               "stars": 5,
-               "comment": "Sushi très bon et anbiance et personnel super agréable."
-            }
-         ]
-      },
-      {
          "restaurantName": "Pizz'Atomic",
          "address": "35 Avenue de la République, 83210 La Farlède",
          "lat": 43.1645455,

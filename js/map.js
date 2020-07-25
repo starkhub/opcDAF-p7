@@ -41,6 +41,11 @@ function initMap() {
       mapLat = position.coords.latitude;
       mapLng = position.coords.longitude;
 
+      bounds = new google.maps.LatLngBounds({
+        lat: mapLat,
+        lng: mapLng
+      });
+
       infoWindow.setPosition(pos);//Popup info que l'user peut fermer
       infoWindow.setContent('Vous êtes ici !');
       infoWindow.open(map);
@@ -61,16 +66,19 @@ function initMap() {
 function loadRestaurants() {
   //GESTION DE LA LISTE DES RESTAURANTS
 
-  bounds = new google.maps.LatLngBounds();
-
   var restaurants = restaurantsList[0];
 
+  map.fitBounds(map.getBounds(), 0);
+
   for (let i = 0; i < restaurants.mainList.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+
     let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
+
     let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
       position: latLng,
       map: map
     });
+
     let restaurantName = restaurants.mainList[i].restaurantName;
     let ratingsArray = restaurants.mainList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
     let ratingsSum = 0;
@@ -89,15 +97,24 @@ function loadRestaurants() {
       infowindow.open(map, marker);
     });
 
-    var restaurantsListContent = document.createElement('div');
-    restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
-    restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
-      '<p>Moyenne des notes : ' + ratingsAvg;
+    var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
+    if (checkMarkerInBounds(marker) && !restaurantID) {
+        var restaurantsListContent = document.createElement('div');
+        restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
+        restaurantsListContent.id = restaurantName;
+        restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
+          '<p>Moyenne des notes : ' + ratingsAvg;
+    }else if(!checkMarkerInBounds(marker) && restaurantID){
+      document.getElementById(restaurantName).remove();
+    }
   }
-
 }
 
+
+function checkMarkerInBounds(marker) {
+  return map.getBounds().contains(marker.getPosition());
+}
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
