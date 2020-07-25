@@ -8,7 +8,6 @@ var markerIcon = './css/images/user-marker-64.png';
 
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
-
 class JsonList{
   constructor(list){
     this.list = list;
@@ -22,6 +21,54 @@ class JsonList{
 
   setJsonListToLocalStorage(){
     localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
+  }
+
+  loadRestaurants() {
+    //GESTION DE LA LISTE DES RESTAURANTS
+  
+    var restaurants = JSON.parse(localStorage.getItem('restaurants'));
+  
+    map.fitBounds(map.getBounds(), 0);
+  
+    for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+  
+      let latLng = new google.maps.LatLng(restaurants[i].lat, restaurants[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
+  
+      let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
+        position: latLng,
+        map: map
+      });
+  
+      let restaurantName = restaurants[i].restaurantName;
+      let ratingsArray = restaurants[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
+      let ratingsSum = 0;
+      ratingsArray.forEach(
+        star => ratingsSum += star.stars
+      );
+  
+      let ratingsAvg = ratingsSum / ratingsArray.length;
+  
+      let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
+      marker.addListener('click', function () {
+        infowindow.setContent(
+          '<h1>' + restaurantName + '</h1>' +
+          '<p> Moyenne des notes : </p>' + ratingsAvg
+        );
+        infowindow.open(map, marker);
+      });
+  
+      var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
+  
+      if (checkMarkerInBounds(marker) && !restaurantID) {
+          var restaurantsListContent = document.createElement('div');
+          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
+          restaurantsListContent.id = restaurantName;
+          restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
+            '<p>Moyenne des notes : ' + ratingsAvg;
+      }else if(!checkMarkerInBounds(marker) && restaurantID){
+        document.getElementById(restaurantName).remove();
+      }
+    }
   }
 }
 
@@ -64,7 +111,7 @@ function initMap() {
 
       map.setCenter(pos);
 
-      loadRestaurants();
+      jsonList.loadRestaurants();
 
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -72,54 +119,6 @@ function initMap() {
   } else {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
-  }
-}
-
-function loadRestaurants() {
-  //GESTION DE LA LISTE DES RESTAURANTS
-
-  var restaurants = JSON.parse(localStorage.getItem('restaurants'));
-
-  map.fitBounds(map.getBounds(), 0);
-
-  for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
-
-    let latLng = new google.maps.LatLng(restaurants[i].lat, restaurants[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
-
-    let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
-      position: latLng,
-      map: map
-    });
-
-    let restaurantName = restaurants[i].restaurantName;
-    let ratingsArray = restaurants[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
-    let ratingsSum = 0;
-    ratingsArray.forEach(
-      star => ratingsSum += star.stars
-    );
-
-    let ratingsAvg = ratingsSum / ratingsArray.length;
-
-    let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
-    marker.addListener('click', function () {
-      infowindow.setContent(
-        '<h1>' + restaurantName + '</h1>' +
-        '<p> Moyenne des notes : </p>' + ratingsAvg
-      );
-      infowindow.open(map, marker);
-    });
-
-    var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
-
-    if (checkMarkerInBounds(marker) && !restaurantID) {
-        var restaurantsListContent = document.createElement('div');
-        restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
-        restaurantsListContent.id = restaurantName;
-        restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
-          '<p>Moyenne des notes : ' + ratingsAvg;
-    }else if(!checkMarkerInBounds(marker) && restaurantID){
-      document.getElementById(restaurantName).remove();
-    }
   }
 }
 
