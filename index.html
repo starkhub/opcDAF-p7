@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>ProxiResto</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <header>
@@ -16,17 +18,14 @@
 
     </nav>
 
-    <section class="main-section">
-        
-        <div id="map"></div>
-        <div id="restaurants-list"></div>
+        <section class="main-section">
 
-        
+            <div id="map"></div>
+            <button id="search-area-button" onclick="jsonList.loadRestaurants()">Chercher dans cette zone</button>
+            <div id="restaurants-list"></div>
 
-    </section>
+        </section>
 
-    <button id="search-area-button" onclick="loadRestaurants()">Recharger</button>
-    
     <footer>
 
     </footer>
