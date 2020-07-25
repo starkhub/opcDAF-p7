@@ -1,4 +1,4 @@
-var restaurantsList = [{
+var restaurantsJsonList = [{
    'mainList':
    [
       {

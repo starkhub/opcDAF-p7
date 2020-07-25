@@ -3,14 +3,30 @@
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
 var api_key = config.secret_key;
-var map, infoWindow, marker, bounds, mapLat, mapLng;
+var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
 
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
+
+class JsonList{
+  constructor(list){
+    this.list = list;
+  }
+
+  initRestaurantsList(){
+    restaurantsList = document.createElement('script');
+    restaurantsList.src = this.list;
+    document.getElementsByTagName('head')[0].appendChild(restaurantsList);
+  }
+
+  setJsonListToLocalStorage(){
+    localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
+  }
+}
+
 function initMap() {
 
-  console.log(2)
   //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera !");
 
   map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
@@ -19,10 +35,6 @@ function initMap() {
   });
 
   infoWindow = new google.maps.InfoWindow;
-
-  var restaurantsList = document.createElement('script');
-  restaurantsList.src = 'js/restaurantsList.js';
-  document.getElementsByTagName('head')[0].appendChild(restaurantsList);
 
   // Try HTML5 geolocation
   if (navigator.geolocation) {
@@ -66,21 +78,21 @@ function initMap() {
 function loadRestaurants() {
   //GESTION DE LA LISTE DES RESTAURANTS
 
-  var restaurants = restaurantsList[0];
+  var restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
   map.fitBounds(map.getBounds(), 0);
 
-  for (let i = 0; i < restaurants.mainList.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+  for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
 
-    let latLng = new google.maps.LatLng(restaurants.mainList[i].lat, restaurants.mainList[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
+    let latLng = new google.maps.LatLng(restaurants[i].lat, restaurants[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
 
     let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
       position: latLng,
       map: map
     });
 
-    let restaurantName = restaurants.mainList[i].restaurantName;
-    let ratingsArray = restaurants.mainList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
+    let restaurantName = restaurants[i].restaurantName;
+    let ratingsArray = restaurants[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
     let ratingsSum = 0;
     ratingsArray.forEach(
       star => ratingsSum += star.stars
@@ -111,6 +123,15 @@ function loadRestaurants() {
   }
 }
 
+function test(){
+  var restaurants = JSON.parse(localStorage.getItem('restaurants'));
+  console.log(restaurants)
+  console.log(restaurants[0])
+  for (let i = 0; i < restaurants.length; i++){
+
+    console.log(restaurants[i].ratings)
+  }
+}
 
 function checkMarkerInBounds(marker) {
   return map.getBounds().contains(marker.getPosition());
@@ -131,4 +152,12 @@ function loadjs() { //Chargement du fichier de config
   document.body.appendChild(loadMap);
 }
 
-window.onload = loadjs();
+
+const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
+jsonList.initRestaurantsList(); //Initialisation de la liste JSON
+
+window.onload = function(){ //Quand la fenêtre (DOM) est prête
+  jsonList.setJsonListToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
+  loadjs(); //On charge la carte
+  
+}
