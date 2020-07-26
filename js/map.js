@@ -78,7 +78,7 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
     center: { lat: -34.397, lng: 150.644 },
-    zoom: 15
+    zoom: 17
   });
 
   infoWindow = new google.maps.InfoWindow;
