@@ -8,38 +8,42 @@ var markerIcon = './css/images/user-marker-64.png';
 var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
-class JsonList{
-  constructor(list){
+class JsonList {
+  constructor(list) {
     this.list = list;
   }
 
-  initRestaurantsList(){
+  initRestaurantsList() {
     restaurantsList = document.createElement('script');
     restaurantsList.src = this.list;
     document.getElementsByTagName('head')[0].appendChild(restaurantsList);
   }
 
-  setJsonListToLocalStorage(){
+  setJsonListToLocalStorage() {
     localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
   }
 
   loadRestaurants() {
     //GESTION DE LA LISTE DES RESTAURANTS
-  
+
     var restaurants = JSON.parse(localStorage.getItem('restaurants'));
-  
+
     map.fitBounds(map.getBounds(), 0);
 
-    for (let i = 0; i< markers.length; i++){
+    for (let i = 0; i < markers.length; i++) {
       markers[i].setVisible(false)
     }
 
+    var ratingFilter = parseInt(document.getElementById('rating-filter').value);
+
+    console.log(typeof(ratingFilter))
+
     markers = [];
-  
-    for (let i = 0; i < restaurants.length; i++){ //ON PARCOURT LA LISTE DES AVIS
-  
+
+    for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+
       let latLng = new google.maps.LatLng(restaurants[i].lat, restaurants[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
-  
+
       let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
         position: latLng,
         map: map
@@ -53,9 +57,9 @@ class JsonList{
       ratingsArray.forEach(
         star => ratingsSum += star.stars
       );
-  
+
       let ratingsAvg = ratingsSum / ratingsArray.length;
-  
+
       let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
       marker.addListener('click', function () {
         infowindow.setContent(
@@ -64,22 +68,27 @@ class JsonList{
         );
         infowindow.open(map, marker);
       });
-  
-      var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
-  
-      if(checkMarkerInBounds(marker)){
-        marker.setVisible(true);
-      }
 
-      if (checkMarkerInBounds(marker) && !restaurantID) {
+      var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
+
+      if(ratingsAvg >=0 && ratingsAvg <= ratingFilter){
+        if (checkMarkerInBounds(marker)) {
+          marker.setVisible(true);
+        }
+  
+        if (checkMarkerInBounds(marker) && !restaurantID) {
           var restaurantsListContent = document.createElement('div');
           restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
           restaurantsListContent.id = restaurantName;
           restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
             '<p>Moyenne des notes : ' + ratingsAvg;
-      }else if(!checkMarkerInBounds(marker) && restaurantID){
+        } else if (!checkMarkerInBounds(marker) && restaurantID) {
+          document.getElementById(restaurantName).remove();
+        }
+      }else if(document.getElementById(restaurantName)){
         document.getElementById(restaurantName).remove();
       }
+
 
     }
   }
@@ -135,11 +144,11 @@ function initMap() {
   }
 }
 
-function test(){
+function test() {
   var restaurants = JSON.parse(localStorage.getItem('restaurants'));
   console.log(restaurants)
   console.log(restaurants[0])
-  for (let i = 0; i < restaurants.length; i++){
+  for (let i = 0; i < restaurants.length; i++) {
 
     console.log(restaurants[i].ratings)
   }
@@ -168,8 +177,8 @@ function loadjs() { //Chargement du fichier de config
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
 jsonList.initRestaurantsList(); //Initialisation de la liste JSON
 
-window.onload = function(){ //Quand la fenêtre (DOM) est prête
+window.onload = function () { //Quand la fenêtre (DOM) est prête
   jsonList.setJsonListToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
   loadjs(); //On charge la carte
-  
+
 }
