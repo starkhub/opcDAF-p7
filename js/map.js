@@ -5,7 +5,7 @@
 var api_key = config.secret_key;
 var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
-
+var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
 class JsonList{
@@ -29,8 +29,14 @@ class JsonList{
     var restaurants = JSON.parse(localStorage.getItem('restaurants'));
   
     map.fitBounds(map.getBounds(), 0);
+
+    for (let i = 0; i< markers.length; i++){
+      markers[i].setVisible(false)
+    }
+
+    markers = [];
   
-    for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
+    for (let i = 0; i < restaurants.length; i++){ //ON PARCOURT LA LISTE DES AVIS
   
       let latLng = new google.maps.LatLng(restaurants[i].lat, restaurants[i].long); //ON RECUPERE LES COORDONNEES DU RESTO
   
@@ -38,7 +44,9 @@ class JsonList{
         position: latLng,
         map: map
       });
-  
+      marker.setVisible(false);
+      markers.push(marker);
+
       let restaurantName = restaurants[i].restaurantName;
       let ratingsArray = restaurants[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
@@ -59,6 +67,10 @@ class JsonList{
   
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
   
+      if(checkMarkerInBounds(marker)){
+        marker.setVisible(true);
+      }
+
       if (checkMarkerInBounds(marker) && !restaurantID) {
           var restaurantsListContent = document.createElement('div');
           restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
@@ -68,6 +80,7 @@ class JsonList{
       }else if(!checkMarkerInBounds(marker) && restaurantID){
         document.getElementById(restaurantName).remove();
       }
+
     }
   }
 }
@@ -91,7 +104,7 @@ function initMap() {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      marker = new google.maps.Marker({
+      userMarker = new google.maps.Marker({
         position: pos,
         map: map,
         icon: markerIcon
