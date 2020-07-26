@@ -88,9 +88,15 @@ class JsonList {
       }else if(document.getElementById(restaurantName)){
         document.getElementById(restaurantName).remove();
       }
-
-
     }
+
+    map.addListener('dragend', function() {
+      // 3 seconds after the center of the map has changed, pan back to the
+      // marker.
+      window.setTimeout(function() {
+        jsonList.loadRestaurants();
+      }, 500);
+    });
   }
 }
 
