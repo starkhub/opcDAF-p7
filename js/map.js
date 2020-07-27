@@ -28,17 +28,16 @@ class JsonList {
 
     var restaurants = JSON.parse(localStorage.getItem('restaurants'));
 
-    map.fitBounds(map.getBounds(), 0);
+    //map.fitBounds(map.getBounds(), 0);
 
     for (let i = 0; i < markers.length; i++) {
       markers[i].setVisible(false)
+      console.log("On efface les markers de la carte")
     }
 
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
-    console.log(typeof(ratingFilter))
-
-    markers = [];
+    markers = []; //On vide la tableau des markers
 
     for (let i = 0; i < restaurants.length; i++) { //ON PARCOURT LA LISTE DES AVIS
 
@@ -74,6 +73,7 @@ class JsonList {
       if(ratingsAvg >=0 && ratingsAvg <= ratingFilter){
         if (checkMarkerInBounds(marker)) {
           marker.setVisible(true);
+          console.log('Le marker est visible !')
         }
   
         if (checkMarkerInBounds(marker) && !restaurantID) {
@@ -87,16 +87,25 @@ class JsonList {
         }
       }else if(document.getElementById(restaurantName)){
         document.getElementById(restaurantName).remove();
+      }else{
+        console.log("Le restaurant n'a pas une assez bonne note...")
       }
     }
 
+    
     map.addListener('dragend', function() {
-      // 3 seconds after the center of the map has changed, pan back to the
-      // marker.
-      window.setTimeout(function() {
-        jsonList.loadRestaurants();
-      }, 500);
+
+      var idleListerner = map.addListener('dragend', function() {
+        google.maps.event.removeListener(idleListerner);
+        window.setTimeout(function() {
+          jsonList.loadRestaurants();
+        }, 500);
+      });
+
+
+
     });
+    
   }
 }
 
