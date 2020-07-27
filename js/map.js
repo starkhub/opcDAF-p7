@@ -8,7 +8,6 @@ var markerIcon = './css/images/user-marker-64.png';
 var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
 
-
 class JsonList {
   constructor(list) {
     this.list = list;
@@ -36,13 +35,20 @@ class JsonList {
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
+      let ratingsComments = [];
       ratingsArray.forEach(
         star => ratingsSum += star.stars
       );
 
+
+
+      console.log(ratingsComments);
+      
       let ratingsAvg = ratingsSum / ratingsArray.length;
 
       let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
+
+      var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
         if (map.getBounds().contains(coords)) {
@@ -54,12 +60,23 @@ class JsonList {
           marker.addListener('click', function () {
             infowindow.setContent(
               '<h1>' + restaurantName + '</h1>' +
-              '<p> Moyenne des notes : </p>' + ratingsAvg
+              '<p> Moyenne des notes : </p>' + ratingsAvg +
+              '<h3>Avis</h3>' +
+              '<ul>' +
+
+              '</ul>'
             );
             infowindow.open(map, marker);
           });
           markers.push(marker);
           console.log('Le marker est visible !');
+          if (!restaurantID) {
+            let restaurantsListContent = document.createElement('div');
+            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
+            restaurantsListContent.id = restaurantName;
+            restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
+              '<p>Moyenne des notes : ' + ratingsAvg;
+          }
         } else {
           if (document.getElementById(restaurantName)) {
             document.getElementById(restaurantName).remove();
