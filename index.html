@@ -23,7 +23,7 @@
             <div id="map"></div>
             <div id="controls">
                 <button id="search-area-button" onclick="jsonList.loadRestaurants()">Chercher dans cette zone</button>
-                <select id="rating-filter">
+                <select id="rating-filter" onchange="jsonList.setNewRestaurants()">
                     <option value="2">De 1 à 2 étoiles</option>
                     <option value="3">De 1 à 3 étoiles</option>
                     <option value="4">De 1 à 4 étoiles</option>

@@ -7,7 +7,7 @@ var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
 var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
-var ratingFilter = parseInt(document.getElementById('rating-filter').value);
+
 
 class JsonList {
   constructor(list) {
@@ -24,11 +24,15 @@ class JsonList {
     localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
   }
 
-  loadRestaurantsNew() {
+  setNewRestaurants() {
+
+    markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
+
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
 
-    for (let i = 0; i < restaurantsJsonList.length; i++) {
+    var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
+    for (let i = 0; i < restaurantsJsonList.length; i++) { 
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
@@ -38,16 +42,21 @@ class JsonList {
 
       let ratingsAvg = ratingsSum / ratingsArray.length;
 
-
-
       let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
         if (map.getBounds().contains(coords)) {
-
           let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
             position: coords,
             map: map
+          });
+          let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
+          marker.addListener('click', function () {
+            infowindow.setContent(
+              '<h1>' + restaurantName + '</h1>' +
+              '<p> Moyenne des notes : </p>' + ratingsAvg
+            );
+            infowindow.open(map, marker);
           });
           markers.push(marker);
           console.log('Le marker est visible !')
@@ -57,8 +66,9 @@ class JsonList {
         }
       }
     }
-
   }
+
+  
 
   loadRestaurants() {
     //GESTION DE LA LISTE DES RESTAURANTS
@@ -180,13 +190,8 @@ function initMap() {
       map.setCenter(pos);
 
       map.addListener('idle', function () {
-        jsonList.loadRestaurantsNew();
-
+        jsonList.setNewRestaurants();
       });
-
-      jsonList.loadRestaurantsNew();
-
-
 
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
