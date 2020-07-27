@@ -35,15 +35,17 @@ class JsonList {
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
-      let ratingsComments = [];
+      let ratingsComments = '<ul class="restaurant-reviews">';
       ratingsArray.forEach(
         star => ratingsSum += star.stars
       );
-
-
-
-      console.log(ratingsComments);
+      ratingsArray.forEach(
+        comment => ratingsComments += '<li>' + comment.comment + '</li>'
+      )
+      ratingsComments += '</ul>';
       
+      console.log(ratingsComments)
+
       let ratingsAvg = ratingsSum / ratingsArray.length;
 
       let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
@@ -63,7 +65,8 @@ class JsonList {
               '<p> Moyenne des notes : </p>' + ratingsAvg +
               '<h3>Avis</h3>' +
               '<ul>' +
-
+              ratingsComments
+               +
               '</ul>'
             );
             infowindow.open(map, marker);
