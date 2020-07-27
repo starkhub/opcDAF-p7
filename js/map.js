@@ -70,12 +70,12 @@ class JsonList {
 
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
-      if(ratingsAvg >=0 && ratingsAvg <= ratingFilter){
+      if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
         if (checkMarkerInBounds(marker)) {
           marker.setVisible(true);
           console.log('Le marker est visible !')
         }
-  
+
         if (checkMarkerInBounds(marker) && !restaurantID) {
           var restaurantsListContent = document.createElement('div');
           restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
@@ -85,27 +85,21 @@ class JsonList {
         } else if (!checkMarkerInBounds(marker) && restaurantID) {
           document.getElementById(restaurantName).remove();
         }
-      }else if(document.getElementById(restaurantName)){
+      } else if (document.getElementById(restaurantName)) {
         document.getElementById(restaurantName).remove();
-      }else{
+      } else {
         console.log("Le restaurant n'a pas une assez bonne note...")
       }
     }
 
-    
-    map.addListener('dragend', function() {
-
-      var idleListerner = map.addListener('dragend', function() {
+    map.addListener('dragend', function () {
+      var idleListerner = map.addListener('dragend', function () {
         google.maps.event.removeListener(idleListerner);
-        window.setTimeout(function() {
+        window.setTimeout(function () {
           jsonList.loadRestaurants();
         }, 500);
       });
-
-
-
     });
-    
   }
 }
 
