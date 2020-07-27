@@ -7,6 +7,7 @@ var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
 var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
+var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
 class JsonList {
   constructor(list) {
@@ -21,6 +22,42 @@ class JsonList {
 
   setJsonListToLocalStorage() {
     localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
+  }
+
+  loadRestaurantsNew() {
+    var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
+
+    for (let i = 0; i < restaurantsJsonList.length; i++) {
+
+      let restaurantName = restaurantsJsonList[i].restaurantName;
+      let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
+      let ratingsSum = 0;
+      ratingsArray.forEach(
+        star => ratingsSum += star.stars
+      );
+
+      let ratingsAvg = ratingsSum / ratingsArray.length;
+
+
+
+      let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
+
+      if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
+        if (map.getBounds().contains(coords)) {
+
+          let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
+            position: coords,
+            map: map
+          });
+          markers.push(marker);
+          console.log('Le marker est visible !')
+        } else {
+
+          console.log('le marker est invisible !')
+        }
+      }
+    }
+
   }
 
   loadRestaurants() {
@@ -93,7 +130,7 @@ class JsonList {
     }
 
     map.addListener('dragend', function () {
-      var idleListerner = map.addListener('dragend', function () {
+      var idleListerner = map.addListener('center_changed', function () {
         google.maps.event.removeListener(idleListerner);
         window.setTimeout(function () {
           jsonList.loadRestaurants();
@@ -142,7 +179,14 @@ function initMap() {
 
       map.setCenter(pos);
 
-      jsonList.loadRestaurants();
+      map.addListener('idle', function () {
+        jsonList.loadRestaurantsNew();
+
+      });
+
+      jsonList.loadRestaurantsNew();
+
+
 
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
