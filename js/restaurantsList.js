@@ -121,6 +121,30 @@ var restaurantsJsonList = [{
                "comment": "Super accueil, des prix corrects pour des pizzas à pâte fine de très bonne qualité !!"
             }
          ]
+      },
+      {
+         "restaurantName": "Le Maddie's Restaurant",
+         "address": "730 Boulevard de Léry, 83500 La Seyne-sur-Mer",
+         "lat": 43.1151259,
+         "long": 5.8491536,
+         "ratings": [
+            {
+               "stars": 5,
+               "comment": "Lieu au top ! On peut y manger des produits frais préparés avec brio, super professionnalisme des serveurs avec leur plus beau sourire ! Très très bon rapport qualité/ prix. Je recommande vivement !"
+            },
+            {
+               "stars": 5,
+               "comment": "Accueil, services, parking et personnel au top. Produit frais et plat vraiment bon. Cadre sympa dans cette zone d’activités. une belle découverte pour les déjeuners pro. Plat du jour copieux."
+            },
+            {
+               "stars": 4,
+               "comment": "Cuisine excellente et copieuse. L'amélioration de l'insonorisation rendra ce lieu parfait."
+            },
+            {
+               "stars": 4,
+               "comment": "Très bon restaurant ouvert le Samedi et personnels très Sympa"
+            }
+         ]
       }
    ]
 }]
