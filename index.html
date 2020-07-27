@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>ProxiResto</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
+		<title>ProxiResto</title>
+		<link rel="stylesheet" href="css/style.css">
+	</head>
 
-<body>
+	<body>
 
-    <header>
+		<header></header>
 
-    </header>
+		<nav></nav>
 
-    <nav>
+		<section class="main-section">
 
-    </nav>
+			<div id="map"></div>
+			<div id="controls">
+				<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>
+				<select id="rating-filter" onchange="jsonList.setNewRestaurants()">
+					<option value="2">De 1 à 2 étoiles</option>
+					<option value="3">De 1 à 3 étoiles</option>
+					<option value="4">De 1 à 4 étoiles</option>
+					<option selected="selected" value="5">De 1 à 5 étoiles</option>
+				</select>
+			</div>
+			<div id="restaurants-list"></div>
 
-        <section class="main-section">
+		</section>
 
-            <div id="map"></div>
-            <div id="controls">
-                <button id="search-area-button" onclick="jsonList.loadRestaurants()">Chercher dans cette zone</button>
-                <select id="rating-filter" onchange="jsonList.setNewRestaurants()">
-                    <option value="2">De 1 à 2 étoiles</option>
-                    <option value="3">De 1 à 3 étoiles</option>
-                    <option value="4">De 1 à 4 étoiles</option>
-                    <option selected="selected" value="5">De 1 à 5 étoiles</option>
-                </select>
-            </div>
-            <div id="restaurants-list"></div>
+		<footer></footer>
 
-        </section>
+		<script src="js/config.js"></script>
+		<script src="js/map.js"></script>
 
-    <footer>
-
-    </footer>
-
-    <script src="js/config.js"></script>
-    <script src="js/map.js"></script>
-    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=" + api_key + "&callback=initMap" type="text/javascript"></script>-->
-
-</body>
+	</body>
 
 </html>

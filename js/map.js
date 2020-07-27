@@ -32,7 +32,7 @@ class JsonList {
 
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
-    for (let i = 0; i < restaurantsJsonList.length; i++) { 
+    for (let i = 0; i < restaurantsJsonList.length; i++) {
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
@@ -59,16 +59,16 @@ class JsonList {
             infowindow.open(map, marker);
           });
           markers.push(marker);
-          console.log('Le marker est visible !')
+          console.log('Le marker est visible !');
         } else {
-
-          console.log('le marker est invisible !')
+          if (document.getElementById(restaurantName)) {
+            document.getElementById(restaurantName).remove();
+          }
+          console.log('le marker est invisible !');
         }
       }
     }
   }
-
-  
 
   loadRestaurants() {
     //GESTION DE LA LISTE DES RESTAURANTS
@@ -124,7 +124,7 @@ class JsonList {
         }
 
         if (checkMarkerInBounds(marker) && !restaurantID) {
-          var restaurantsListContent = document.createElement('div');
+          let restaurantsListContent = document.createElement('div');
           restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
           restaurantsListContent.id = restaurantName;
           restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
@@ -148,6 +148,7 @@ class JsonList {
       });
     });
   }
+
 }
 
 function initMap() {
