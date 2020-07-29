@@ -40,7 +40,7 @@ class JsonList {
         star => ratingsSum += star.stars
       );
       ratingsArray.forEach(
-        comment => ratingsComments += '<li>' + comment.comment + '</li>'
+        comment => ratingsComments += '<li><span>Note : ' + comment.stars +'</span><br /><span>Commentaire : ' + comment.comment + '</span></li><br/><hr>'
       )
       ratingsComments += '</ul>';
       
