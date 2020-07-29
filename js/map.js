@@ -58,21 +58,25 @@ class JsonList {
             position: coords,
             map: map
           });
-          let infowindow = new google.maps.InfoWindow(); //ON GERE LES FENETRE POPUP AU CLIC SUR UN MARQUEUR
-          marker.addListener('click', function () {
-            infowindow.setContent(
+          let infowindow = new google.maps.InfoWindow({
+            content: 
               '<h1>' + restaurantName + '</h1>' +
               '<p> Moyenne des notes : </p>' + ratingsAvg +
               '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
                +
-              '</ul>'
-            );
-            infowindow.open(map, marker);
+              '</ul>',
+              disableAutoPan: true
+          });
+
+          marker.addListener('click', function () {
+              infowindow.open(map, marker);
           });
           markers.push(marker);
+
           console.log('Le marker est visible !');
+
           if (!restaurantID) {
             let restaurantsListContent = document.createElement('div');
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
