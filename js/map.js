@@ -44,7 +44,7 @@ class JsonList {
       )
       ratingsComments += '</ul>';
       
-      console.log(ratingsComments)
+      console.log(ratingsComments);
 
       let ratingsAvg = ratingsSum / ratingsArray.length;
 
@@ -75,8 +75,6 @@ class JsonList {
           });
           markers.push(marker);
 
-          console.log('Le marker est visible !');
-
           if (!restaurantID) {
             let restaurantsListContent = document.createElement('div');
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
@@ -98,8 +96,6 @@ class JsonList {
     //GESTION DE LA LISTE DES RESTAURANTS
 
     var restaurants = JSON.parse(localStorage.getItem('restaurants'));
-
-    //map.fitBounds(map.getBounds(), 0);
 
     for (let i = 0; i < markers.length; i++) {
       markers[i].setVisible(false)
@@ -172,7 +168,6 @@ class JsonList {
       });
     });
   }
-
 }
 
 function initMap() {
@@ -227,16 +222,6 @@ function initMap() {
   }
 }
 
-function test() {
-  var restaurants = JSON.parse(localStorage.getItem('restaurants'));
-  console.log(restaurants)
-  console.log(restaurants[0])
-  for (let i = 0; i < restaurants.length; i++) {
-
-    console.log(restaurants[i].ratings)
-  }
-}
-
 function checkMarkerInBounds(marker) {
   return map.getBounds().contains(marker.getPosition());
 }
@@ -256,12 +241,10 @@ function loadjs() { //Chargement du fichier de config
   document.body.appendChild(loadMap);
 }
 
-
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
 jsonList.initRestaurantsList(); //Initialisation de la liste JSON
 
 window.onload = function () { //Quand la fenêtre (DOM) est prête
   jsonList.setJsonListToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
   loadjs(); //On charge la carte
-
 }
