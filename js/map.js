@@ -1,7 +1,3 @@
-// Note: This example requires that you consent to location sharing when
-// prompted by your browser. If you see the error "The Geolocation service
-// failed.", it means you probably did not give permission for the browser to
-// locate you.
 var api_key = config.secret_key;
 var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
@@ -69,7 +65,6 @@ class JsonList {
               '</ul>',
               disableAutoPan: true
           });
-
           marker.addListener('click', function () {
               infowindow.open(map, marker);
           });
@@ -86,7 +81,6 @@ class JsonList {
           if (document.getElementById(restaurantName)) {
             document.getElementById(restaurantName).remove();
           }
-          console.log('le marker est invisible !');
         }
       }
     }
@@ -99,7 +93,6 @@ class JsonList {
 
     for (let i = 0; i < markers.length; i++) {
       markers[i].setVisible(false)
-      console.log("On efface les markers de la carte")
     }
 
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
