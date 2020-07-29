@@ -22,9 +22,7 @@ class JsonList {
   setNewRestaurants() {
 
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
-
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
-
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
@@ -32,6 +30,7 @@ class JsonList {
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
       let ratingsComments = '<ul class="restaurant-reviews">';
+
       ratingsArray.forEach(
         star => ratingsSum += star.stars
       );
@@ -40,12 +39,8 @@ class JsonList {
       )
       ratingsComments += '</ul>';
       
-      console.log(ratingsComments);
-
       let ratingsAvg = ratingsSum / ratingsArray.length;
-
       let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
-
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
