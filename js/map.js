@@ -63,7 +63,7 @@ class JsonList {
             infowindow.setContent(
               '<h1>' + restaurantName + '</h1>' +
               '<p> Moyenne des notes : </p>' + ratingsAvg +
-              '<h3>Avis</h3>' +
+              '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
                +
