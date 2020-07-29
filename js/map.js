@@ -35,12 +35,14 @@ class JsonList {
         star => ratingsSum += star.stars
       );
       ratingsArray.forEach(
-        comment => ratingsComments += '<li><span>Note : ' + comment.stars +'</span><br /><span>Commentaire : ' + comment.comment + '</span></li><br/><hr>'
+        comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars +'</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
       )
       ratingsComments += '</ul>';
       
       let ratingsAvg = ratingsSum / ratingsArray.length;
-      let coords = new google.maps.LatLng(restaurantsJsonList[i].lat, restaurantsJsonList[i].long);
+      let itemLat = restaurantsJsonList[i].lat;
+      let itemLong = restaurantsJsonList[i].long;
+      let coords = new google.maps.LatLng(itemLat, itemLong);
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
@@ -51,13 +53,14 @@ class JsonList {
           });
           let infowindow = new google.maps.InfoWindow({
             content: 
-              '<h1>' + restaurantName + '</h1>' +
-              '<p> Moyenne des notes : </p>' + ratingsAvg +
+              '<div class="infoWindow"><h1>' + restaurantName + '</h1>' +
+              '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
               '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
                +
-              '</ul>',
+              '</ul></div>'+
+              '<div class="streeViewImage"></div>',
               disableAutoPan: true
           });
           marker.addListener('click', function () {
@@ -70,7 +73,7 @@ class JsonList {
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
-              '<p>Moyenne des notes : ' + ratingsAvg;
+              '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
           }
         } else {
           if (document.getElementById(restaurantName)) {

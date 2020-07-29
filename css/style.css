@@ -50,3 +50,11 @@
     display:flex;
     flex-direction: column;
   }
+
+  .infoWindow h1, .infoWindow h3, .infoWindowRating{
+    text-align:center;
+  }
+
+  .infoWindow ul{
+    padding:0;
+  }
