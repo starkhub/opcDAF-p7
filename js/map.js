@@ -20,14 +20,11 @@ class JsonList {
   }
 
   setNewRestaurants() {
-
-    console.log('test')
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
-      console.log(i)
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
@@ -37,10 +34,10 @@ class JsonList {
         star => ratingsSum += star.stars
       );
       ratingsArray.forEach(
-        comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars +'</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
+        comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
       )
       ratingsComments += '</ul>';
-      
+
       let ratingsAvg = ratingsSum / ratingsArray.length;
       let itemLat = restaurantsJsonList[i].lat;
       let itemLong = restaurantsJsonList[i].long;
@@ -49,30 +46,28 @@ class JsonList {
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
         if (map.getBounds().contains(coords)) {
-          console.log('le marker est dans les bounds')
           let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
             position: coords,
             map: map
           });
           let infowindow = new google.maps.InfoWindow({
-            content: 
+            content:
               '<div class="infoWindow"><h1>' + restaurantName + '</h1>' +
               '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
               '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
-               +
-              '</ul></div>'+
+              +
+              '</ul></div>' +
               '<div class="streeViewImage"></div>',
-              disableAutoPan: true
+            disableAutoPan: true
           });
           marker.addListener('click', function () {
-              infowindow.open(map, marker);
+            infowindow.open(map, marker);
           });
           markers.push(marker);
 
           if (!restaurantID) {
-            console.log('Le restaurant existe pas !')
             let restaurantsListContent = document.createElement('div');
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
             restaurantsListContent.id = restaurantName;
@@ -80,13 +75,9 @@ class JsonList {
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
           }
         } else if (document.getElementById(restaurantName)) {
-            console.log('le restaurant existe ! On le supprime !')
-            document.getElementById(restaurantName).remove();
-          }else{
-            console.log('je sais pas !')
-          }
-      } else if(document.getElementById(restaurantName)){
-        console.log('le restaurant existe ! On le supprime !')
+          document.getElementById(restaurantName).remove();
+        }
+      } else if (document.getElementById(restaurantName)) {
         document.getElementById(restaurantName).remove();
       }
     }
