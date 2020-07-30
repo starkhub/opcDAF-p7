@@ -6,6 +6,7 @@ var restaurantsJsonList = [{
          "address": "2 Rue du 4 Septembre, 83210 La Farlède",
          "lat": 43.1676125,
          "long": 6.0429525,
+         "streetViewImage": "Donatello,La Farlède",
          "ratings": [
             {
                "stars": 5,
@@ -31,6 +32,7 @@ var restaurantsJsonList = [{
          "address": "225, Avenue Charles de Gaulle Quartier de L'Auberte, 83210 La Farlède",
          "lat": 43.1638216,
          "long": 6.0451975,
+         "streetViewImage": "Croco-Grill, La Farlède",
          "ratings": [
             {
                "stars": 4,
@@ -55,6 +57,7 @@ var restaurantsJsonList = [{
          "address": "100 Avenue de la République, 83210 La Farlède",
          "lat": 43.1674311,
          "long": 6.0432234,
+         "streetViewImage": "Gotosushi, La Farlède",
          "ratings": [
             {
                "stars": 5,
@@ -79,6 +82,7 @@ var restaurantsJsonList = [{
          "address": "1 Impasse de l'Auberte, 83260 La Farlède",
          "lat": 43.1601039,
          "long": 6.0423806,
+         "streetViewImage": "Le 702, La Farlède",
          "ratings": [
             {
                "stars": 5,
@@ -103,6 +107,7 @@ var restaurantsJsonList = [{
          "address": "35 Avenue de la République, 83210 La Farlède",
          "lat": 43.1645455,
          "long": 6.0425415,
+         "streetViewImage": "Pizz'Atomic, La Farlède",
          "ratings": [
             {
                "stars": 1,

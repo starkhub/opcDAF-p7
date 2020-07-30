@@ -41,6 +41,7 @@ class JsonList {
       let ratingsAvg = ratingsSum / ratingsArray.length;
       let itemLat = restaurantsJsonList[i].lat;
       let itemLong = restaurantsJsonList[i].long;
+      let streetViewImage = restaurantsJsonList[i].streetViewImage;
       let coords = new google.maps.LatLng(itemLat, itemLong);
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
@@ -59,8 +60,8 @@ class JsonList {
               ratingsComments
               +
               '</ul></div>' +
-              '<div class="streeViewImage"></div>',
-            disableAutoPan: true
+              '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
+            
           });
           marker.addListener('click', function () {
             infowindow.open(map, marker);
