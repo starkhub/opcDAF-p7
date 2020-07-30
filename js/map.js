@@ -21,11 +21,13 @@ class JsonList {
 
   setNewRestaurants() {
 
+    console.log('test')
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
+      console.log(i)
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
@@ -47,6 +49,7 @@ class JsonList {
 
       if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
         if (map.getBounds().contains(coords)) {
+          console.log('le marker est dans les bounds')
           let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
             position: coords,
             map: map
@@ -69,17 +72,22 @@ class JsonList {
           markers.push(marker);
 
           if (!restaurantID) {
+            console.log('Le restaurant existe pas !')
             let restaurantsListContent = document.createElement('div');
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
           }
-        } else {
-          if (document.getElementById(restaurantName)) {
+        } else if (document.getElementById(restaurantName)) {
+            console.log('le restaurant existe ! On le supprime !')
             document.getElementById(restaurantName).remove();
+          }else{
+            console.log('je sais pas !')
           }
-        }
+      } else if(document.getElementById(restaurantName)){
+        console.log('le restaurant existe ! On le supprime !')
+        document.getElementById(restaurantName).remove();
       }
     }
   }
