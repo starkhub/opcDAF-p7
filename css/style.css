@@ -26,7 +26,7 @@
 
   #map {
     width : 100%;
-    height: 800px;
+    height: 600px;
   }
 
   #restaurants-list {
@@ -51,7 +51,7 @@
     flex-direction: column;
   }
 
-  .infoWindow h1, .infoWindow h3, .infoWindowRating{
+  .infoWindow h1, .infoWindow h3, .infoWindowRating, .infoWindowAddress{
     text-align:center;
   }
 
