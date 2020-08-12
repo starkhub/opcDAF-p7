@@ -27,6 +27,7 @@ class JsonList {
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
       let restaurantName = restaurantsJsonList[i].restaurantName;
+      let restaurantAddress = restaurantsJsonList[i].address;
       let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
       let ratingsSum = 0;
       let ratingsComments = '<ul class="restaurant-reviews">';
@@ -55,14 +56,14 @@ class JsonList {
           let infowindow = new google.maps.InfoWindow({
             content:
               '<div class="infoWindow"><h1>' + restaurantName + '</h1>' +
-              '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
+              '<span class="infoWindowAddress">' + restaurantAddress + '</span>' +
+              '<span class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</span>' +
               '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
               +
               '</ul></div>' +
               '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
-            
           });
           marker.addListener('click', function () {
             infowindow.open(map, marker);

@@ -132,6 +132,7 @@ var restaurantsJsonList = [{
          "address": "730 Boulevard de Léry, 83500 La Seyne-sur-Mer",
          "lat": 43.1151259,
          "long": 5.8491536,
+         "streetViewImage": "Le Maddie's, La Seyne-sur-mer",
          "ratings": [
             {
                "stars": 5,
