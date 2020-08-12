@@ -3,6 +3,7 @@ var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
 var markerIcon = './css/images/user-marker-64.png';
 var markers = [];
 var restaurantsListDiv = document.getElementById('restaurants-list');
+var clickTime = Date.now() - 1001; //timer infoWindow
 
 class JsonList {
   constructor(list) {
@@ -65,6 +66,7 @@ class JsonList {
           });
           marker.addListener('click', function () {
             infowindow.open(map, marker);
+            clickTime = Date.now();
           });
           markers.push(marker);
 
@@ -125,6 +127,7 @@ function initMap() {
       map.setCenter(pos);
 
       map.addListener('idle', function () {
+        if(Date.now() > (clickTime + 1000))
         jsonList.setNewRestaurants();
       });
 
