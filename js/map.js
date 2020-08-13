@@ -1,59 +1,59 @@
-var api_key = config.secret_key;
-var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
-var markerIcon = './css/images/user-marker-64.png';
-var markers = [];
-var restaurantsListDiv = document.getElementById('restaurants-list');
+var api_key = config.secret_key; //initialisation clé API à partir d'un fichier config séparé
+var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //init. variables
+var markerIcon = './css/images/user-marker-64.png'; //init. image marker utilisateur
+var markers = []; //init. tableau des markers
+var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
 
-class JsonList {
+class JsonList { //Class de la liste JSON
   constructor(list) {
     this.list = list;
   }
 
-  initRestaurantsList() {
-    restaurantsList = document.createElement('script');
+  initRestaurantsList() { //On insert la liste des restaurants dans le dom avec une balise script
+    restaurantsList = document.createElement('script');//
     restaurantsList.src = this.list;
     document.getElementsByTagName('head')[0].appendChild(restaurantsList);
   }
 
-  setJsonListToLocalStorage() {
+  setJsonListToLocalStorage() { //On place la liste des restaurants dans le local storage pour faciliter l'accès futur
     localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
   }
 
-  setNewRestaurants() {
+  setNewRestaurants() { //On définit et on place tous les restaurants de la liste sur la carte
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
-      let restaurantName = restaurantsJsonList[i].restaurantName;
-      let restaurantAddress = restaurantsJsonList[i].address;
-      let ratingsArray = restaurantsJsonList[i].ratings; //ON PARCOURT LA LISTE DES NOTES DANS LE TABLEAU DES AVIS
-      let ratingsSum = 0;
-      let ratingsComments = '<ul class="restaurant-reviews">';
+      let restaurantName = restaurantsJsonList[i].restaurantName; //On récupère le nom du restaurant
+      let restaurantAddress = restaurantsJsonList[i].address;  //On récupère l'adresse du restaurant
+      let ratingsArray = restaurantsJsonList[i].ratings; //On récupère le tableau notes
+      let ratingsSum = 0; // Moyenne des notes à 0
+      let ratingsComments = '<ul class="restaurant-reviews">'; //Début de la liste html des avis
 
-      ratingsArray.forEach(
+      ratingsArray.forEach( //On additionne les notes
         star => ratingsSum += star.stars
       );
-      ratingsArray.forEach(
+      ratingsArray.forEach( //On parcourt les avis et on fait une liste html
         comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
       )
-      ratingsComments += '</ul>';
+      ratingsComments += '</ul>'; //On ferme la liste des avis.
 
-      let ratingsAvg = ratingsSum / ratingsArray.length;
-      let itemLat = restaurantsJsonList[i].lat;
-      let itemLong = restaurantsJsonList[i].long;
-      let streetViewImage = restaurantsJsonList[i].streetViewImage;
-      let coords = new google.maps.LatLng(itemLat, itemLong);
+      let ratingsAvg = ratingsSum / ratingsArray.length; //On calcule la moyenne des notes
+      let itemLat = restaurantsJsonList[i].lat; //On récupère la Lattitude
+      let itemLong = restaurantsJsonList[i].long; //On récupère la Longitude
+      let streetViewImage = restaurantsJsonList[i].streetViewImage; //On récupère l'image StreetView
+      let coords = new google.maps.LatLng(itemLat, itemLong); //On définit une nouvelle instance des coordonnées de la map
       var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
-      if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) {
-        if (map.getBounds().contains(coords)) {
-          let marker = new google.maps.Marker({ //ON PLACE LES MARQUEURS DES RESTAURANTS
+      if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { //Filtrage par les moyennes des avis
+        if (map.getBounds().contains(coords)) { //Si les coordonnées sont dans la map actuelle
+          let marker = new google.maps.Marker({ //On créé une instance d'un marker dédiée au restaurant i
             position: coords,
             map: map
           });
-          let infowindow = new google.maps.InfoWindow({
+          let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
             content:
               '<div class="infoWindow"><h1>' + restaurantName + '</h1>' +
               '<span class="infoWindowAddress">' + restaurantAddress + '</span>' +
@@ -65,42 +65,41 @@ class JsonList {
               '</ul></div>' +
               '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
           });
-          marker.addListener('click', function () {
+          marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
             infowindow.open(map, marker);
-            clickTime = Date.now();
+            clickTime = Date.now(); //Définit clickTime avec le timeStamp actuel
           });
-          markers.push(marker);
+          markers.push(marker); //On insert le marker dans le tableau dédié
 
-          if (!restaurantID) {
+          if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
             let restaurantsListContent = document.createElement('div');
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
           }
-        } else if (document.getElementById(restaurantName)) {
+        } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
         }
-      } else if (document.getElementById(restaurantName)) {
+      } else if (document.getElementById(restaurantName)) { //Si le restaurant n'a pas une note suffisante et qu'il était affiché auparavant, on supprime ses infos du dom
         document.getElementById(restaurantName).remove();
       }
     }
   }
 }
 
-function initMap() {
+function initMap() { //Initialisation de la carte Google Map via l'API
 
   //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera !");
 
-  map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
+  map = new google.maps.Map(document.getElementById('map'), { //Instanciation de la carte avec pour paramètre l'ID de la carte côté html
     center: { lat: -34.397, lng: 150.644 },
     zoom: 17
   });
 
-  infoWindow = new google.maps.InfoWindow;
+  infoWindow = new google.maps.InfoWindow; //Instanciation d'un infoWindow
 
-  // Try HTML5 geolocation
-  if (navigator.geolocation) {
+  if (navigator.geolocation) { //Check si le navigateur possède la fonction de géolocalisation
 
     navigator.geolocation.getCurrentPosition(function (position) {
       var pos = {
@@ -121,7 +120,7 @@ function initMap() {
         lng: mapLng
       });
 
-      infoWindow.setPosition(pos);//Popup info que l'user peut fermer
+      infoWindow.setPosition(pos); //Popup info que l'utilisateur peut fermer
       infoWindow.setContent('Vous êtes ici !');
       infoWindow.open(map);
 
@@ -135,17 +134,16 @@ function initMap() {
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });
-  } else {
-    // Browser doesn't support Geolocation
+  } else { //Si le navigateur ne supporte pas la géolocalisation
     handleLocationError(false, infoWindow, map.getCenter());
   }
 }
 
-function checkMarkerInBounds(marker) {
+function checkMarkerInBounds(marker) { //Vérification de la position du marker
   return map.getBounds().contains(marker.getPosition());
 }
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+function handleLocationError(browserHasGeolocation, infoWindow, pos) { //Gestion des erreurs
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
     'Erreur : nous ne pouvons pas vous localiser.' :
