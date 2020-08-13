@@ -76,7 +76,8 @@ class JsonList { //Class de la liste JSON
             restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
-              '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
+              '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
+              '<button name="addReview" id="addReviewButton" onclick="">Ajouter un avis</button>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
