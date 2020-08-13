@@ -16,13 +16,13 @@ class JsonList { //Class de la liste JSON
     document.getElementsByTagName('head')[0].appendChild(restaurantsList);
   }
 
-  setJsonListToLocalStorage() { //On place la liste des restaurants dans le local storage pour faciliter l'accès futur
-    localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
+  setJsonListToLocalStorage() { //On place la liste des restaurants dans le session storage pour faciliter l'accès futur
+    sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Storage ne stock que des valeurs de type String, pas d'objets !
   }
 
   setNewRestaurants() { //On définit et on place tous les restaurants de la liste sur la carte
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
-    var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
+    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
@@ -77,7 +77,7 @@ class JsonList { //Class de la liste JSON
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
-              '<button name="addReview" id="addReviewButton" onclick="">Ajouter un avis</button>';
+              '<button name="addReview" id="addReviewButton" onclick="jsonList.setNewReview(' + i + ')">Ajouter un avis</button>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
@@ -86,6 +86,14 @@ class JsonList { //Class de la liste JSON
         document.getElementById(restaurantName).remove();
       }
     }
+  }
+  setNewReview(resto){
+    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
+    let restaurantRatingsArray = tempRestaurantsJsonList[resto].ratings;
+    restaurantRatingsArray.push({'stars' : 5, 'comment' : 'test commentaire'});
+    console.log(tempRestaurantsJsonList);
+    sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
+    jsonList.setNewRestaurants();
   }
 }
 
