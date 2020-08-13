@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta charset="UTF-8">
-		<title>ProxiResto</title>
-		<link rel="stylesheet" href="css/style.css">
-	</head>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<title>ProxiResto</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
 
-	<body>
+<body>
 
-		<header></header>
+	<header class="pady-15">
+		<h1>ProxiResto</h1>
+		<h2>Tous les restaurants au bout des doigts...</h2>
+	</header>
 
-		
-
-		<nav>
-			<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>
-			<select id="rating-filter" onchange="jsonList.setNewRestaurants()">
+		<nav class="pady-15">
+			<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
+			<p class="text-white">Recherche par note : </p>
+			<select class="select-css" id="rating-filter" onchange="jsonList.setNewRestaurants()">
 				<option value="2">De 1 à 2 étoiles</option>
 				<option value="3">De 1 à 3 étoiles</option>
 				<option value="4">De 1 à 4 étoiles</option>
 				<option selected="selected" value="5">De 1 à 5 étoiles</option>
 			</select>
 		</nav>
-		<section class="main-section">
 
-			<div id="restaurants-list"></div>
+	<section class="main-section">
 
-			<div id="map"></div>
+		<div id="restaurants-list">
+			<h2 class="my-50">Les restaurants dans les environs</h2>
+		</div>
 
-		</section>
+		<div id="map"></div>
 
-		<footer></footer>
+	</section>
 
-		<script src="js/config.js"></script>
-		<script src="js/map.js"></script>
+	<footer></footer>
 
-	</body>
+	<script src="js/config.js"></script>
+	<script src="js/map.js"></script>
+
+</body>
 
 </html>

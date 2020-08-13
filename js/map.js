@@ -55,9 +55,9 @@ class JsonList { //Class de la liste JSON
           });
           let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
             content:
-              '<div class="infoWindow"><h1>' + restaurantName + '</h1>' +
-              '<span class="infoWindowAddress">' + restaurantAddress + '</span>' +
-              '<span class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</span>' +
+              '<div class="infoWindow"><h1 class="my-15">' + restaurantName + '</h1>' +
+              '<p class="infoWindowAddress">' + restaurantAddress + '</p>' +
+              '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
               '<h3>Avis clients</h3>' +
               '<ul>' +
               ratingsComments
@@ -73,7 +73,7 @@ class JsonList { //Class de la liste JSON
 
           if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
             let restaurantsListContent = document.createElement('div');
-            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file');
+            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
