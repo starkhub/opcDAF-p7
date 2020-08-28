@@ -200,6 +200,10 @@
     border-color: #aaa;
   }
 
+  .commentBlock{
+    display:none;
+  }
+
   /*MEDIA QUERIES*/
 
   @media screen and (max-width: 768px) {

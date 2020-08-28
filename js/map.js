@@ -77,7 +77,10 @@ class JsonList { //Class de la liste JSON
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
-              '<button name="addReview" id="addReviewButton" onclick="jsonList.setNewReview(' + i + ')">Ajouter un avis</button>';
+              '<button name="addReview" id="addReviewButton" onclick="jsonList.writeNewReview(' + i + ')">Ajouter un avis</button>' +
+              '<div id="commentBlock' + i + '" class="commentBlock">' + 
+              '<label>Votre commentaire : </label><textarea name="reviewComment' + i + '" id="reviewComment' + i + '"></textarea>' + 
+              '<button name="submitReview" id="submitReviewButton" onclick="jsonList.setNewReview(' + i +')">Valider</button></div>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
@@ -87,10 +90,14 @@ class JsonList { //Class de la liste JSON
       }
     }
   }
-  setNewReview(resto){
+  writeNewReview(resto){
+    document.getElementById('commentBlock' + resto).style.display = "block";
+  }
+
+  setNewReview(resto, rate, comment){
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantRatingsArray = tempRestaurantsJsonList[resto].ratings;
-    restaurantRatingsArray.push({'stars' : 5, 'comment' : 'test commentaire'});
+    restaurantRatingsArray.push({'stars' : rate, 'comment' : comment});
     console.log(tempRestaurantsJsonList);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     jsonList.setNewRestaurants();
