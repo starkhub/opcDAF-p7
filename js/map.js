@@ -94,10 +94,11 @@ class JsonList { //Class de la liste JSON
     document.getElementById('commentBlock' + resto).style.display = "block";
   }
 
-  setNewReview(resto, rate, comment){
+  setNewReview(resto){
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantRatingsArray = tempRestaurantsJsonList[resto].ratings;
-    restaurantRatingsArray.push({'stars' : rate, 'comment' : comment});
+    let userComment = document.getElementById('reviewComment' + resto).value;
+    restaurantRatingsArray.push({'stars' : 2, 'comment' : userComment});
     console.log(tempRestaurantsJsonList);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     jsonList.setNewRestaurants();

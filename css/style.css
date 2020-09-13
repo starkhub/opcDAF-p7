@@ -74,7 +74,7 @@
   #restaurants-list {
     width          : 33.33%;
     padding        : 0 15px;
-    height         : 700px;
+
     display        : flex;
     flex-direction : column;
     justify-content: flex-start;
