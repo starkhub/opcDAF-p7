@@ -10,7 +10,6 @@ var setReviewButton = document.getElementById('submitReviewButton');
 var reviewCommentArea = document.getElementById('reviewCommentArea');
 var reviewRatingSelect = document.getElementById('reviewRating');
 
-
 class JsonList { //Class de la liste JSON
   constructor(list) {
     this.list = list;
@@ -198,6 +197,8 @@ function closeReviewModal(resto) {
   reviewModal.id = 'reviewModal';
   reviewCommentArea.id  = 'reviewCommentArea';
   reviewRatingSelect.id = 'reviewRating';
+  reviewCommentArea.value = '';
+  reviewRatingSelect.value = 1;
   reviewModal.style.display = 'none';
 }
 
