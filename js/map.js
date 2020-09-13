@@ -4,6 +4,12 @@ var markerIcon = './css/images/user-marker-64.png'; //init. image marker utilisa
 var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
+var reviewModal = document.getElementById('reviewModal');
+var closeModal = document.getElementById('closeModal');
+var setReviewButton = document.getElementById('submitReviewButton');
+var reviewCommentArea = document.getElementById('reviewCommentArea');
+var reviewRatingSelect = document.getElementById('reviewRating');
+
 
 class JsonList { //Class de la liste JSON
   constructor(list) {
@@ -73,14 +79,11 @@ class JsonList { //Class de la liste JSON
 
           if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
             let restaurantsListContent = document.createElement('div');
-            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
+            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-15');
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
-              '<button name="addReview" id="addReviewButton" onclick="jsonList.writeNewReview(' + i + ')">Ajouter un avis</button>' +
-              '<div id="commentBlock' + i + '" class="commentBlock">' + 
-              '<label>Votre commentaire : </label><textarea name="reviewComment' + i + '" id="reviewComment' + i + '"></textarea>' + 
-              '<button name="submitReview" id="submitReviewButton" onclick="jsonList.setNewReview(' + i +')">Valider</button></div>';
+              '<button name="addReviewButton" id="addReviewButton' + i + '" onclick="revealReviewModal(' + i + ')">Ajouter un avis</button></div>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
@@ -90,18 +93,24 @@ class JsonList { //Class de la liste JSON
       }
     }
   }
-  writeNewReview(resto){
+  writeNewReview(resto) {
     document.getElementById('commentBlock' + resto).style.display = "block";
   }
 
-  setNewReview(resto){
+  setNewReview(resto) {
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantRatingsArray = tempRestaurantsJsonList[resto].ratings;
     let userComment = document.getElementById('reviewComment' + resto).value;
-    restaurantRatingsArray.push({'stars' : 2, 'comment' : userComment});
-    console.log(tempRestaurantsJsonList);
-    sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
-    jsonList.setNewRestaurants();
+    let userRating = parseInt(document.getElementById('reviewRating' + resto).value);
+    if (userComment != '') {
+      closeReviewModal(resto);
+      restaurantRatingsArray.push({ 'stars': userRating, 'comment': userComment });
+      sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
+      jsonList.setNewRestaurants();
+    }
+    else {
+      alert('Veuillez saisir un commentaire !')
+    }
   }
 }
 
@@ -144,8 +153,8 @@ function initMap() { //Initialisation de la carte Google Map via l'API
       map.setCenter(pos);
 
       map.addListener('idle', function () {
-        if(Date.now() > (clickTime + 1000))
-        jsonList.setNewRestaurants();
+        if (Date.now() > (clickTime + 1000))
+          jsonList.setNewRestaurants();
       });
 
     }, function () {
@@ -175,10 +184,38 @@ function loadjs() { //Chargement du fichier de config
   document.body.appendChild(loadMap);
 }
 
+function revealReviewModal(resto) {
+  var reviewModal = document.getElementById('reviewModal');
+  reviewModal.id = resto;
+  setReviewButton.id = resto;
+  reviewCommentArea.id = 'reviewComment' + resto;
+  reviewRatingSelect.id = 'reviewRating' + resto;
+  reviewModal.style.display = 'block';
+}
+
+function closeReviewModal(resto) {
+  setReviewButton.id = 'setReviewButton';
+  reviewModal.id = 'reviewModal';
+  reviewCommentArea.id  = 'reviewCommentArea';
+  reviewRatingSelect.id = 'reviewRating';
+  reviewModal.style.display = 'none';
+}
+
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
 jsonList.initRestaurantsList(); //Initialisation de la liste JSON
 
 window.onload = function () { //Quand la fenêtre (DOM) est prête
   jsonList.setJsonListToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
   loadjs(); //On charge la carte
+}
+
+// When the user clicks anywhere outside of the modal or on the close span, close it
+
+closeModal.onclick = function () {
+  closeReviewModal();
+}
+window.onclick = function (event) {
+  if (event.target == reviewModal) {
+    closeReviewModal();
+  }
 }

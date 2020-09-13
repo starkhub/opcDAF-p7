@@ -15,16 +15,16 @@
 		<h2>Tous les restaurants au bout des doigts...</h2>
 	</header>
 
-		<nav class="pady-15">
-			<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
-			<p class="text-white">Recherche par note : </p>
-			<select class="select-css" id="rating-filter" onchange="jsonList.setNewRestaurants()">
-				<option value="2">De 1 à 2 étoiles</option>
-				<option value="3">De 1 à 3 étoiles</option>
-				<option value="4">De 1 à 4 étoiles</option>
-				<option selected="selected" value="5">De 1 à 5 étoiles</option>
-			</select>
-		</nav>
+	<nav class="pady-15">
+		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
+		<p class="text-white">Recherche par note : </p>
+		<select class="select-css" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+			<option value="2">De 1 à 2 étoiles</option>
+			<option value="3">De 1 à 3 étoiles</option>
+			<option value="4">De 1 à 4 étoiles</option>
+			<option selected="selected" value="5">De 1 à 5 étoiles</option>
+		</select>
+	</nav>
 
 	<section class="main-section">
 
@@ -33,6 +33,22 @@
 		</div>
 
 		<div id="reviewModal" class="modal">
+			<div class="modal-content">
+				<span id="closeModal">&times;</span>
+				<h2 id="reviewRestoTitle"></h2>
+				<h3>Ajouter un avis</h3>
+				<label>Votre note : </label><select class="select-css" id="reviewRating">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+				<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"></textarea>
+				<button name="submitReviewButton" class="submitReviewButton" id="submitReviewButton" onclick="jsonList.setNewReview(this.id)">Valider</button>
+			</div>
+		</div>
+
 		<div id="map"></div>
 
 	</section>
