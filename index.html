@@ -33,38 +33,43 @@
 		</div>
 
 		<div id="reviewModal" class="modal">
-			<div class="modal-content">
-				<span id="closeModal">&times;</span>
-				<h2 id="reviewRestoTitle"></h2>
-				<h3>Ajouter un avis</h3>
-				<label>Votre note : </label><select class="select-css" id="reviewRating">
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-				</select>
-				<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"></textarea>
-				<button name="submitReviewButton" class="submitReviewButton" id="submitReviewButton" onclick="jsonList.setNewReview(this.id)">Valider</button>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<span id="closeReviewModalButton" onclick="toggleModal('reviewModal')">&times;</span>
+					<div class="modal-header">
+						<h2>Ajouter un commentaire</h2>
+					</div>
+					<div class="modal-body">
+						<label>Votre note : </label><select class="select-css" id="reviewRating">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select>
+						<label>Votre commentaire : </label><textarea name="reviewComment"
+							id="reviewCommentArea"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" name="submitReviewButton" class="modalSubmitButton" id="reviewModalButton">Valider</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div id="addRestaurantModal" class="modal">
 			<div class="modal-content">
-				<div class="modal-title">
+				<div class="modal-header">
 
 				</div>
 				<div class="modal-body">
 
 				</div>
 				<div class="modal-footer">
-					
+
 				</div>
 			</div>
 		</div>
-
-		<button type="button" class="delete" data-toggle="modal" data-target="addRestaurantModal">TEST MODAL 1</button>
-		<button type="button" class="delete" data-toggle="modal" data-target="addReview">TEST MODAL 2</button>
 
 		<div id="map"></div>
 

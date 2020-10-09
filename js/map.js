@@ -5,21 +5,14 @@ var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
 var reviewModal = document.getElementById('reviewModal');
-var closeModal = document.getElementById('closeModal');
+
+
+var closeReviewModalButton = document.getElementById('closeReviewModalButton');
+
+
 var setReviewButton = document.getElementById('submitReviewButton');
 var reviewCommentArea = document.getElementById('reviewCommentArea');
 var reviewRatingSelect = document.getElementById('reviewRating');
-
-var modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
-
-console.log(modalTriggers)
-
-for (let i = 0; i < modalTriggers.length; i++) {
-  modalTriggers[i].addEventListener('click', function () {
-    alert(this.dataset.target)
-  })
-}
-
 
 class JsonList { //Class de la liste JSON
   constructor(list) {
@@ -93,7 +86,7 @@ class JsonList { //Class de la liste JSON
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
-              '<button name="addReviewButton" id="addReviewButton' + i + '" onclick="revealReviewModal(' + i + ')">Ajouter un avis</button></div>';
+              '<button name="addReviewButton" id="addReviewButton' + i + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + i + ')">Ajouter un avis</button></div>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
@@ -128,9 +121,7 @@ class JsonList { //Class de la liste JSON
     console.log(tempRestaurantsJsonList)
 
   }
-
 }
-
 
 function initMap() { //Initialisation de la carte Google Map via l'API
 
@@ -207,6 +198,7 @@ function loadjs() { //Chargement du fichier de config
   document.body.appendChild(loadMap);
 }
 
+/*
 function revealReviewModal(resto) {
   var reviewModal = document.getElementById('reviewModal');
   reviewModal.id = resto;
@@ -224,7 +216,7 @@ function closeReviewModal(resto) {
   reviewCommentArea.value = '';
   reviewRatingSelect.value = 1;
   reviewModal.style.display = 'none';
-}
+}*/
 
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
 jsonList.initRestaurantsList(); //Initialisation de la liste JSON
@@ -236,11 +228,35 @@ window.onload = function () { //Quand la fenêtre (DOM) est prête
 
 // When the user clicks anywhere outside of the modal or on the close span, close it
 
-closeModal.onclick = function () {
-  closeReviewModal();
-}
+
+/*
 window.onclick = function (event) {
-  if (event.target == reviewModal) {
-    closeReviewModal();
+  console.log(event)
+  if(event !== null){
+    let modal = document.getElementById(event.target.id);
+    modal.style.display = "none";
+    //closeReviewModal();
+    let modalsSubmitButton = document.getElementsByClassName('modalSubmitButton');
+    for(let i = 0; i < modalsSubmitButton.length; i++){
+      delete modalsSubmitButton[i].dataset.target;
+    }
   }
 }
+*/
+
+
+// GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
+
+function toggleModal(target, item){
+  let modal = document.getElementById(target);
+  let modalVisibility = modal.style.display;
+  let submitButton = document.getElementById(target + 'Button');
+  if(modalVisibility == 'block'){
+    modal.style.display = 'none';
+    delete submitButton.dataset.target;
+  } else{
+    submitButton.dataset.target = item;
+    modal.style.display = 'block'
+  }
+}
+
