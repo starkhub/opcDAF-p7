@@ -10,6 +10,17 @@ var setReviewButton = document.getElementById('submitReviewButton');
 var reviewCommentArea = document.getElementById('reviewCommentArea');
 var reviewRatingSelect = document.getElementById('reviewRating');
 
+var modalTriggers = document.querySelectorAll('[data-toggle="modal"]');
+
+console.log(modalTriggers)
+
+for (let i = 0; i < modalTriggers.length; i++) {
+  modalTriggers[i].addEventListener('click', function () {
+    alert(this.dataset.target)
+  })
+}
+
+
 class JsonList { //Class de la liste JSON
   constructor(list) {
     this.list = list;
@@ -111,7 +122,15 @@ class JsonList { //Class de la liste JSON
       alert('Veuillez saisir un commentaire !')
     }
   }
+
+  setNewRestaurant() {
+    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
+    console.log(tempRestaurantsJsonList)
+
+  }
+
 }
+
 
 function initMap() { //Initialisation de la carte Google Map via l'API
 
@@ -156,6 +175,11 @@ function initMap() { //Initialisation de la carte Google Map via l'API
           jsonList.setNewRestaurants();
       });
 
+      map.addListener('click', function (mapsMouseEvent) {
+        console.log(mapsMouseEvent.latLng.toString());
+        jsonList.setNewRestaurant();
+      })
+
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -195,7 +219,7 @@ function revealReviewModal(resto) {
 function closeReviewModal(resto) {
   setReviewButton.id = 'setReviewButton';
   reviewModal.id = 'reviewModal';
-  reviewCommentArea.id  = 'reviewCommentArea';
+  reviewCommentArea.id = 'reviewCommentArea';
   reviewRatingSelect.id = 'reviewRating';
   reviewCommentArea.value = '';
   reviewRatingSelect.value = 1;
