@@ -168,7 +168,8 @@ function initMap() { //Initialisation de la carte Google Map via l'API
 
       map.addListener('click', function (mapsMouseEvent) {
         console.log(mapsMouseEvent.latLng.toString());
-        jsonList.setNewRestaurant();
+        toggleModal('addRestaurantModal'); // ADD RESTAURANT WITH A CLICK ON THE MAP 
+        //jsonList.setNewRestaurant();
       })
 
     }, function () {
