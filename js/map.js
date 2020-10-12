@@ -64,6 +64,7 @@ class JsonList { //Class de la liste JSON
           });
           let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
             content:
+
               '<div class="infoWindow"><h1 class="my-15">' + restaurantName + '</h1>' +
               '<p class="infoWindowAddress">' + restaurantAddress + '</p>' +
               '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
@@ -73,7 +74,9 @@ class JsonList { //Class de la liste JSON
               +
               '</ul></div>' +
               '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
-          });
+
+
+            });
           marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
             infowindow.open(map, marker);
             clickTime = Date.now(); //Définit clickTime avec le timeStamp actuel
@@ -120,7 +123,6 @@ class JsonList { //Class de la liste JSON
   setNewRestaurant() {
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     console.log(tempRestaurantsJsonList)
-
   }
 }
 
@@ -166,13 +168,13 @@ function initMap() { //Initialisation de la carte Google Map via l'API
         if (Date.now() > (clickTime + 1000))
           jsonList.setNewRestaurants();
       });
-
+/*
       map.addListener('click', function (mapsMouseEvent) {
-        console.log(mapsMouseEvent.latLng.toString());
-        toggleModal('addRestaurantModal'); // ADD RESTAURANT WITH A CLICK ON THE MAP 
-        //jsonList.setNewRestaurant();
-      })
-
+          console.log(mapsMouseEvent.latLng.toString());
+          toggleModal('addRestaurantModal'); // ADD RESTAURANT WITH A CLICK ON THE MAP 
+          //jsonList.setNewRestaurant();
+      });
+*/
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -199,26 +201,6 @@ function loadjs() { //Chargement du fichier de config
   loadMap.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
   document.body.appendChild(loadMap);
 }
-
-/*
-function revealReviewModal(resto) {
-  var reviewModal = document.getElementById('reviewModal');
-  reviewModal.id = resto;
-  setReviewButton.id = resto;
-  reviewCommentArea.id = 'reviewComment' + resto;
-  reviewRatingSelect.id = 'reviewRating' + resto;
-  reviewModal.style.display = 'block';
-}
-
-function closeReviewModal(resto) {
-  setReviewButton.id = 'setReviewButton';
-  reviewModal.id = 'reviewModal';
-  reviewCommentArea.id = 'reviewCommentArea';
-  reviewRatingSelect.id = 'reviewRating';
-  reviewCommentArea.value = '';
-  reviewRatingSelect.value = 1;
-  reviewModal.style.display = 'none';
-}*/
 
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
 jsonList.initRestaurantsList(); //Initialisation de la liste JSON
