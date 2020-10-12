@@ -49,7 +49,7 @@ class JsonList { //Class de la liste JSON
       )
       ratingsComments += '</ul>'; //On ferme la liste des avis.
 
-      let ratingsAvg = ratingsSum / ratingsArray.length; //On calcule la moyenne des notes
+      let ratingsAvg = parseFloat(ratingsSum / ratingsArray.length).toFixed(2); //On calcule la moyenne des notes
       let itemLat = restaurantsJsonList[i].lat; //On récupère la Lattitude
       let itemLong = restaurantsJsonList[i].long; //On récupère la Longitude
       let streetViewImage = restaurantsJsonList[i].streetViewImage; //On récupère l'image StreetView
