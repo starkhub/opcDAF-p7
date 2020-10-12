@@ -5,10 +5,10 @@ var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
 var reviewModal = document.getElementById('reviewModal');
-
+var reviewModalButton = document.getElementById('reviewModalButton');
+var reviewTextArea = document.getElementById('reviewCommentArea');
 
 var closeReviewModalButton = document.getElementById('closeReviewModalButton');
-
 
 var setReviewButton = document.getElementById('submitReviewButton');
 var reviewCommentArea = document.getElementById('reviewCommentArea');
@@ -103,10 +103,11 @@ class JsonList { //Class de la liste JSON
   setNewReview(resto) {
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantRatingsArray = tempRestaurantsJsonList[resto].ratings;
-    let userComment = document.getElementById('reviewComment' + resto).value;
-    let userRating = parseInt(document.getElementById('reviewRating' + resto).value);
+    let userComment = reviewTextArea.value;
+    let userRating = parseInt(document.getElementById('reviewRating').value);
     if (userComment != '') {
-      closeReviewModal(resto);
+      toggleModal('reviewModal');
+      reviewTextArea.value = '';
       restaurantRatingsArray.push({ 'stars': userRating, 'comment': userComment });
       sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
       jsonList.setNewRestaurants();
@@ -227,25 +228,6 @@ window.onload = function () { //Quand la fenêtre (DOM) est prête
   loadjs(); //On charge la carte
 }
 
-// When the user clicks anywhere outside of the modal or on the close span, close it
-
-
-/*
-window.onclick = function (event) {
-  console.log(event)
-  if(event !== null){
-    let modal = document.getElementById(event.target.id);
-    modal.style.display = "none";
-    //closeReviewModal();
-    let modalsSubmitButton = document.getElementsByClassName('modalSubmitButton');
-    for(let i = 0; i < modalsSubmitButton.length; i++){
-      delete modalsSubmitButton[i].dataset.target;
-    }
-  }
-}
-*/
-
-
 // GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
 
 function toggleModal(target, item){
@@ -261,3 +243,10 @@ function toggleModal(target, item){
   }
 }
 
+
+reviewModalButton.addEventListener('click', function(event){
+  event.preventDefault;
+  let resto = this.dataset.target;
+  jsonList.setNewReview(resto);
+
+})
