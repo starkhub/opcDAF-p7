@@ -9,11 +9,9 @@ var reviewModal = document.getElementById('reviewModal');
 var reviewModalButton = document.getElementById('reviewModalButton');
 var addRestaurantModalButton = document.getElementById('addRestaurantModalButton');
 var reviewTextArea = document.getElementById('reviewCommentArea');
+var restaurantNameInput = document.getElementById('addRestaurantName');
 var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
 var closeReviewModalButton = document.getElementById('closeReviewModalButton');
-
-
-
 var reviewRatingSelect = document.getElementById('reviewRating');
 
 class JsonList { //Class de la liste JSON
@@ -135,10 +133,12 @@ class JsonList { //Class de la liste JSON
     }
     tempRestaurantsJsonList.push(newRestaurant);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
-    console.log(restaurantIndex)
     toggleModal('addRestaurantModal');
     toggleModal('reviewModal', restaurantIndex);
-    
+    for( let i = 9; i>= 0; i--){
+      addRestaurantAddressSelect.remove(i);
+    }
+    restaurantNameInput.value = '';
   }
 }
 
@@ -271,7 +271,7 @@ reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUT
 
 addRestaurantModalButton.addEventListener('click', function(event){
   event.preventDefault;
-  let restaurantName = document.getElementById('addRestaurantName').value;
+  let restaurantName = restaurantNameInput.value;
   let restaurantAddress = addRestaurantAddressSelect.value;
   let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
   let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
