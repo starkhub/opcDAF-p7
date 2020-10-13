@@ -172,6 +172,13 @@
     font-size    : 1.2em;
   }
 
+  input {
+    padding:10px 14px;
+    border:none;
+    border-radius: 25px;
+    background-color: #ededed;
+  }
+
   .closeModal {
     font-size: 2em;
     float    : right;
