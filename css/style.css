@@ -85,7 +85,7 @@
   .main-section {
     display        : flex;
     flex-direction : row;
-    height:70%;
+    height:600px;
   }
 
   .map-container {
@@ -103,20 +103,22 @@
   aside {
     width : 33.33%;
     height: 600px;
-
+    position:relative;
+    border: 5px solid #F4AA2D;
   }
 
   aside h2 {
+    height:60px;
     text-transform: uppercase;
   }
 
   #restaurants-list {
-    height         : 100%;
+    max-height     : 510px;
     overflow       : auto;
     display        : flex;
     flex-direction : column;
     align-items    : center;
-    border: 5px solid #F4AA2D;
+
   }
 
   .restaurant-file {
@@ -264,6 +266,10 @@
   .gm-ui-hover-effect img{
     width: 30px !important;
     height: 30px !important;
+  }
+
+  .poi-info-window {
+    padding: 20px !important;
   }
 
   /*MEDIA QUERIES*/

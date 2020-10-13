@@ -115,9 +115,10 @@ class JsonList { //Class de la liste JSON
       restaurantRatingsArray.push({ 'stars': userRating, 'comment': userComment });
       sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
       jsonList.setNewRestaurants();
+      alert('Merci pour votre commentaire !');
     }
     else {
-      alert('Veuillez saisir un commentaire !')
+      alert('Veuillez saisir un commentaire !');
     }
   }
 
