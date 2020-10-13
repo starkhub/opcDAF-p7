@@ -7,6 +7,7 @@ var clickTime = Date.now() - 1001; //timer infoWindow
 var reviewModal = document.getElementById('reviewModal');
 var reviewModalButton = document.getElementById('reviewModalButton');
 var reviewTextArea = document.getElementById('reviewCommentArea');
+var locationSelect = document.getElementById('addRestaurantAddressSelect');
 
 var closeReviewModalButton = document.getElementById('closeReviewModalButton');
 
@@ -171,20 +172,19 @@ function initMap() { //Initialisation de la carte Google Map via l'API
           jsonList.setNewRestaurants();
       });
       map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP 
-        console.log(mapsMouseEvent.latLng.lat());
-        console.log(mapsMouseEvent.latLng.lng());
-        console.log('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '')
-        // ancien code de compatibilité, aujourd’hui inutile
-        if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+...
-          httpRequest = new XMLHttpRequest();
+        let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
+        if (confirm) {
+          // ancien code de compatibilité, aujourd’hui inutile
+          if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+...
+            httpRequest = new XMLHttpRequest();
+          }
+          else if (window.ActiveXObject) { // IE 6 et antérieurs
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+          }
+          httpRequest.onreadystatechange = getHttpResponse;
+          httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
+          httpRequest.send();
         }
-        else if (window.ActiveXObject) { // IE 6 et antérieurs
-          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        httpRequest.onreadystatechange = getHttpResponse;
-
-        httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
-        httpRequest.send();
 
         //toggleModal('addRestaurantModal');
         //jsonList.setNewRestaurant();
@@ -246,10 +246,23 @@ reviewModalButton.addEventListener('click', function (event) {
 })
 
 function getHttpResponse() {
+
   if (httpRequest.readyState === XMLHttpRequest.DONE) {
-    // tout va bien, la réponse a été reçue
-    console.log(httpRequest.responseText)
-} else {
-    // pas encore prête
-}
+    if (httpRequest.status === 200) {
+      let response = JSON.parse(httpRequest.responseText);
+      let responseLength = response.results.length;
+      for (let i = 0; i < responseLength; i++) {
+        let results = response.results[i];
+        let option = document.createElement('option');
+        option.innerHTML = results.formatted_address;
+        option.setAttribute('value', results.formatted_address)
+        locationSelect.append(option);
+        console.log(results)
+      }
+      toggleModal('addRestaurantModal');
+    } else {
+      alert('Il y a eu un problème avec la requête.');
+    }
+  }
+
 }

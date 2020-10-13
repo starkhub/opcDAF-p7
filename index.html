@@ -62,8 +62,13 @@
 				<h2>Ajouter un restaurant</h2>
 			</div>
 			<div class="modal-body pady-15">
-				<label for="restaurantName"></label><input name="restaurantName" type="text"
+				<div class="modal-group">
+				<label for="restaurantName">Choisir le nom du restaurant : </label><input name="restaurantName" type="text"
 					placeholder="Nom restaurant" />
+				</div>
+				<div class="modal-group pady-15">
+					<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant : </label><select class="select-css bg-secondary" id="addRestaurantAddressSelect" name="addRestaurantAddressSelect"></select>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"

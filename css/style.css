@@ -54,7 +54,8 @@
   }
 
   header {
-    height         : 95px;;
+    height: 95px;
+    ;
     display        : flex;
     flex-direction : column;
     justify-content: center;
@@ -73,23 +74,23 @@
   }
 
   footer {
-  
+
     position        : relative;
     margin-top      : 50px;
     height          : 75px;
     width           : 100%;
     background-color: grey;
-  
+
   }
 
   .main-section {
-    display        : flex;
-    flex-direction : row;
-    height:600px;
+    display       : flex;
+    flex-direction: row;
+    height        : 600px;
   }
 
   .map-container {
-    width: 100%;
+    width : 100%;
     height: 100%;
     border: 5px solid #F4AA2D;
   }
@@ -101,23 +102,23 @@
   }
 
   aside {
-    width : 33.33%;
-    height: 600px;
-    position:relative;
-    border: 5px solid #F4AA2D;
+    width   : 33.33%;
+    height  : 600px;
+    position: relative;
+    border  : 5px solid #F4AA2D;
   }
 
   aside h2 {
-    height:60px;
+    height        : 60px;
     text-transform: uppercase;
   }
 
   #restaurants-list {
-    max-height     : 510px;
-    overflow       : auto;
-    display        : flex;
-    flex-direction : column;
-    align-items    : center;
+    max-height    : 510px;
+    overflow      : auto;
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
 
   }
 
@@ -163,25 +164,25 @@
   }
 
   button {
-    padding: 10px 14px;
-    border: none;
+    padding      : 10px 14px;
+    border       : none;
     border-radius: 25px;
-    cursor: pointer;
-    color: #fff;
-    font-size: 1.2em;
+    cursor       : pointer;
+    color        : #fff;
+    font-size    : 1.2em;
   }
 
-  .closeModal{
-    font-size:2em;
-    float:right;
-    cursor: pointer;
+  .closeModal {
+    font-size: 2em;
+    float    : right;
+    cursor   : pointer;
   }
 
   select {
-    padding: 10px 14px;
+    padding      : 10px 14px;
     border-radius: 25px;
-    color: #fff;
-    font-size: 1.2em;
+    color        : #fff;
+    font-size    : 1.2em;
   }
 
   .commentBlock {
@@ -233,13 +234,18 @@
     margin          : auto;
     padding         : 20px;
     border          : 1px solid #888;
-    width           : 80%;
+    max-width       : 50%;
   }
 
-  .modal-body{
-    display:flex;
+  .modal-body {
+    display       : flex;
     flex-direction: column;
-    font-size:1.2em;
+    font-size     : 1.2em;
+  }
+
+  .modal-group {
+    display       : flex;
+    flex-direction: column;
   }
 
   /* The Close Button */
@@ -258,13 +264,13 @@
   }
 
 
-  .gm-ui-hover-effect{
-    top: 0px !important;
+  .gm-ui-hover-effect {
+    top  : 0px !important;
     right: 25px !important;
   }
 
-  .gm-ui-hover-effect img{
-    width: 30px !important;
+  .gm-ui-hover-effect img {
+    width : 30px !important;
     height: 30px !important;
   }
 
@@ -281,15 +287,15 @@
 
     aside {
       padding-top: 25px;
-      width: 100%;
+      width      : 100%;
     }
 
-    .main-section{
-      height:auto;
+    .main-section {
+      height: auto;
     }
 
     .map-container {
-      height:500px
+      height: 500px
     }
 
   }
