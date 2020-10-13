@@ -76,7 +76,7 @@ class JsonList { //Class de la liste JSON
               '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
 
 
-            });
+          });
 
           marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
             infowindow.open(map, marker);
@@ -170,10 +170,24 @@ function initMap() { //Initialisation de la carte Google Map via l'API
         if (Date.now() > (clickTime + 1000))
           jsonList.setNewRestaurants();
       });
-      map.addListener('click', function (mapsMouseEvent) {
-          console.log(mapsMouseEvent.latLng.toString());
-          toggleModal('addRestaurantModal'); // ADD RESTAURANT WITH A CLICK ON THE MAP 
-          //jsonList.setNewRestaurant();
+      map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP 
+        console.log(mapsMouseEvent.latLng.lat());
+        console.log(mapsMouseEvent.latLng.lng());
+        console.log('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '')
+        // ancien code de compatibilité, aujourd’hui inutile
+        if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+...
+          httpRequest = new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject) { // IE 6 et antérieurs
+          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        httpRequest.onreadystatechange = getHttpResponse;
+
+        httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
+        httpRequest.send();
+
+        //toggleModal('addRestaurantModal');
+        //jsonList.setNewRestaurant();
       });
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -210,23 +224,32 @@ window.onload = function () { //Quand la fenêtre (DOM) est prête
   loadjs(); //On charge la carte
 }
 
-function toggleModal(target, item){ // GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
+function toggleModal(target, item) { // GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
   let modal = document.getElementById(target);
   let modalVisibility = modal.style.display;
   let submitButton = document.getElementById(target + 'Button');
-  if(modalVisibility == 'block'){
+  if (modalVisibility == 'block') {
     modal.style.display = 'none';
     reviewTextArea.value = '';
     delete submitButton.dataset.target;
-  } else{
+  } else {
     submitButton.dataset.target = item;
     modal.style.display = 'block'
   }
 }
 
-reviewModalButton.addEventListener('click', function(event){
+reviewModalButton.addEventListener('click', function (event) {
   event.preventDefault;
   let resto = this.dataset.target;
   jsonList.setNewReview(resto);
 
 })
+
+function getHttpResponse() {
+  if (httpRequest.readyState === XMLHttpRequest.DONE) {
+    // tout va bien, la réponse a été reçue
+    console.log(httpRequest.responseText)
+} else {
+    // pas encore prête
+}
+}
