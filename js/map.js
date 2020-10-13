@@ -217,13 +217,13 @@ function toggleModal(target, item){ // GET THE MODAL ID AND THE RESTAURANT ID TH
   let submitButton = document.getElementById(target + 'Button');
   if(modalVisibility == 'block'){
     modal.style.display = 'none';
+    reviewTextArea.value = '';
     delete submitButton.dataset.target;
   } else{
     submitButton.dataset.target = item;
     modal.style.display = 'block'
   }
 }
-
 
 reviewModalButton.addEventListener('click', function(event){
   event.preventDefault;
