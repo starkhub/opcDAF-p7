@@ -77,6 +77,7 @@ class JsonList { //Class de la liste JSON
 
 
             });
+
           marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
             infowindow.open(map, marker);
             clickTime = Date.now(); //Définit clickTime avec le timeStamp actuel
@@ -89,7 +90,7 @@ class JsonList { //Class de la liste JSON
             restaurantsListContent.id = restaurantName;
             restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
               '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>' +
-              '<button name="addReviewButton" id="addReviewButton' + i + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + i + ')">Ajouter un avis</button></div>';
+              '<button name="addReviewButton" class="bg-secondary" id="addReviewButton' + i + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + i + ')">Ajouter un avis</button></div>';
           }
         } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
           document.getElementById(restaurantName).remove();
@@ -159,7 +160,7 @@ function initMap() { //Initialisation de la carte Google Map via l'API
       });
 
       infoWindow.setPosition(pos); //Popup info que l'utilisateur peut fermer
-      infoWindow.setContent('Vous êtes ici !');
+      infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
       infoWindow.open(map);
 
       map.setCenter(pos);
