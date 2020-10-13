@@ -211,9 +211,7 @@ window.onload = function () { //Quand la fenêtre (DOM) est prête
   loadjs(); //On charge la carte
 }
 
-// GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
-
-function toggleModal(target, item){
+function toggleModal(target, item){ // GET THE MODAL ID AND THE RESTAURANT ID THEN REVEAL THE MODAL IF CLOSED, CLOSE IT IF OPENED
   let modal = document.getElementById(target);
   let modalVisibility = modal.style.display;
   let submitButton = document.getElementById(target + 'Button');

@@ -50,7 +50,7 @@
   }
 
   .bg-secondary {
-    background-color: #ADA842;
+    background-color: #AC4131;
   }
 
   header {
@@ -160,11 +160,26 @@
     padding: 0;
   }
 
-
   button {
     padding: 10px 14px;
     border: none;
     border-radius: 25px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.2em;
+  }
+
+  .closeModal{
+    font-size:2em;
+    float:right;
+    cursor: pointer;
+  }
+
+  select {
+    padding: 10px 14px;
+    border-radius: 25px;
+    color: #fff;
+    font-size: 1.2em;
   }
 
   .commentBlock {
@@ -204,7 +219,7 @@
     -ms-flex-align         : start;
     align-items            : flex-start;
     -ms-flex-pack          : justify;
-    justify-content        : space-between;
+    justify-content        : center;
     padding                : 1rem 1rem;
     border-bottom          : 1px solid #dee2e6;
     border-top-left-radius : calc(0.3rem - 1px);
@@ -217,6 +232,12 @@
     padding         : 20px;
     border          : 1px solid #888;
     width           : 80%;
+  }
+
+  .modal-body{
+    display:flex;
+    flex-direction: column;
+    font-size:1.2em;
   }
 
   /* The Close Button */

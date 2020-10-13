@@ -15,10 +15,10 @@
 		<h2><i>Tous vos restaurants sur le bout des doigts !</i></h2>
 	</header>
 
-	<nav class="pady-5">
+	<nav class="pady-15">
 		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
 		<p>Recherche par note : </p>
-		<select class="select-css" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+		<select class="select-css bg-secondary" id="rating-filter" onchange="jsonList.setNewRestaurants()">
 			<option value="2">De 1 à 2 étoiles</option>
 			<option value="3">De 1 à 3 étoiles</option>
 			<option value="4">De 1 à 4 étoiles</option>
@@ -29,22 +29,26 @@
 	<div id="reviewModal" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<span id="closeReviewModalButton" onclick="toggleModal('reviewModal')">&times;</span>
+				<span id="closeReviewModalButton" class="closeModal" onclick="toggleModal('reviewModal')">&times;</span>
 				<div class="modal-header">
 					<h2>Ajouter un commentaire</h2>
 				</div>
-				<div class="modal-body">
-					<label>Votre note : </label><select class="select-css" id="reviewRating">
+				<div class="modal-body pady-15">
+					<div class="modal-group pady-15">
+					<label>Votre note : </label><select class="select-css bg-secondary" id="reviewRating">
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
 						<option value="5">5</option>
 					</select>
-					<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"></textarea>
+				</div>
+					<div class="modal-group pady-15">
+						<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea" rows="10" cols="30" required></textarea>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" name="submitReviewButton" class="modalSubmitButton"
+					<button type="button" name="submitReviewButton" class="modalSubmitButton bg-secondary"
 						id="reviewModalButton">Valider</button>
 				</div>
 			</div>
@@ -54,7 +58,7 @@
 	<div id="addRestaurantModal" class="modal">
 		<div class="modal-content">
 			<div class="modal-header">
-				<span id="closeRestaurantAddModalButton" onclick="toggleModal('addRestaurantModal')">&times;</span>
+				<span id="closeRestaurantAddModalButton" class="closeModal" onclick="toggleModal('addRestaurantModal')">&times;</span>
 				<h2>Ajouter un restaurant</h2>
 			</div>
 			<div class="modal-body">
