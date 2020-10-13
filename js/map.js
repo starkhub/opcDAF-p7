@@ -6,8 +6,9 @@ var restaurantsListDiv = document.getElementById('restaurants-list'); // init. d
 var clickTime = Date.now() - 1001; //timer infoWindow
 var reviewModal = document.getElementById('reviewModal');
 var reviewModalButton = document.getElementById('reviewModalButton');
+var addRestaurantModalButton = document.getElementById('addRestaurantModalButton');
 var reviewTextArea = document.getElementById('reviewCommentArea');
-var locationSelect = document.getElementById('addRestaurantAddressSelect');
+var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
 
 var closeReviewModalButton = document.getElementById('closeReviewModalButton');
 
@@ -34,6 +35,7 @@ class JsonList { //Class de la liste JSON
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
     var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     var ratingFilter = parseInt(document.getElementById('rating-filter').value);
+    console.log(restaurantsJsonList)
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
       let restaurantName = restaurantsJsonList[i].restaurantName; //On récupère le nom du restaurant
@@ -123,9 +125,33 @@ class JsonList { //Class de la liste JSON
     }
   }
 
-  setNewRestaurant() {
+  setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) {
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
-    console.log(tempRestaurantsJsonList)
+    let newRestaurant = {
+      "restaurantName" : restaurantName,
+      "address" : restaurantAdress,
+      "lat" : parseFloat(restaurantLat),
+      "long" : parseFloat(restaurantLng),
+      "streetViewImage" : "",
+      "ratings" : [
+        {
+           "stars": 5,
+           "comment": "Très commerçant un bon accueil et le reste va avec. On se régale continuer merci."
+        }
+
+     ]
+    }
+    tempRestaurantsJsonList.push(newRestaurant);
+    sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
+    jsonList.setNewRestaurants();
+    toggleModal('addRestaurantModal');
+    /*
+    console.log(tempRestaurantsJsonList);
+    console.log(restaurantName);
+    console.log(restaurantAdress);
+    console.log(restaurantLat);
+    console.log(restaurantLng);*/
+
   }
 }
 
@@ -185,9 +211,6 @@ function initMap() { //Initialisation de la carte Google Map via l'API
           httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
           httpRequest.send();
         }
-
-        //toggleModal('addRestaurantModal');
-        //jsonList.setNewRestaurant();
       });
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -238,14 +261,24 @@ function toggleModal(target, item) { // GET THE MODAL ID AND THE RESTAURANT ID T
   }
 }
 
-reviewModalButton.addEventListener('click', function (event) {
+reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUTTON TRIGGER
   event.preventDefault;
   let resto = this.dataset.target;
   jsonList.setNewReview(resto);
+});
 
-})
+addRestaurantModalButton.addEventListener('click', function(event){
+  event.preventDefault;
+  let restaurantName = document.getElementById('addRestaurantName').value;
+  let restaurantAddress = addRestaurantAddressSelect.value;
+  let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
+  let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
 
-function getHttpResponse() {
+  jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng)
+});
+
+
+function getHttpResponse() { // RETURN OF THE HTTP REQUEST FOR GEOCODING
 
   if (httpRequest.readyState === XMLHttpRequest.DONE) {
     if (httpRequest.status === 200) {
@@ -253,11 +286,14 @@ function getHttpResponse() {
       let responseLength = response.results.length;
       for (let i = 0; i < responseLength; i++) {
         let results = response.results[i];
+        let restaurantLat = results.geometry.location.lat;
+        let restaurantLng = results.geometry.location.lng;
         let option = document.createElement('option');
         option.innerHTML = results.formatted_address;
         option.setAttribute('value', results.formatted_address)
-        locationSelect.append(option);
-        console.log(results)
+        addRestaurantAddressSelect.append(option);
+        option.dataset.lat = restaurantLat;
+        option.dataset.lng = restaurantLng;
       }
       toggleModal('addRestaurantModal');
     } else {
