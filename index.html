@@ -10,14 +10,14 @@
 
 <body>
 
-	<header class="pady-15">
+	<header class="pady-15 text-center">
 		<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
 		<h2><i>Tous vos restaurants sur le bout des doigts !</i></h2>
 	</header>
 
-	<nav class="pady-15">
+	<nav class="pady-5">
 		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
-		<p class="text-white">Recherche par note : </p>
+		<p>Recherche par note : </p>
 		<select class="select-css" id="rating-filter" onchange="jsonList.setNewRestaurants()">
 			<option value="2">De 1 à 2 étoiles</option>
 			<option value="3">De 1 à 3 étoiles</option>
@@ -26,58 +26,62 @@
 		</select>
 	</nav>
 
+	<div id="reviewModal" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<span id="closeReviewModalButton" onclick="toggleModal('reviewModal')">&times;</span>
+				<div class="modal-header">
+					<h2>Ajouter un commentaire</h2>
+				</div>
+				<div class="modal-body">
+					<label>Votre note : </label><select class="select-css" id="reviewRating">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+					<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button type="button" name="submitReviewButton" class="modalSubmitButton"
+						id="reviewModalButton">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="addRestaurantModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span id="closeRestaurantAddModalButton" onclick="toggleModal('addRestaurantModal')">&times;</span>
+				<h2>Ajouter un restaurant</h2>
+			</div>
+			<div class="modal-body">
+				<label for="restaurantName"></label><input name="restaurantName" type="text"
+					placeholder="Nom restaurant" />
+			</div>
+			<div class="modal-footer">
+				<button type="button" name="addRestaurantButton" class="modalSubmitButton"
+					id="addRestaurantModalButton">Valider</button>
+			</div>
+		</div>
+	</div>
+
 	<section class="main-section">
-		
+
 		<aside>
-			<h2 class="text-center">Les restaurants dans les environs</h2>
+			<h2 class="text-center bg-primary text-white pady-15">Les restaurants dans les environs</h2>
 			<div id="restaurants-list">
-			
+
 			</div>
 		</aside>
 
+		<div class="map-container">
 
+			<div id="map"></div>
 
-		<div id="reviewModal" class="modal">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<span id="closeReviewModalButton" onclick="toggleModal('reviewModal')">&times;</span>
-					<div class="modal-header">
-						<h2>Ajouter un commentaire</h2>
-					</div>
-					<div class="modal-body">
-						<label>Votre note : </label><select class="select-css" id="reviewRating">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-						</select>
-						<label>Votre commentaire : </label><textarea name="reviewComment"
-							id="reviewCommentArea"></textarea>
-					</div>
-					<div class="modal-footer">
-						<button type="button" name="submitReviewButton" class="modalSubmitButton" id="reviewModalButton">Valider</button>
-					</div>
-				</div>
-			</div>
 		</div>
-
-		<div id="addRestaurantModal" class="modal">
-			<div class="modal-content">
-				<div class="modal-header">
-					<span id="closeRestaurantAddModalButton" onclick="toggleModal('addRestaurantModal')">&times;</span>
-					<h2>Ajouter un restaurant</h2>
-				</div>
-				<div class="modal-body">
-					<label for="restaurantName"></label><input name="restaurantName" type="text" placeholder="Nom restaurant" />
-				</div>
-				<div class="modal-footer">
-					<button type="button" name="addRestaurantButton" class="modalSubmitButton" id="addRestaurantModalButton">Valider</button>
-				</div>
-			</div>
-		</div>
-
-		<div id="map"></div>
 
 	</section>
 
