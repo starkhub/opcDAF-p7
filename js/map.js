@@ -170,13 +170,11 @@ function initMap() { //Initialisation de la carte Google Map via l'API
         if (Date.now() > (clickTime + 1000))
           jsonList.setNewRestaurants();
       });
-/*
       map.addListener('click', function (mapsMouseEvent) {
           console.log(mapsMouseEvent.latLng.toString());
           toggleModal('addRestaurantModal'); // ADD RESTAURANT WITH A CLICK ON THE MAP 
           //jsonList.setNewRestaurant();
       });
-*/
     }, function () {
       handleLocationError(true, infoWindow, map.getCenter());
     });

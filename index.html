@@ -57,16 +57,16 @@
 
 	<div id="addRestaurantModal" class="modal">
 		<div class="modal-content">
+			<span id="closeRestaurantAddModalButton" class="closeModal" onclick="toggleModal('addRestaurantModal')">&times;</span>
 			<div class="modal-header">
-				<span id="closeRestaurantAddModalButton" class="closeModal" onclick="toggleModal('addRestaurantModal')">&times;</span>
 				<h2>Ajouter un restaurant</h2>
 			</div>
-			<div class="modal-body">
+			<div class="modal-body pady-15">
 				<label for="restaurantName"></label><input name="restaurantName" type="text"
 					placeholder="Nom restaurant" />
 			</div>
 			<div class="modal-footer">
-				<button type="button" name="addRestaurantButton" class="modalSubmitButton"
+				<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"
 					id="addRestaurantModalButton">Valider</button>
 			</div>
 		</div>
