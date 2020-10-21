@@ -131,11 +131,12 @@ class JsonList { // JSON LIST CLASS
     tempRestaurantsJsonList.push(newRestaurant);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     toggleModal('addRestaurantModal');
+    alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
     toggleModal('reviewModal', restaurantIndex);
-    for( let i = 9; i>= 0; i--){
+    for( let i = 9; i>= 0; i--){ // REMOVE SELECT OPTIONS IN MODAL
       addRestaurantAddressSelect.remove(i);
     }
-    restaurantNameInput.value = '';
+    restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
   }
 }
 
@@ -267,9 +268,14 @@ reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUT
 
 addRestaurantModalButton.addEventListener('click', function(event){ // ADD RESTAURANT BUTTON TRIGGER
   event.preventDefault();
-  let restaurantName = restaurantNameInput.value;
-  let restaurantAddress = addRestaurantAddressSelect.value;
-  let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
-  let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
-  jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng)
+  let restaurantName = restaurantNameInput.value; // GET THE NEW RESTAURANT NAME
+  if(restaurantName === ''){
+    alert('Vous devez saisir le nom du restaurant !');
+  }else{
+    let restaurantAddress = addRestaurantAddressSelect.value; // SELECTED ADDRESS IN THE SELECT ADDRESS LIST
+    let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
+    let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
+    jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
+  }
+
 });
