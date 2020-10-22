@@ -15,24 +15,28 @@ var reviewModalButton = document.getElementById('reviewModalButton');
 var addRestaurantModalButton = document.getElementById('addRestaurantModalButton');
 var restaurantNameInput = document.getElementById('addRestaurantName');
 var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
+
+var placesIdArr = [];
+
 // ---------- OBJECTS ----------
-class Restaurant{
-  constructor(name, address, ratingsArray, lat, lng, streetViewImage, index){
+class Restaurant {
+  constructor(name, address, ratingsArray, lat, lng, streetViewImage, index) {
     this.name = name,
-    this.address = address,
-    this.ratingsArray = ratingsArray,
-    this.lat = lat,
-    this.lng = lng,
-    this.streetViewImage = streetViewImage,
-    this.index = index
+      this.address = address,
+      this.ratingsArray = ratingsArray,
+      this.lat = lat,
+      this.lng = lng,
+      this.streetViewImage = streetViewImage,
+      this.index = index
   }
-  sayHello(){
+  sayHello() {
     console.log('Je suis un nouveau restaurant. Mon nom est : ' + this.name + ', je me situe à l\'adresse suivante : ' + this.address);
     console.log('Voici mon tableau de notes : ' + this.ratingsArray);
     console.log('Ma latitude : ' + this.lat + ' et la longitude : ' + this.lng);
     console.log('Mon image StreeView : ' + this.streetViewImage)
   }
-  setOnMap(){
+  setOnMap() {
+    console.log('Les bounds : ' + bounds)
     var ratingsSum = 0;
     var ratingsComments = '<ul class="restaurant-reviews">';
     var restaurantAvgRating;
@@ -47,7 +51,7 @@ class Restaurant{
     )
     ratingsComments += '</ul>';
     var ratingsAvg = calculateAverage(ratingsSum, this.ratingsArray.length);
-    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter){ // FILTER RESTAURANTS BY NOTES
+    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { // FILTER RESTAURANTS BY NOTES
       if (map.getBounds().contains(coords)) {
         let marker = new google.maps.Marker({
           position: coords,
@@ -81,15 +85,15 @@ class Restaurant{
           restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
             '<p id="restaurantAvgRating' + this.index + '"></p>' +
             '<button name="addReviewButton" class="bg-secondary" id="addReviewButton' + this.index + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + this.index + ')">Ajouter un avis</button></div>';
-          restaurantAvgRating = document.getElementById('restaurantAvgRating'+ this.index);
+          restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
-          }else{ // IF RESTAURANT CARD EXIST, UPDATE THE RATING
-            console.log('The card already exist, update the rating')
-            restaurantAvgRating = document.getElementById('restaurantAvgRating'+ this.index);
-            restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
-          }
+        } else { // IF RESTAURANT CARD EXIST, UPDATE THE RATING
+          console.log('The card already exist, update the rating')
+          restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
+          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
+        }
       } else if (document.getElementById(this.name)) { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
-      console.log('restaurant is out of bounds but was visible before ! Remove it !');
+        console.log('restaurant is out of bounds but was visible before ! Remove it !');
         document.getElementById(this.name).remove();
       }
     } else if (document.getElementById(this.name)) { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
@@ -125,7 +129,7 @@ class JsonList {
       var itemLat = restaurantsJsonList[i].lat;
       var itemLong = restaurantsJsonList[i].long;
       var streetViewImage = restaurantsJsonList[i].streetViewImage;
-      
+
       let restaurant = window["restaurant" + i];
       restaurant = new Restaurant(restaurantName, restaurantAddress, ratingsArray, itemLat, itemLong, streetViewImage, i);
       restaurant.setOnMap();
@@ -154,19 +158,19 @@ class JsonList {
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantIndex = tempRestaurantsJsonList.length;
     let newRestaurant = {
-      "restaurantName" : restaurantName,
-      "address" : restaurantAdress,
-      "lat" : parseFloat(restaurantLat),
-      "long" : parseFloat(restaurantLng),
-      "streetViewImage" : "" + parseFloat(restaurantLat)  + "," + parseFloat(restaurantLng) + "" ,
-      "ratings" : []
+      "restaurantName": restaurantName,
+      "address": restaurantAdress,
+      "lat": parseFloat(restaurantLat),
+      "long": parseFloat(restaurantLng),
+      "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
+      "ratings": []
     }
     tempRestaurantsJsonList.push(newRestaurant);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     toggleModal('addRestaurantModal');
     alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
     toggleModal('reviewModal', restaurantIndex);
-    for( let i = 9; i>= 0; i--){ // REMOVE SELECT OPTIONS IN MODAL
+    for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
       addRestaurantAddressSelect.remove(i);
     }
     restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
@@ -205,6 +209,7 @@ function initMap() { // GOOGLE MAP INIT
       infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
       infoWindow.open(map); // OPEN THE MAP
       map.setCenter(pos); // CENTER
+
       map.addListener('idle', function () {
         if (Date.now() > (clickTime + 1000))
           jsonList.setNewRestaurants();
@@ -212,6 +217,7 @@ function initMap() { // GOOGLE MAP INIT
       map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP 
         let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
         if (prompt) {
+
           if (window.XMLHttpRequest) { // COMPATIBILITY CODE
             httpRequest = new XMLHttpRequest();
           }
@@ -246,7 +252,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) { // HANDLI
 function loadMap() { // LOAD CONFIG FILE
   var map = document.createElement("script");
   map.type = "text/javascript";
-  map.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
+  map.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&libraries=places&maptype=roadmap&callback=initMap";
   document.body.appendChild(map);
 }
 
@@ -285,10 +291,11 @@ function getHttpResponse() { // RETURN OF THE HTTP REQUEST FOR GEOCODING
     }
   }
 }
-function calculateAverage(dividend, divider){
+function calculateAverage(dividend, divider) {
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
+
 // ---------- OBJECTS INSTANCES ----------
 const jsonList = new JsonList('js/restaurantsList.js'); // CREATE JSON LIST INSTANCE WITH RESTAURANTS LIST FILE
 jsonList.initialize(); // INITIALIZE JSON LIST
@@ -306,15 +313,56 @@ reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUT
   jsonList.setNewReview(resto);
 });
 
-addRestaurantModalButton.addEventListener('click', function(event){ // ADD RESTAURANT BUTTON TRIGGER
+addRestaurantModalButton.addEventListener('click', function (event) { // ADD RESTAURANT BUTTON TRIGGER
   event.preventDefault();
   let restaurantName = restaurantNameInput.value; // GET THE NEW RESTAURANT NAME
-  if(restaurantName === ''){
+  if (restaurantName === '') {
     alert('Vous devez saisir le nom du restaurant !');
-  }else{
+  } else {
     let restaurantAddress = addRestaurantAddressSelect.value; // SELECTED ADDRESS IN THE SELECT ADDRESS LIST
     let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
     let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
     jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
   }
 });
+
+
+     /*
+
+      var newMap = new google.maps.LatLng(mapLat, mapLng);
+
+
+
+      var placeRequest = {
+        location: newMap,
+        radius: '1500',
+        type: ['restaurant']
+      };
+
+      placeService = new google.maps.places.PlacesService(map);
+      placeService.nearbySearch(placeRequest, placeCallback);
+
+function placeCallback(results, status) {
+
+  console.log()
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    console.log(status)
+      for (var i = 0; i < results.length; i++) {
+        let restaurantLng = results[i].geometry.location.lng();
+        let restaurantLat = results[i].geometry.location.lat();
+        let restaurantName = results[i].name;
+        let restaurantAddress = results[i].vicinity;
+        let restaurantRating = results[i].rating;
+        let restaurantPlaceID = results[i].place_id;
+        placesIdArr.push(restaurantPlaceID)
+      }
+  }
+}
+
+function detailsCallback(place, status){
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    console.log(place)
+  }
+}
+
+ */
