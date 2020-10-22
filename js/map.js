@@ -6,7 +6,68 @@ var restaurantsListDiv = document.getElementById('restaurants-list'); // init. d
 var clickTime = Date.now() - 1001; //timer infoWindow
 
 class Restaurant {
-  constructor(name, address, ratingsArray, lat, lng)
+  constructor(name, address, ratingsArray, lat, lng, index){
+    this.name = name,
+    this.address = address,
+    this.ratingsArray = ratingsArray,
+    this.lat = lat,
+    this.lng = lng,
+    this.index = index
+  }
+
+  setOnMap(){
+    let coords = new google.maps.LatLng(this.lat, this.lng); //On définit une nouvelle instance des coordonnées de la map
+    let ratingsSum = 0; // Moyenne des notes à 0
+    let ratingsComments = '<ul class="restaurant-reviews">'; //Début de la liste html des avis
+    this.ratingsArray.forEach( //On additionne les notes
+      star => ratingsSum += star.stars
+    );
+    this.ratingsArray.forEach( //On parcourt les avis et on fait une liste html
+      comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
+    )
+    this.ratingsComments += '</ul>'; //On ferme la liste des avis.
+    var ratingsAvg = calculateAverage(ratingsSum, this.ratingsArray.length);
+    var ratingFilter = parseInt(document.getElementById('rating-filter').value);
+    var restaurantID = document.getElementById(this.name); //On récupère l'ID du restaurant dans la page HTML
+
+    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { //Filtrage par les moyennes des avis
+      if (map.getBounds().contains(coords)) { //Si les coordonnées sont dans la map actuelle
+        let marker = new google.maps.Marker({ //On créé une instance d'un marker dédiée au restaurant i
+          position: coords,
+          map: map
+        });
+        let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
+          content:
+            '<div class="infoWindow"><h1 class="my-15">' + this.name + '</h1>' +
+            '<p class="infoWindowAddress">' + this.address + '</p>' +
+            '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
+            '<h3>Avis clients</h3>' +
+            '<ul>' +
+            ratingsComments
+            +
+            '</ul></div>' +
+            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>'
+        });
+        marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
+          infowindow.open(map, marker);
+          clickTime = Date.now(); //Définit clickTime avec le timeStamp actuel
+        });
+        markers.push(marker); //On insert le marker dans le tableau dédié
+
+        if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
+          let restaurantsListContent = document.createElement('div');
+          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
+          restaurantsListContent.id = this.name;
+          restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
+            '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
+        }
+      } else if (document.getElementById(this.name)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
+        document.getElementById(this.name).remove();
+      }
+    } else if (document.getElementById(this.name)) { //Si le restaurant n'a pas une note suffisante et qu'il était affiché auparavant, on supprime ses infos du dom
+      document.getElementById(this.name).remove();
+    }
+  }
 
 }
 
@@ -15,7 +76,7 @@ class JsonList { //Class de la liste JSON
     this.list = list;
   }
 
-  initRestaurantsList() { //On insert la liste des restaurants dans le dom avec une balise script
+  initialize() { //On insert la liste des restaurants dans le dom avec une balise script
     restaurantsList = document.createElement('script');//
     restaurantsList.src = this.list;
     document.getElementsByTagName('head')[0].appendChild(restaurantsList);
@@ -28,67 +89,21 @@ class JsonList { //Class de la liste JSON
   setNewRestaurants() { //On définit et on place tous les restaurants de la liste sur la carte
     markers.forEach(item => item.setMap(null)); //On retire tous les markers de la carte
     var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
-    var ratingFilter = parseInt(document.getElementById('rating-filter').value);
+
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
       let restaurantName = restaurantsJsonList[i].restaurantName; //On récupère le nom du restaurant
       let restaurantAddress = restaurantsJsonList[i].address;  //On récupère l'adresse du restaurant
       let ratingsArray = restaurantsJsonList[i].ratings; //On récupère le tableau notes
-      let ratingsSum = 0; // Moyenne des notes à 0
-      let ratingsComments = '<ul class="restaurant-reviews">'; //Début de la liste html des avis
-
-      ratingsArray.forEach( //On additionne les notes
-        star => ratingsSum += star.stars
-      );
-      ratingsArray.forEach( //On parcourt les avis et on fait une liste html
-        comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
-      )
-      ratingsComments += '</ul>'; //On ferme la liste des avis.
-
-      let ratingsAvg = ratingsSum / ratingsArray.length; //On calcule la moyenne des notes
       let itemLat = restaurantsJsonList[i].lat; //On récupère la Lattitude
       let itemLong = restaurantsJsonList[i].long; //On récupère la Longitude
       let streetViewImage = restaurantsJsonList[i].streetViewImage; //On récupère l'image StreetView
-      let coords = new google.maps.LatLng(itemLat, itemLong); //On définit une nouvelle instance des coordonnées de la map
-      var restaurantID = document.getElementById(restaurantName); //On récupère l'ID du restaurant dans la page HTML
 
-      if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { //Filtrage par les moyennes des avis
-        if (map.getBounds().contains(coords)) { //Si les coordonnées sont dans la map actuelle
-          let marker = new google.maps.Marker({ //On créé une instance d'un marker dédiée au restaurant i
-            position: coords,
-            map: map
-          });
-          let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
-            content:
-              '<div class="infoWindow"><h1 class="my-15">' + restaurantName + '</h1>' +
-              '<p class="infoWindowAddress">' + restaurantAddress + '</p>' +
-              '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
-              '<h3>Avis clients</h3>' +
-              '<ul>' +
-              ratingsComments
-              +
-              '</ul></div>' +
-              '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + streetViewImage + '&key=' + api_key + '"></div>'
-          });
-          marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
-            infowindow.open(map, marker);
-            clickTime = Date.now(); //Définit clickTime avec le timeStamp actuel
-          });
-          markers.push(marker); //On insert le marker dans le tableau dédié
+      let restaurant = window["restaurant" + i];
+      restaurant = new Restaurant(restaurantName, restaurantAddress, ratingsArray, itemLat, itemLong, streetViewImage, i);
+      restaurant.setOnMap();
 
-          if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
-            let restaurantsListContent = document.createElement('div');
-            restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
-            restaurantsListContent.id = restaurantName;
-            restaurantsListContent.innerHTML = '<h2>' + restaurantName + '</h2>' +
-              '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
-          }
-        } else if (document.getElementById(restaurantName)) { //Si le restaurant n'est pas dans la carte et qu'il était affiché auparavant, on supprime ses infos du dom
-          document.getElementById(restaurantName).remove();
-        }
-      } else if (document.getElementById(restaurantName)) { //Si le restaurant n'a pas une note suffisante et qu'il était affiché auparavant, on supprime ses infos du dom
-        document.getElementById(restaurantName).remove();
-      }
+
     }
   }
 }
@@ -163,8 +178,13 @@ function loadjs() { //Chargement du fichier de config
   document.body.appendChild(loadMap);
 }
 
+function calculateAverage(dividend, divider){
+  let result = parseFloat(dividend / divider).toFixed(2);
+  return result;
+}
+
 const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
-jsonList.initRestaurantsList(); //Initialisation de la liste JSON
+jsonList.initialize(); //Initialisation de la liste JSON
 
 window.onload = function () { //Quand la fenêtre (DOM) est prête
   jsonList.setJsonListToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
