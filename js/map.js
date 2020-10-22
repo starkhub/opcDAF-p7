@@ -141,11 +141,9 @@ function initMap() { //Initialisation de la carte Google Map via l'API
       });
 
       infoWindow.setPosition(pos); //Popup info que l'utilisateur peut fermer
-      infoWindow.setContent('Vous êtes ici !');
+      infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
       infoWindow.open(map);
-
       map.setCenter(pos);
-
       map.addListener('idle', function () {
         if(Date.now() > (clickTime + 1000))
         jsonList.setNewRestaurants();
