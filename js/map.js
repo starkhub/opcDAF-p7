@@ -5,6 +5,11 @@ var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
 
+class Restaurant {
+  constructor(name, address, ratingsArray, lat, lng)
+
+}
+
 class JsonList { //Class de la liste JSON
   constructor(list) {
     this.list = list;
