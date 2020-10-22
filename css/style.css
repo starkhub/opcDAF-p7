@@ -25,17 +25,37 @@
     margin: 15px 0;
   }
 
+  .pady-5 {
+    padding: 5px 0;
+  }
+
   .pady-15 {
     padding: 15px 0;
+  }
+
+  .pady-25 {
+    padding: 25px 0;
   }
 
   .text-white {
     color: #fff;
   }
 
+  .text-center {
+    text-align: center;
+  }
+
+  .bg-primary {
+    background-color: #F4AA2D;
+  }
+
+  .bg-secondary {
+    background-color: #AC4131;
+  }
+
   header {
-    height         : auto;
-    background     : #FF6A00;
+    height: 95px;
+    ;
     display        : flex;
     flex-direction : column;
     justify-content: center;
@@ -43,8 +63,7 @@
   }
 
   nav {
-    height        : auto;
-    background    : #923C00;
+    height        : 95px;
     display       : flex;
     flex-direction: column;
     align-items   : center;
@@ -55,30 +74,52 @@
   }
 
   footer {
+
+    position        : relative;
+    margin-top      : 50px;
     height          : 75px;
+    width           : 100%;
     background-color: grey;
+
   }
 
   .main-section {
-    display        : flex;
-    flex-direction : row;
-    justify-content: space-around;
-    align-items    : center;
+    display       : flex;
+    flex-direction: row;
+    height        : 600px;
+  }
+
+  .map-container {
+    width : 100%;
+    height: 100%;
+    border: 5px solid #F4AA2D;
   }
 
   #map {
     width : 100%;
-    height: 700px;
+    height: 100%;
+
+  }
+
+  aside {
+    width   : 33.33%;
+    height  : 600px;
+    position: relative;
+    border  : 5px solid #F4AA2D;
+  }
+
+  aside h2 {
+    height        : 60px;
+    text-transform: uppercase;
   }
 
   #restaurants-list {
-    width          : 33.33%;
-    padding        : 0 15px;
-    height         : 700px;
-    display        : flex;
-    flex-direction : column;
-    justify-content: flex-start;
-    align-items    : center;
+    max-height    : 510px;
+    overflow      : auto;
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+
   }
 
   .restaurant-file {
@@ -122,82 +163,126 @@
     padding: 0;
   }
 
-  /*BOUTON SELECTION ETOILES*/
-
-  .select-css {
-    display           : block;
-    font-size         : 16px;
-    font-family       : sans-serif;
-    font-weight       : 700;
-    color             : #444;
-    line-height       : 1.3;
-    padding           : .6em 1.4em .5em .8em;
-    box-sizing        : border-box;
-    margin            : 0;
-    border            : 1px solid #aaa;
-    box-shadow        : 0 1px 0 1px rgba(0, 0, 0, .04);
-    border-radius     : .5em;
-    -moz-appearance   : none;
-    -webkit-appearance: none;
-    appearance        : none;
-    background-color  : #fff;
-    /* note           : bg image below uses 2 urls. The first is an svg data uri for the arrow icon, and the second is the gradient. 
-        for the icon, if you want to change the color, be sure to use `%23` instead of `#`, since it's a url. You can also swap in a different svg icon or an external image reference
-        
-    */
-    background-image  : url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
-      linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
-    background-repeat  : no-repeat, repeat;
-    /* arrow icon position (1em from the right, 50% vertical) , then gradient position*/
-    background-position: right .7em top 50%, 0 0;
-    /* icon size, then gradient */
-    background-size    : .65em auto, 100%;
+  button {
+    padding      : 10px 14px;
+    border       : none;
+    border-radius: 25px;
+    cursor       : pointer;
+    color        : #fff;
+    font-size    : 1.2em;
   }
 
-  /* Hide arrow icon in IE browsers */
-  .select-css::-ms-expand {
+  input {
+    padding:10px 14px;
+    border:none;
+    border-radius: 25px;
+    background-color: #ededed;
+  }
+
+  .closeModal {
+    font-size: 2em;
+    float    : right;
+    cursor   : pointer;
+  }
+
+  select {
+    padding      : 10px 14px;
+    border-radius: 25px;
+    color        : #fff;
+    font-size    : 1.2em;
+  }
+
+  .commentBlock {
     display: none;
   }
 
-  /* Hover style */
-  .select-css:hover {
-    border-color: #888;
+  .modal {
+    display    : none;
+    /* Hidden by default */
+    position   : fixed;
+    /* Stay in place */
+    z-index    : 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left       : 0;
+    top        : 0;
+    width      : 100%;
+    /* Full width */
+    height     : 100%;
+    /* Full height */
+    overflow   : auto;
+    /* Enable scroll if needed */
+
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
   }
 
-  /* Focus style */
-  .select-css:focus {
-    border-color: #aaa;
-    /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
-    box-shadow  : 0 0 1px 3px rgba(59, 153, 252, .7);
-    box-shadow  : 0 0 0 3px -moz-mac-focusring;
-    color       : #222;
-    outline     : none;
+  .modal-dialog {
+    max-width: 500px;
+    margin   : 1.75rem auto;
   }
 
-  /* Set options to normal weight */
-  .select-css option {
-    font-weight: normal;
+  .modal-header {
+    display                : -ms-flexbox;
+    display                : flex;
+    -ms-flex-align         : start;
+    align-items            : flex-start;
+    -ms-flex-pack          : justify;
+    justify-content        : center;
+    padding                : 1rem 1rem;
+    border-bottom          : 1px solid #dee2e6;
+    border-top-left-radius : calc(0.3rem - 1px);
+    border-top-right-radius: calc(0.3rem - 1px);
   }
 
-  /* Support for rtl text, explicit support for Arabic and Hebrew */
-  *[dir="rtl"] .select-css,
-  :root:lang(ar) .select-css,
-  :root:lang(iw) .select-css {
-    background-position: left .7em top 50%, 0 0;
-    padding            : .6em .8em .5em 1.4em;
+  .modal-content {
+    background-color: #fefefe;
+    margin          : auto;
+    padding         : 20px;
+    border          : 1px solid #888;
+    max-width       : 50%;
   }
 
-  /* Disabled styles */
-  .select-css:disabled,
-  .select-css[aria-disabled=true] {
-    color: graytext;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
-      linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+  .modal-body {
+    display       : flex;
+    flex-direction: column;
+    font-size     : 1.2em;
   }
 
-  .select-css:disabled:hover,
-  .select-css[aria-disabled=true] {
-    border-color: #aaa;
+  .modal-group {
+    display       : flex;
+    flex-direction: column;
+  }
+
+  /* The Close Button */
+  #closeModal {
+    color      : #aaa;
+    float      : right;
+    font-size  : 28px;
+    font-weight: bold;
+  }
+
+  #closeModal:hover,
+  #closeModal:focus {
+    color          : black;
+    text-decoration: none;
+    cursor         : pointer;
+  }
+
+
+  .gm-ui-hover-effect {
+    top  : 0px !important;
+    right: 25px !important;
+  }
+
+  .gm-ui-hover-effect img {
+    width : 30px !important;
+    height: 30px !important;
+  }
+
+  .poi-info-window {
+    padding: 20px !important;
   }
 
   /*MEDIA QUERIES*/
@@ -206,4 +291,18 @@
     .main-section {
       flex-direction: column-reverse !important;
     }
+
+    aside {
+      padding-top: 25px;
+      width      : 100%;
+    }
+
+    .main-section {
+      height: auto;
+    }
+
+    .map-container {
+      height: 500px
+    }
+
   }

@@ -6,12 +6,13 @@ var restaurantsListDiv = document.getElementById('restaurants-list'); // init. d
 var clickTime = Date.now() - 1001; //timer infoWindow
 
 class Restaurant {
-  constructor(name, address, ratingsArray, lat, lng, index){
+  constructor(name, address, ratingsArray, lat, lng, streetViewImage,index){
     this.name = name,
     this.address = address,
     this.ratingsArray = ratingsArray,
     this.lat = lat,
     this.lng = lng,
+    this.streetViewImage = streetViewImage,
     this.index = index
   }
 
@@ -102,7 +103,6 @@ class JsonList { //Class de la liste JSON
       let restaurant = window["restaurant" + i];
       restaurant = new Restaurant(restaurantName, restaurantAddress, ratingsArray, itemLat, itemLong, streetViewImage, i);
       restaurant.setOnMap();
-
 
     }
   }
