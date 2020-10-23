@@ -20,10 +20,11 @@ var placesIdArr = [];
 
 // ---------- OBJECTS ----------
 class Restaurant {
-  constructor(name, address, ratingsArray, lat, lng, streetViewImage, index) {
+  constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index) {
     this.name = name,
       this.address = address,
-      this.ratingsArray = ratingsArray,
+      this.rating = rating,
+      this.reviewsArray = reviewsArray,
       this.lat = lat,
       this.lng = lng,
       this.streetViewImage = streetViewImage,
@@ -31,7 +32,7 @@ class Restaurant {
   }
   sayHello() {
     console.log('Je suis un nouveau restaurant. Mon nom est : ' + this.name + ', je me situe à l\'adresse suivante : ' + this.address);
-    console.log('Voici mon tableau de notes : ' + this.ratingsArray);
+    console.log('Voici mon tableau de notes : ' + this.reviewsArray);
     console.log('Ma latitude : ' + this.lat + ' et la longitude : ' + this.lng);
     console.log('Mon image StreeView : ' + this.streetViewImage)
   }
@@ -43,15 +44,15 @@ class Restaurant {
     var coords = new google.maps.LatLng(this.lat, this.lng);
     var restaurantID = document.getElementById(this.name);
     var ratingFilter = parseInt(document.getElementById('rating-filter').value); // GET THE VALUE OF THE RATING FILTER BUTTON
-    this.ratingsArray.forEach(
+    this.reviewsArray.forEach(
       star => ratingsSum += star.stars
     );
-    this.ratingsArray.forEach(
+    this.reviewsArray.forEach(
       comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
     )
     ratingsComments += '</ul>';
-    var ratingsAvg = calculateAverage(ratingsSum, this.ratingsArray.length);
-    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { // FILTER RESTAURANTS BY NOTES
+    //var ratingsAvg = calculateAverage(ratingsSum, this.reviewsArray.length);
+    if (this.rating >= 0 && this.rating <= ratingFilter) { // FILTER RESTAURANTS BY NOTES
       if (map.getBounds().contains(coords)) {
         let marker = new google.maps.Marker({
           position: coords,
@@ -62,7 +63,7 @@ class Restaurant {
 
             '<div class="infoWindow"><h1 class="my-15">' + this.name + '</h1>' +
             '<p class="infoWindowAddress">' + this.address + '</p>' +
-            '<p class="infoWindowRating" id="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
+            '<p class="infoWindowRating" id="infoWindowRating"> Moyenne des notes : ' + this.rating + '</p>' +
             '<h3>Avis clients</h3>' +
             '<ul>' +
             ratingsComments
@@ -86,11 +87,11 @@ class Restaurant {
             '<p id="restaurantAvgRating' + this.index + '"></p>' +
             '<button name="addReviewButton" class="bg-secondary" id="addReviewButton' + this.index + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + this.index + ')">Ajouter un avis</button></div>';
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
-          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
+          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + this.rating + '</p>';
         } else { // IF RESTAURANT CARD EXIST, UPDATE THE RATING
           console.log('The card already exist, update the rating')
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
-          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
+          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + this.rating + '</p>';
         }
       } else if (document.getElementById(this.name)) { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
         console.log('restaurant is out of bounds but was visible before ! Remove it !');
@@ -104,16 +105,72 @@ class Restaurant {
 
 }
 class JsonList {
-  constructor(list) {
-    this.list = list;
+  constructor() {
+    this.map;
+    this.coords;
+    this.service;
+    this.mainlist = [];
+    this.placesList = [];
+    this.reviewsList = []; // NO FUTUR NEED
   }
   initialize() { // SET RESTAURANTS'S JSON LIST INTO THE DOM
-    restaurantsList = document.createElement('script');//
-    restaurantsList.src = this.list;
-    document.getElementsByTagName('head')[0].appendChild(restaurantsList);
+    /*
+        restaurantsList = document.createElement('script');//
+        restaurantsList.src = this.list;
+        document.getElementsByTagName('head')[0].appendChild(restaurantsList);
+    */
+    console.log('JsonList : Go Get Places')
+    this.getPlaces();
+
   }
+  // SETTERS
+  setMap(map, coords) {
+    console.log('JsonList : Go Set The Map')
+    this.map = map;
+    this.coords = coords;
+    this.service = new google.maps.places.PlacesService(this.map);
+  }
+  setPlacesList(items) {
+    this.placesList.push(items);
+   //this.getReviews(this.list[0])
+  }
+  setReviewsList(items) {
+    this.reviewsList.push(items)
+  }
+  setMainList(){
+    console.log(this.placesList[0])
+  }
+  // RETRIEVERS
+  getPlaces() {
+    var request = {
+      location: this.coords,
+      radius: '1500',
+      type: ['restaurant']
+    };
+    this.service.nearbySearch(request, placeCallback);
+  }
+  getReviews(placeId) {
+    var request = {
+      placeId: placeId
+    };
+    this.service.getDetails(request, detailsCallback);
+  }
+  // GETTERS
+  places() {
+    console.log(this.placesList)
+  }
+  reviews() {
+    console.log(this.reviewsList)
+  }
+
   setToLocalStorage() { // PUT THE RESTAURANTS'S LIST INTO LOCAL STORAGE FOR FUTUR ACCESS
-    sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); // LOCAL STORAGE GET ONLY STRING DATA, NO OBJECTS
+    //sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); // LOCAL STORAGE GET ONLY STRING DATA, NO OBJECTS
+    sessionStorage.setItem('restaurants', JSON.stringify(this.placesList[0]));
+    console.log('JsonList : Go Set To Local Storage End');
+    this.map.addListener('idle', function () {
+      if (Date.now() > (clickTime + 1000))
+        jsonList.setNewRestaurants();
+    });
   }
   setNewRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
     markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
@@ -125,13 +182,14 @@ class JsonList {
       // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
       var restaurantName = restaurantsJsonList[i].restaurantName;
       var restaurantAddress = restaurantsJsonList[i].address;
-      var ratingsArray = restaurantsJsonList[i].ratings;
+      var restaurantRating = restaurantsJsonList[i].rating;
+      var reviewsArray = restaurantsJsonList[i].reviews;
       var itemLat = restaurantsJsonList[i].lat;
       var itemLong = restaurantsJsonList[i].long;
       var streetViewImage = restaurantsJsonList[i].streetViewImage;
 
       let restaurant = window["restaurant" + i];
-      restaurant = new Restaurant(restaurantName, restaurantAddress, ratingsArray, itemLat, itemLong, streetViewImage, i);
+      restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i);
       restaurant.setOnMap();
     } // END FOR
   }
@@ -177,6 +235,9 @@ class JsonList {
   }
 }
 
+// ---------- NEW JSONLIST INSTANCE ----------
+const jsonList = new JsonList();
+
 // ---------- FUNCTIONS ----------
 function initMap() { // GOOGLE MAP INIT
 
@@ -210,10 +271,14 @@ function initMap() { // GOOGLE MAP INIT
       infoWindow.open(map); // OPEN THE MAP
       map.setCenter(pos); // CENTER
 
-      map.addListener('idle', function () {
-        if (Date.now() > (clickTime + 1000))
-          jsonList.setNewRestaurants();
-      });
+      var coords = new google.maps.LatLng(mapLat, mapLng);
+      jsonList.setMap(map, coords);
+      jsonList.initialize();
+
+      
+
+      
+
       map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP 
         let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
         if (prompt) {
@@ -291,18 +356,57 @@ function getHttpResponse() { // RETURN OF THE HTTP REQUEST FOR GEOCODING
     }
   }
 }
-function calculateAverage(dividend, divider) {
+function calculateAverage(dividend, divider) { // AS HIS NAME TELL, CALCULTATE THE AVERAGE RATING OF RESTAUTANT
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
+function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATION
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    var tempList = [];
+    for (var i = 0; i < results.length; i++) {
+      let restaurantLng = results[i].geometry.location.lng();
+      let restaurantLat = results[i].geometry.location.lat();
+      let restaurantName = results[i].name;
+      let restaurantAddress = results[i].vicinity;
+      let restaurantRating = results[i].rating;
+      let restaurantPlaceID = results[i].place_id;
+      let newRestaurant = {
+        "restaurantName": restaurantName,
+        "address": restaurantAddress,
+        "lat": parseFloat(restaurantLat),
+        "long": parseFloat(restaurantLng),
+        "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
+        "rating": restaurantRating,
+        "reviews": [],
+        "placeId": restaurantPlaceID
+      }
+      //jsonList.getReviews(restaurantPlaceID); // CALL GETREVIEWS JSON LIST FUNCTION TO GET REVIEWS PUSHED IN REVIEWS JSON LIST IN SAME TIME
+
+      tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
+    }
+    jsonList.setPlacesList(tempList) // CALL SETPLACESLIST TO SET JSON PLACES LIST
+    console.log('placeCallback : End Get Places')
+    jsonList.setToLocalStorage();
+  }
+}
+function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLBACK
+  console.log(status)
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+      let newRestaurantReviews = {
+        "placeId": place.place_id,
+        "reviews": place.reviews
+      }
+      jsonList.setReviewsList(newRestaurantReviews); // PUSH RESTAURANT PLACE_ID REVIEWS INSIDE REVIEWS JSON LIST
+      }
+}
 
 // ---------- OBJECTS INSTANCES ----------
-const jsonList = new JsonList('js/restaurantsList.js'); // CREATE JSON LIST INSTANCE WITH RESTAURANTS LIST FILE
-jsonList.initialize(); // INITIALIZE JSON LIST
+//const jsonList = new JsonList('js/restaurantsList.js'); // CREATE JSON LIST INSTANCE WITH RESTAURANTS LIST FILE
+//jsonList.initialize(); // INITIALIZE JSON LIST
 
 // ---------- ONLOAD INIT ----------
 window.onload = function () {
-  jsonList.setToLocalStorage(); // SET JSON LIST INTO LOCAL STORAGE
+  //jsonList.setToLocalStorage(); // SET JSON LIST INTO LOCAL STORAGE
   loadMap(); // LOAD THE MAP
 }
 
@@ -327,42 +431,42 @@ addRestaurantModalButton.addEventListener('click', function (event) { // ADD RES
 });
 
 
-     /*
+/*
 
-      var newMap = new google.maps.LatLng(mapLat, mapLng);
+ var newMap = new google.maps.LatLng(mapLat, mapLng);
 
 
 
-      var placeRequest = {
-        location: newMap,
-        radius: '1500',
-        type: ['restaurant']
-      };
+ var placeRequest = {
+   location: newMap,
+   radius: '1500',
+   type: ['restaurant']
+ };
 
-      placeService = new google.maps.places.PlacesService(map);
-      placeService.nearbySearch(placeRequest, placeCallback);
+ placeService = new google.maps.places.PlacesService(map);
+ placeService.nearbySearch(placeRequest, placeCallback);
 
 function placeCallback(results, status) {
 
-  console.log()
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    console.log(status)
-      for (var i = 0; i < results.length; i++) {
-        let restaurantLng = results[i].geometry.location.lng();
-        let restaurantLat = results[i].geometry.location.lat();
-        let restaurantName = results[i].name;
-        let restaurantAddress = results[i].vicinity;
-        let restaurantRating = results[i].rating;
-        let restaurantPlaceID = results[i].place_id;
-        placesIdArr.push(restaurantPlaceID)
-      }
-  }
+console.log()
+if (status == google.maps.places.PlacesServiceStatus.OK) {
+console.log(status)
+ for (var i = 0; i < results.length; i++) {
+   let restaurantLng = results[i].geometry.location.lng();
+   let restaurantLat = results[i].geometry.location.lat();
+   let restaurantName = results[i].name;
+   let restaurantAddress = results[i].vicinity;
+   let restaurantRating = results[i].rating;
+   let restaurantPlaceID = results[i].place_id;
+   placesIdArr.push(restaurantPlaceID)
+ }
+}
 }
 
 function detailsCallback(place, status){
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    console.log(place)
-  }
+if (status == google.maps.places.PlacesServiceStatus.OK) {
+console.log(place)
+}
 }
 
- */
+*/
