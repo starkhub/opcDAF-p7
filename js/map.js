@@ -30,12 +30,6 @@ class Restaurant {
       this.streetViewImage = streetViewImage,
       this.index = index
   }
-  sayHello() {
-    console.log('Je suis un nouveau restaurant. Mon nom est : ' + this.name + ', je me situe à l\'adresse suivante : ' + this.address);
-    console.log('Voici mon tableau de notes : ' + this.reviewsArray);
-    console.log('Ma latitude : ' + this.lat + ' et la longitude : ' + this.lng);
-    console.log('Mon image StreeView : ' + this.streetViewImage)
-  }
   setOnMap() {
     console.log('Restaurant.setOnMap : ' + this.name)
     var ratingsSum = 0;
@@ -116,6 +110,7 @@ class JsonList {
   }
   initialize() { // SET RESTAURANTS'S JSON LIST INTO THE DOM
     console.log('JsonList.initialize with following bounds ->')
+    sessionStorage.removeItem('restaurants');
     let bounds = map.getBounds();
     this.getPlaces(bounds);
   }
