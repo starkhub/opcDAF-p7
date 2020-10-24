@@ -26,61 +26,6 @@
 		</select>
 	</nav>
 
-	<div id="reviewModal" class="modal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<span id="closeReviewModalButton" class="closeModal" onclick="toggleModal('reviewModal')">&times;</span>
-				<div class="modal-header">
-					<h2>Ajouter un commentaire</h2>
-				</div>
-				<div class="modal-body pady-15">
-					<div class="modal-group pady-15">
-						<label>Votre note : </label><select class="select-css bg-secondary" id="reviewRating">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-						</select>
-					</div>
-					<div class="modal-group pady-15">
-						<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"
-							rows="10" cols="30" required></textarea>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" name="submitReviewButton" class="modalSubmitButton bg-secondary"
-						id="reviewModalButton">Valider</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div id="addRestaurantModal" class="modal">
-		<div class="modal-content">
-			<span id="closeRestaurantAddModalButton" class="closeModal"
-				onclick="toggleModal('addRestaurantModal')">&times;</span>
-			<div class="modal-header">
-				<h2>Ajouter un restaurant</h2>
-			</div>
-			<div class="modal-body pady-15">
-				<div class="modal-group">
-					<label for="restaurantName">Choisir le nom du restaurant : </label><input name="restaurantName"
-						id="addRestaurantName" type="text" placeholder="Nom restaurant" required/>
-				</div>
-				<div class="modal-group pady-15">
-					<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant : </label><select
-						class="select-css bg-secondary" id="addRestaurantAddressSelect"
-						name="addRestaurantAddressSelect"></select>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"
-					id="addRestaurantModalButton">Valider</button>
-			</div>
-		</div>
-	</div>
-
 	<section class="main-section">
 
 		<aside>
