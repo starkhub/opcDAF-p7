@@ -2,45 +2,107 @@
 <html lang="fr">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>ProxiResto</title>
-    <link rel="stylesheet" href="css/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+	<title>ProxiResto</title>
+	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <header>
+	<header class="pady-15 text-center">
+		<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
+		<h2><i>Tous vos restaurants sur le bout des doigts !</i></h2>
+	</header>
 
-    </header>
+	<nav class="pady-15">
+		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
+		<p>Recherche par note : </p>
+		<select class="select-css bg-secondary" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+			<option value="2">De 1 à 2 étoiles</option>
+			<option value="3">De 1 à 3 étoiles</option>
+			<option value="4">De 1 à 4 étoiles</option>
+			<option selected="selected" value="5">De 1 à 5 étoiles</option>
+		</select>
+	</nav>
 
-    <nav>
+	<div id="reviewModal" class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<span id="closeReviewModalButton" class="closeModal" onclick="toggleModal('reviewModal')">&times;</span>
+				<div class="modal-header">
+					<h2>Ajouter un commentaire</h2>
+				</div>
+				<div class="modal-body pady-15">
+					<div class="modal-group pady-15">
+						<label>Votre note : </label><select class="select-css bg-secondary" id="reviewRating">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select>
+					</div>
+					<div class="modal-group pady-15">
+						<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"
+							rows="10" cols="30" required></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" name="submitReviewButton" class="modalSubmitButton bg-secondary"
+						id="reviewModalButton">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    </nav>
+	<div id="addRestaurantModal" class="modal">
+		<div class="modal-content">
+			<span id="closeRestaurantAddModalButton" class="closeModal"
+				onclick="toggleModal('addRestaurantModal')">&times;</span>
+			<div class="modal-header">
+				<h2>Ajouter un restaurant</h2>
+			</div>
+			<div class="modal-body pady-15">
+				<div class="modal-group">
+					<label for="restaurantName">Choisir le nom du restaurant : </label><input name="restaurantName"
+						id="addRestaurantName" type="text" placeholder="Nom restaurant" required/>
+				</div>
+				<div class="modal-group pady-15">
+					<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant : </label><select
+						class="select-css bg-secondary" id="addRestaurantAddressSelect"
+						name="addRestaurantAddressSelect"></select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"
+					id="addRestaurantModalButton">Valider</button>
+			</div>
+		</div>
+	</div>
 
-        <section class="main-section">
+	<section class="main-section">
 
-            <div id="map"></div>
-            <div id="controls">
-                <button id="search-area-button" onclick="jsonList.loadRestaurants()">Chercher dans cette zone</button>
-                <select id="rating-filter">
-                    <option value="2">De 1 à 2 étoiles</option>
-                    <option value="3">De 1 à 3 étoiles</option>
-                    <option value="4">De 1 à 4 étoiles</option>
-                    <option selected="selected" value="5">De 1 à 5 étoiles</option>
-                </select>
-            </div>
-            <div id="restaurants-list"></div>
+		<aside>
+			<h2 class="text-center bg-primary text-white pady-15">Les restaurants dans les environs</h2>
+			<div id="restaurants-list">
+			</div>
+		</aside>
 
-        </section>
+		<div class="map-container">
 
-    <footer>
+			<div id="map"></div>
 
-    </footer>
+		</div>
 
-    <script src="js/config.js"></script>
-    <script src="js/map.js"></script>
-    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=" + api_key + "&callback=initMap" type="text/javascript"></script>-->
+	</section>
+
+	<footer>
+		<p>Copyright @ProxyResto</p>
+	</footer>
+
+	<script src="js/config.js"></script>
+	<script src="js/map.js"></script>
 
 </body>
 
