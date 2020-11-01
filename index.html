@@ -24,7 +24,6 @@
 			<option value="4">De 1 à 4 étoiles</option>
 			<option selected="selected" value="5">De 1 à 5 étoiles</option>
 		</select>
-
 		<button class="bg-secondary" id="searchPlacesInThisArea" name="searchPlacesInThisArea" onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
 	</nav>
 
@@ -86,7 +85,10 @@
 	<section class="main-section">
 
 		<aside>
-			<h2 class="text-center bg-primary text-white pady-15">Les restaurants dans les environs</h2>
+			<div class="aside-title bg-primary pady-15 text-center text-white">
+				<h2 class="">Les restaurants dans les environs</h2>
+				<h3 id="restaurants-amount"></h3>
+			</div>
 			<div id="restaurants-list">
 			</div>
 		</aside>
