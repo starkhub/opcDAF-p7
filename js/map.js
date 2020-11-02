@@ -86,12 +86,12 @@ class Restaurant {
           content:
 
             '<div class="infoWindow"><h2 class="my-15">' + this.name + '</h2>' +
+            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
             '<p class="infoWindowAddress">' + this.address + '</p>' +
             '<p class="infoWindowRating" id="infoWindowRating"> Moyenne des notes : ' + this.rating + '</p>' +
             '<h3>Avis clients</h3>' +
             '<ul id="restaurant-reviews">' + 
-            '</ul></div>' +
-            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>'
+            '</ul></div>'
         });
 
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
@@ -465,10 +465,6 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
     newRestaurantReviews.reviews.forEach(item => 
       restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
     )
-
-    //rating = item.rating, comment = item.text
-    //jsonList.setReviews(newRestaurantReviews); // PUSH RESTAURANT PLACE_ID REVIEWS INSIDE REVIEWS JSON LIST
-
   } else {
     console.log('function detailsCallback is not ok !');
   }
