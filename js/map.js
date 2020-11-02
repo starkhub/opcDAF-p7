@@ -458,11 +458,15 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
   console.log('detailsCallback status = ' + status)
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     var tempList = [];
+    var restaurantReviews = document.getElementById('restaurant-reviews');
     let newRestaurantReviews = {
       "reviews": place.reviews
     }
-    newRestaurantReviews.reviews.forEach(item => console.log(item.text))
+    newRestaurantReviews.reviews.forEach(item => 
+      restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
+    )
 
+    //rating = item.rating, comment = item.text
     //jsonList.setReviews(newRestaurantReviews); // PUSH RESTAURANT PLACE_ID REVIEWS INSIDE REVIEWS JSON LIST
 
   } else {
