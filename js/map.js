@@ -37,7 +37,7 @@ class Card {
 
 class Restaurant {
   constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId) {
-      this.name = name,
+    this.name = name,
       this.address = address,
       this.rating = rating,
       this.reviewsArray = reviewsArray,
@@ -90,29 +90,29 @@ class Restaurant {
             '<p class="infoWindowAddress">' + this.address + '</p>' +
             '<p class="infoWindowRating" id="infoWindowRating"> Moyenne des notes : ' + this.rating + '</p>' +
             '<h3>Avis clients</h3>' +
-            '<ul id="restaurant-reviews">' + 
+            '<ul id="restaurant-reviews">' +
             '</ul></div>'
         });
 
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
           console.log('ouverture ' + this.placeId);
-          infowindow.open(map, marker);
           jsonList.getReviews(this.placeId);
+          infowindow.open(map, marker);
           clickTime = Date.now();
         });
-        
+
         markers.push(marker); // PUT MARKER INSIDE MARKER'S ARRAY
 
         console.log('Create Restaurant Card If Not Exist');
 
-          let restaurantsListContent = document.createElement('div');
-          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-15');
-          restaurantsListContent.id = formatedID;
-          restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
-            '<p id="restaurantAvgRating' + this.index + '"></p>' +
-            '<button name="addReviewButton" class="bg-secondary" id="addReviewButton' + this.index + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + this.index + ')">Ajouter un avis</button></div>';
-          restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
-          restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + this.rating + '</p>';
+        let restaurantsListContent = document.createElement('div');
+        restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-15');
+        restaurantsListContent.id = formatedID;
+        restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
+          '<p id="restaurantAvgRating' + this.index + '"></p>' +
+          '<button name="addReviewButton" class="bg-secondary" id="addReviewButton' + this.index + '" data-target="reviewModal" onclick="toggleModal(this.dataset.target, ' + this.index + ')">Ajouter un avis</button></div>';
+        restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
+        restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + this.rating + '</p>';
 
       } else { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
 
@@ -122,9 +122,9 @@ class Restaurant {
 
 
     } else { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
-      
+
       console.log('Restaurant have low rating...');
-      
+
     }
 
   }
@@ -207,7 +207,7 @@ class JsonList {
     let placesList = this.placesList[0];
     sessionStorage.setItem('restaurants', JSON.stringify(this.placesList[0]));
     console.log('JsonList : Go Set To Local Storage End');
-    
+
     this.setNewRestaurants();
     /*
     this.map.addListener('idle', function () {
@@ -458,13 +458,34 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
   console.log('detailsCallback status = ' + status)
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     var tempList = [];
+    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
     var restaurantReviews = document.getElementById('restaurant-reviews');
     let newRestaurantReviews = {
       "reviews": place.reviews
     }
-    newRestaurantReviews.reviews.forEach(item => 
-      restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
-    )
+    let placeId = place.place_id;
+    let index;
+    for (let i = 0; i < restaurantsJsonList.length; i++) {
+      if (restaurantsJsonList[i].placeId === placeId) {
+        index = i;
+        if (restaurantsJsonList[i].reviews == "") {
+          newRestaurantReviews.reviews.forEach(function (item) {
+            restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
+            restaurantsJsonList[i].reviews.push({ "stars": item.rating, "comment": item.text })
+          });
+          sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList));
+
+        } else {
+          console.log('Les avis sont déjà en session storage !')
+        }
+      }
+    }
+
+    /*
+        newRestaurantReviews.reviews.forEach(item => 
+          restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
+        )
+    */
   } else {
     console.log('function detailsCallback is not ok !');
   }
