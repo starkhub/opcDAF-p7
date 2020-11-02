@@ -418,7 +418,7 @@ function calculateAverage(dividend, divider) { // AS HIS NAME TELL, CALCULTATE T
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
-function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATION
+function placeCallback(results, status, pagination) { // GET NEARBY PLACES OF CURRENT LOCATION
   console.log('function placeCallback start ->')
   console.log('placeCallback status = ' + status)
   if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -520,41 +520,3 @@ addRestaurantModalButton.addEventListener('click', function (event) { // ADD RES
     jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
   }
 });
-
-/*
-
- var newMap = new google.maps.LatLng(mapLat, mapLng);
-
- var placeRequest = {
-   location: newMap,
-   radius: '1500',
-   type: ['restaurant']
- };
-
- placeService = new google.maps.places.PlacesService(map);
- placeService.nearbySearch(placeRequest, placeCallback);
-
-function placeCallback(results, status) {
-
-console.log()
-if (status == google.maps.places.PlacesServiceStatus.OK) {
-console.log(status)
- for (var i = 0; i < results.length; i++) {
-   let restaurantLng = results[i].geometry.location.lng();
-   let restaurantLat = results[i].geometry.location.lat();
-   let restaurantName = results[i].name;
-   let restaurantAddress = results[i].vicinity;
-   let restaurantRating = results[i].rating;
-   let restaurantPlaceID = results[i].place_id;
-   placesIdArr.push(restaurantPlaceID)
- }
-}
-}
-
-function detailsCallback(place, status){
-if (status == google.maps.places.PlacesServiceStatus.OK) {
-console.log(place)
-}
-}
-
-*/
