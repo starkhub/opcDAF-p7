@@ -18,13 +18,13 @@
 	<nav class="pady-15">
 		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
 		<p>Recherche par note : </p>
-		<select class="select-css bg-secondary" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+		<select class="select-css bg-secondary ml-5" id="rating-filter" onchange="jsonList.setNewRestaurants()">
 			<option value="2">De 1 à 2 étoiles</option>
 			<option value="3">De 1 à 3 étoiles</option>
 			<option value="4">De 1 à 4 étoiles</option>
 			<option selected="selected" value="5">De 1 à 5 étoiles</option>
 		</select>
-		<button class="bg-secondary" id="searchPlacesInThisArea" name="searchPlacesInThisArea" onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
+		<button class="bg-secondary ml-5" id="searchPlacesInThisArea" name="searchPlacesInThisArea" onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
 	</nav>
 
 	<div id="reviewModal" class="modal">

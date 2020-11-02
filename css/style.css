@@ -25,6 +25,10 @@
     margin: 15px 0;
   }
 
+  .ml-5{
+    margin-left: 0.5rem;
+  }
+
   .pady-5 {
     padding: 5px 0;
   }
@@ -275,7 +279,7 @@
 
   .gm-ui-hover-effect {
     top  : 0px !important;
-    right: 25px !important;
+    right: 8px !important;
   }
 
   .gm-ui-hover-effect img {
