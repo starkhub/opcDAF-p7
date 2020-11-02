@@ -5,48 +5,46 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
 	<title>ProxiResto</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+	<div class="container-fluid main-container p-0">
 
-	<header class="pady-15 text-center">
-		<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
-		<h2><i>Tous vos restaurants sur le bout des doigts !</i></h2>
-	</header>
+		<header class="text-center">
+			<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
+			<h2 class="text-white">Tous vos restaurants sur le bout des doigts !</h2>
+			<nav class="py-5 w-25 mx-auto">
+				<select class="form-control" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+					<option value="2">De 1 à 2 étoiles</option>
+					<option value="3">De 1 à 3 étoiles</option>
+					<option value="4">De 1 à 4 étoiles</option>
+					<option selected="selected" value="5">De 1 à 5 étoiles</option>
+				</select>
+			</nav>
+		</header>
 
-	<nav class="pady-15">
-		<p>Recherche par note : </p>
-		<select class="select-css bg-secondary" id="rating-filter" onchange="jsonList.setNewRestaurants()">
-			<option value="2">De 1 à 2 étoiles</option>
-			<option value="3">De 1 à 3 étoiles</option>
-			<option value="4">De 1 à 4 étoiles</option>
-			<option selected="selected" value="5">De 1 à 5 étoiles</option>
-		</select>
-	</nav>
-
-	<section class="main-section">
-
-		<aside>
-			<h2 class="text-center bg-primary text-white pady-15">Les restaurants dans les environs</h2>
-			<div id="restaurants-list">
+		<section class="main-section row mb-5">
+			<div class="col-md-4">
+				<aside>
+					<h2 class="text-center bg-dark text-white py-5">Les restaurants dans les environs</h2>
+					<div id="restaurants-list">
+					</div>
+				</aside>
 			</div>
-		</aside>
+			<div class="col-md-8 map-container pr-2">
+				<div id="map"></div>
+			</div>
+		</section>
 
-		<div class="map-container">
+		<footer class="bg-dark text-white text-center">
+			<p>Copyright @ProxyResto</p>
+		</footer>
 
-			<div id="map"></div>
-
-		</div>
-
-	</section>
-
-	<footer>
-		<p>Copyright @ProxyResto</p>
-	</footer>
-
-	<script src="js/config.js"></script>
-	<script src="js/map.js"></script>
-
+		<script src="js/config.js"></script>
+		<script src="js/map.js"></script>
+	</div>
 </body>
+
 </html>

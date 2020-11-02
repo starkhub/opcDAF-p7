@@ -57,7 +57,7 @@ class Restaurant {
 
         if (!restaurantID) { //Si l'ID tu restaurant n'existe pas dans le dom, on créé l'item contenant les infos du restaurant
           let restaurantsListContent = document.createElement('div');
-          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file','my-15');
+          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2');
           restaurantsListContent.id = this.name;
           restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
             '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
@@ -141,7 +141,7 @@ function initMap() { //Initialisation de la carte Google Map via l'API
       });
 
       infoWindow.setPosition(pos); //Popup info que l'utilisateur peut fermer
-      infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
+      infoWindow.setContent('<h5 class="py-3">Vous êtes ici !</h5>');
       infoWindow.open(map);
       map.setCenter(pos);
       map.addListener('idle', function () {
