@@ -5,28 +5,28 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
 	<title>ProxiResto</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+	<div class="container-fluid main-container p-0">
 
-	<header class="pady-15 text-center">
-		<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
-		<h2><i>Tous vos restaurants sur le bout des doigts !</i></h2>
-	</header>
+		<header class="text-center">
+			<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
+			<h2 class="text-white">Tous vos restaurants sur le bout des doigts !</h2>
+			<nav class="py-5 w-25 mx-auto">
+				<select class="form-control mx-auto" id="rating-filter" onchange="jsonList.setNewRestaurants()">
+					<option value="2">De 1 à 2 étoiles</option>
+					<option value="3">De 1 à 3 étoiles</option>
+					<option value="4">De 1 à 4 étoiles</option>
+					<option selected="selected" value="5">De 1 à 5 étoiles</option>
+				</select>
+			</nav>
+		</header>
 
-	<nav class="pady-15">
-		<!--<button id="search-area-button" onclick="jsonList.setNewRestaurants()">Chercher dans cette zone</button>-->
-		<p>Recherche par note : </p>
-		<select class="select-css bg-secondary" id="rating-filter" onchange="jsonList.setNewRestaurants()">
-			<option value="2">De 1 à 2 étoiles</option>
-			<option value="3">De 1 à 3 étoiles</option>
-			<option value="4">De 1 à 4 étoiles</option>
-			<option selected="selected" value="5">De 1 à 5 étoiles</option>
-		</select>
-	</nav>
-
-	<div id="reviewModal" class="modal">
+		<!--
+		<div id="reviewModal" class="modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<span id="closeReviewModalButton" class="closeModal" onclick="toggleModal('reviewModal')">&times;</span>
@@ -55,7 +55,6 @@
 			</div>
 		</div>
 	</div>
-
 	<div id="addRestaurantModal" class="modal">
 		<div class="modal-content">
 			<span id="closeRestaurantAddModalButton" class="closeModal"
@@ -80,30 +79,87 @@
 			</div>
 		</div>
 	</div>
-
-	<section class="main-section">
-
-		<aside>
-			<h2 class="text-center bg-primary text-white pady-15">Les restaurants dans les environs</h2>
-			<div id="restaurants-list">
+	-->
+		<div class="modal fade addReviewModal" id="reviewModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title">Ajouter un commentaire</h2>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body py-2">
+						<form id="addReviewForm">
+							<div class="modal-group py-2">
+								<label>Votre note : </label><select class="form-control" id="reviewRating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+							<div class="modal-group py-2">
+								<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"
+									class="form-control" rows="10" cols="50" required></textarea>
+							</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" name="submitReviewButton" class="modalSubmitButton btn btn-success"
+							id="reviewModalButton" form="addReviewForm">Valider</button>
+					</div>
+					</form>
+				</div>
 			</div>
-		</aside>
-
-		<div class="map-container">
-
-			<div id="map"></div>
-
+		</div>
+		<div class="modal" id="addRestaurantModal" tabindex="-1" role="dialog">
+			<div class="modal-content">
+				<span id="closeRestaurantAddModalButton" class="closeModal"
+					onclick="toggleModal('addRestaurantModal')">&times;</span>
+				<div class="modal-header">
+					<h2>Ajouter un restaurant</h2>
+				</div>
+				<div class="modal-body pady-15">
+					<div class="modal-group">
+						<label for="restaurantName">Choisir le nom du restaurant : </label><input name="restaurantName"
+							id="addRestaurantName" type="text" placeholder="Nom restaurant" required />
+					</div>
+					<div class="modal-group pady-15">
+						<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant : </label><select
+							class="select-css bg-secondary" id="addRestaurantAddressSelect"
+							name="addRestaurantAddressSelect"></select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"
+						id="addRestaurantModalButton">Valider</button>
+				</div>
+			</div>
 		</div>
 
-	</section>
+		<section class="main-section row mb-5">
+			<div class="col-md-4">
+				<aside>
+					<h2 class="text-center bg-dark text-white py-5">Les restaurants dans les environs</h2>
+					<div id="restaurants-list">
+					</div>
+				</aside>
+			</div>
+			<div class="col-md-8 map-container pr-2">
+				<div id="map"></div>
+			</div>
+		</section>
 
-	<footer>
-		<p>Copyright @ProxyResto</p>
-	</footer>
+		<footer class="bg-dark text-white d-flex flex-column justify-content-center align-items-center">
+			<h5>Copyright 2020 - @ProxyResto</h5>
+		</footer>
 
-	<script src="js/config.js"></script>
-	<script src="js/map.js"></script>
-
+		<script src="js/jquery-3.5.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/map.js"></script>
+	</div>
 </body>
 
 </html>
