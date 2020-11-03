@@ -19,12 +19,12 @@ class Restaurant {
   setOnMap(){
     let coords = new google.maps.LatLng(this.lat, this.lng); //On définit une nouvelle instance des coordonnées de la map
     let ratingsSum = 0; // Moyenne des notes à 0
-    let ratingsComments = '<ul class="restaurant-reviews">'; //Début de la liste html des avis
+    let ratingsComments = '<ul class="restaurant-reviews mt-2">'; //Début de la liste html des avis
     this.ratingsArray.forEach( //On additionne les notes
       star => ratingsSum += star.stars
     );
     this.ratingsArray.forEach( //On parcourt les avis et on fait une liste html
-      comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
+      comment => ratingsComments += '<li><span class="font-weight-bold">Note : </span>' + comment.stars + '<br /><span class="font-weight-bold">Commentaire : </span>' + comment.comment + '</li><br/><hr>'
     )
     this.ratingsComments += '</ul>'; //On ferme la liste des avis.
     var ratingsAvg = calculateAverage(ratingsSum, this.ratingsArray.length);
@@ -40,14 +40,14 @@ class Restaurant {
         let infowindow = new google.maps.InfoWindow({ //On créé une instance d'un infoWindow dédiée au restaurant i
           content:
             '<div class="infoWindow"><h1 class="my-15">' + this.name + '</h1>' +
-            '<p class="infoWindowAddress">' + this.address + '</p>' +
-            '<p class="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
+            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
+            '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
+            '<p class="infoWindowRating"><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>' +
             '<h3>Avis clients</h3>' +
             '<ul>' +
             ratingsComments
             +
-            '</ul></div>' +
-            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>'
+            '</ul></div>'
         });
         marker.addListener('click', function () { //On écoute l'évènement d'un click sur un marker
           infowindow.open(map, marker);
