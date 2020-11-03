@@ -113,27 +113,33 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal" id="addRestaurantModal" tabindex="-1" role="dialog">
-			<div class="modal-content">
-				<span id="closeRestaurantAddModalButton" class="closeModal"
-					onclick="toggleModal('addRestaurantModal')">&times;</span>
-				<div class="modal-header">
-					<h2>Ajouter un restaurant</h2>
-				</div>
-				<div class="modal-body pady-15">
-					<div class="modal-group">
-						<label for="restaurantName">Choisir le nom du restaurant : </label><input name="restaurantName"
-							id="addRestaurantName" type="text" placeholder="Nom restaurant" required />
+		<div class="modal fade addRestaurantModal" id="addRestaurantModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title">Ajouter un restaurant</h2>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
-					<div class="modal-group pady-15">
-						<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant : </label><select
-							class="select-css bg-secondary" id="addRestaurantAddressSelect"
-							name="addRestaurantAddressSelect"></select>
+					<div class="modal-body py-2">
+						<form id="addRestaurantForm">
+							<div class="modal-group">
+								<label for="restaurantName">Choisir le nom du restaurant : </label><input
+									name="restaurantName" class="form-control" id="addRestaurantName" type="text"
+									placeholder="Nom restaurant" required />
+							</div>
+							<div class="modal-group py-2">
+								<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant :
+								</label><select class="form-control" id="addRestaurantAddressSelect"
+									name="addRestaurantAddressSelect"></select>
+							</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" name="addRestaurantButton" class="modalSubmitButton bg-secondary"
-						id="addRestaurantModalButton">Valider</button>
+					<div class="modal-footer">
+						<button type="submit" name="addRestaurantButton" class="modalSubmitButton btn btn-success"
+							id="addRestaurantModalButton" form="addRestaurantForm">Valider</button>
+					</div>
+					</form>
 				</div>
 			</div>
 		</div>

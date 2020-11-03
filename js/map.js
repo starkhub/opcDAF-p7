@@ -6,14 +6,11 @@ var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var clickTime = Date.now() - 1001; //timer infoWindow
 // ---------- RESTAURANT MODALS VARS ----------
-var reviewModal = document.getElementById('reviewModal');
-var reviewTextArea = document.getElementById('reviewCommentArea');
-var closeReviewModalButton = document.getElementById('closeReviewModalButton');
-// ---------- REVIEW MODALS VARS ----------
-//var reviewModalButton = document.getElementById('reviewModalButton');
-//var addRestaurantModalButton = document.getElementById('addRestaurantModalButton');
 var restaurantNameInput = document.getElementById('addRestaurantName');
 var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
+// ---------- REVIEW MODALS VARS ----------
+var reviewModal = document.getElementById('reviewModal');
+var reviewTextArea = document.getElementById('reviewCommentArea');
 // ---------- OBJECTS ----------
 class Restaurant {
   constructor(name, address, ratingsArray, lat, lng, streetViewImage, index) {
@@ -73,7 +70,7 @@ class Restaurant {
           restaurantsListContent.id = this.name;
           restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
             '<p id="restaurantAvgRating' + this.index + '"></p>' +
-            '<button name="addReviewButton" class="btn" id="addReviewButton' + this.index + '" data-restaurant="' + this.index + '" data-toggle="modal" data-target="#reviewModal">Ajouter un avis</button></div>';
+            '<button name="addReviewButton" class="btn btn-dark" id="addReviewButton' + this.index + '" data-restaurant="' + this.index + '" data-toggle="modal" data-target="#reviewModal">Ajouter un avis</button></div>';
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>';
         } else { // IF RESTAURANT CARD EXIST, UPDATE THE RATING
@@ -90,7 +87,6 @@ class Restaurant {
       console.log('Restaurant have low rating and was visible before, Remove it !');
     }
   }
-
 }
 class JsonList {
   constructor(list) {
@@ -146,9 +142,10 @@ class JsonList {
     }
     tempRestaurantsJsonList.push(newRestaurant);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
-    toggleModal('addRestaurantModal');
+    $('#addRestaurantModal').modal('toggle');
     alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
-    toggleModal('reviewModal', restaurantIndex);
+    $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
+    $('#reviewModal').modal('toggle');
     for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
       addRestaurantAddressSelect.remove(i);
     }
@@ -158,15 +155,12 @@ class JsonList {
 
 // ---------- FUNCTIONS ----------
 function initMap() { // GOOGLE MAP INIT
-
   //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera pour profiter au mieux des fonctionnalités de l'application !");
   map = new google.maps.Map(document.getElementById('map'), { // NEW MAP INSTANCE
     center: { lat: -34.397, lng: 150.644 },
     zoom: 17
   });
-
   infoWindow = new google.maps.InfoWindow; // NEW INFOWINDOW INSTANCE
-
   if (navigator.geolocation) { // CHECKING IF BROWSER SUPPORT GEOLOCATION
     navigator.geolocation.getCurrentPosition(function (position) {
       var pos = {
@@ -249,7 +243,7 @@ function getHttpResponse() { // RETURN OF THE HTTP REQUEST FOR GEOCODING
         option.dataset.lat = restaurantLat;
         option.dataset.lng = restaurantLng;
       }
-      toggleModal('addRestaurantModal');
+      $('#addRestaurantModal').modal('toggle');
     } else {
       alert('Il y a eu un problème avec la requête.');
     }
@@ -270,8 +264,6 @@ window.onload = function () {
 }
 
 // ---------- TRIGGERS ----------
-
-
 addReviewForm.addEventListener('submit', function (event) {
   event.preventDefault();
   let comment = reviewTextArea.value;
@@ -279,10 +271,15 @@ addReviewForm.addEventListener('submit', function (event) {
   let rating = parseInt(document.getElementById('reviewRating').value);
   jsonList.setNewReview(restaurant, comment, rating);
 });
-/*
+
 addRestaurantForm.addEventListener('submit', function(event){
   event.preventDefault();
-});*/
+  let restaurantName = restaurantNameInput.value;
+  let restaurantAddress = addRestaurantAddressSelect.value;
+  let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
+  let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
+  jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
+});
 
 $('#reviewModal').on('show.bs.modal', function (event) {
   let button = $(event.relatedTarget) // Button that triggered the modal
@@ -290,7 +287,7 @@ $('#reviewModal').on('show.bs.modal', function (event) {
   console.log(restaurant);
   let modal = $(this);
   modal.find('#reviewModalButton').attr('data-restaurant', restaurant);
-})
+});
 
 /*
 reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUTTON TRIGGER
