@@ -119,15 +119,15 @@ class JsonList {
     } // END FOR
   }
   setNewReview(restaurant, comment, rating) { // ADD NEW REVIEW INTO LOCAL STORAGE RESTAURANTS LIST
+    console.log('Index du restaurant = ' + restaurant)
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let restaurantRatingsArray = tempRestaurantsJsonList[restaurant].ratings;
+    console.log(restaurantRatingsArray)
     $('#reviewModal').modal('toggle');
-    reviewTextArea.value = '';
     restaurantRatingsArray.push({ 'stars': rating, 'comment': comment });
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     jsonList.setNewRestaurants();
     alert('Merci pour votre commentaire !');
-
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
     let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
@@ -267,7 +267,8 @@ window.onload = function () {
 addReviewForm.addEventListener('submit', function (event) {
   event.preventDefault();
   let comment = reviewTextArea.value;
-  let restaurant = $('#reviewModalButton').data('restaurant');
+  let restaurant = $('#reviewModalButton').attr('data-restaurant');
+  console.log('L\'index du restaurant est bien : ' + restaurant)
   let rating = parseInt(document.getElementById('reviewRating').value);
   jsonList.setNewReview(restaurant, comment, rating);
 });
@@ -284,10 +285,14 @@ addRestaurantForm.addEventListener('submit', function(event){
 $('#reviewModal').on('show.bs.modal', function (event) {
   let button = $(event.relatedTarget) // Button that triggered the modal
   let restaurant = button.data('restaurant') // Extract info from data-* attributes
-  console.log(restaurant);
-  let modal = $(this);
-  modal.find('#reviewModalButton').attr('data-restaurant', restaurant);
+  console.log('On attribue l\'index du restaurant : ' + restaurant)
+  $('#reviewModalButton').attr('data-restaurant', restaurant);
 });
+
+$('#reviewModal').on('hidden.bs.modal', function (event) {
+  reviewTextArea.value = '';
+  $('#reviewModalButton').removeAttr('data-restaurant');
+})
 
 /*
 reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUTTON TRIGGER
