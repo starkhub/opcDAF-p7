@@ -45,7 +45,6 @@ class Restaurant {
         });
         let infowindow = new google.maps.InfoWindow({
           content:
-
             '<div class="infoWindow"><h1 class="my-5">' + this.name + '</h1>' +
             '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
             '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
@@ -56,35 +55,30 @@ class Restaurant {
             +
             '</ul></div>'
         });
-
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
           infowindow.open(map, marker);
           clickTime = Date.now();
         });
         markers.push(marker); // PUT MARKER INSIDE MARKER'S ARRAY
-
         if (!restaurantID) { // CREATE RESTAURANT CARD IF NOT EXIST
           console.log('Create Restaurant Card If Not Exist');
           let restaurantsListContent = document.createElement('div');
-          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2');
+          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2', 'text-center');
           restaurantsListContent.id = this.name;
           restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
             '<p id="restaurantAvgRating' + this.index + '"></p>' +
-            '<button name="addReviewButton" class="btn btn-dark" id="addReviewButton' + this.index + '" data-restaurant="' + this.index + '" data-toggle="modal" data-target="#reviewModal">Ajouter un avis</button></div>';
+            '<button name="addReviewButton" class="btn btn-warning" id="addReviewButton' + this.index + '" data-restaurant="' + this.index + '" data-toggle="modal" data-target="#reviewModal">Ajouter un avis</button></div>';
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>';
         } else { // IF RESTAURANT CARD EXIST, UPDATE THE RATING
-          console.log('The card already exist, update the rating')
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>';
         }
       } else if (document.getElementById(this.name)) { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
-        console.log('restaurant is out of bounds but was visible before ! Remove it !');
         document.getElementById(this.name).remove();
       }
     } else if (document.getElementById(this.name)) { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
       document.getElementById(this.name).remove();
-      console.log('Restaurant have low rating and was visible before, Remove it !');
     }
   }
 }
@@ -293,25 +287,3 @@ $('#reviewModal').on('hidden.bs.modal', function (event) {
   reviewTextArea.value = '';
   $('#reviewModalButton').removeAttr('data-restaurant');
 })
-
-/*
-reviewModalButton.addEventListener('click', function (event) { // ADD REVIEW BUTTON TRIGGER
-  event.preventDefault();
-  let resto = this.dataset.target;
-  jsonList.setNewReview(resto);
-});
-
-
-addRestaurantModalButton.addEventListener('click', function(event){ // ADD RESTAURANT BUTTON TRIGGER
-  event.preventDefault();
-  let restaurantName = restaurantNameInput.value; // GET THE NEW RESTAURANT NAME
-  if(restaurantName === ''){
-    alert('Vous devez saisir le nom du restaurant !');
-  }else{
-    let restaurantAddress = addRestaurantAddressSelect.value; // SELECTED ADDRESS IN THE SELECT ADDRESS LIST
-    let restaurantLat = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lat; // RETRIEVE SELECTED OPTION DATA
-    let restaurantLng = addRestaurantAddressSelect.options[addRestaurantAddressSelect.selectedIndex].dataset.lng; // RETRIEVE SELECTED OPTION DATA
-    jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
-  }
-});
-*/
