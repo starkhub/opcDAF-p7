@@ -136,17 +136,19 @@ class JsonList {
   }
   setMainList(items) {
     console.log('JsonList.setMainList ->')
-    if(this.main() === null){
-      console.log('JsonList.setMainList -> Premier enregistrement...')
-      sessionStorage.setItem('restaurants', JSON.stringify(items));
-    }else{
-      console.log('JsonList.setMainList -> Des restaurants sont déjà dans la liste...')
-      let tempMainList = this.main();
-      let tempNewMainList = tempMainList.concat(items);
-      sessionStorage.setItem('restaurants', JSON.stringify(tempNewMainList));
-
-    }
-    this.setNewRestaurants();
+    return new Promise((resolve, reject) => {
+      if (this.main() === null) {
+        console.log('JsonList.setMainList -> Premier enregistrement...')
+        sessionStorage.setItem('restaurants', JSON.stringify(items));
+        resolve("OK !");
+      } else {
+        console.log('JsonList.setMainList -> Des restaurants sont déjà dans la liste...')
+        let tempMainList = this.main();
+        let tempNewMainList = tempMainList.concat(items);
+        sessionStorage.setItem('restaurants', JSON.stringify(tempNewMainList));
+        resolve("OK !");
+      }
+    })
   }
   // ---------- RETRIEVERS
   getPlaces(bounds) {
@@ -189,19 +191,6 @@ class JsonList {
       console.log('Aucune liste dans le session Storage...')
     }
   }
-  setToSessionStorage(list) { // PUT THE RESTAURANTS'S LIST INTO LOCAL STORAGE FOR FUTUR ACCESS
-
-    //sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); // LOCAL STORAGE GET ONLY STRING DATA, NO OBJECTS
-
-    //this.setNewRestaurants();
-
-    /*
-    this.map.addListener('idle', function () {
-      if (Date.now() > (clickTime + 1000))
-        jsonList.setNewRestaurants();
-    });
-    */
-  }
   setNewRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
     console.log('JsonList.setNewRestaurants ->')
     let sessionStorageLength = sessionStorage.length;
@@ -237,8 +226,9 @@ class JsonList {
   }
   setNewReview(restaurant, comment, rating) { // ADD NEW REVIEW INTO LOCAL STORAGE RESTAURANTS LIST
     console.log('Index du restaurant = ' + restaurant)
-    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
-    let restaurantRatingsArray = tempRestaurantsJsonList[restaurant].reviews;
+    //let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
+    let tempMainList = this.main();
+    let restaurantRatingsArray = tempMainList[restaurant].reviews;
     console.log(restaurantRatingsArray)
     $('#reviewModal').modal('toggle');
     restaurantRatingsArray.push({ 'stars': rating, 'comment': comment });
@@ -247,26 +237,38 @@ class JsonList {
     alert('Merci pour votre commentaire !');
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
-    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
-    let restaurantIndex = tempRestaurantsJsonList.length;
-    let newRestaurant = {
+    var newRestaurant = {
       "restaurantName": restaurantName,
       "address": restaurantAdress,
       "lat": parseFloat(restaurantLat),
       "long": parseFloat(restaurantLng),
       "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
-      "ratings": []
+      "reviews": []
     }
-    tempRestaurantsJsonList.push(newRestaurant);
-    sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
-    $('#addRestaurantModal').modal('toggle');
-    alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
-    $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
-    $('#reviewModal').modal('toggle');
-    for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
-      addRestaurantAddressSelect.remove(i);
+    var restaurantIndex;
+    var restaurantToAdd;
+    if (this.main() !== null) {
+      var tempMainList = this.main();
+      restaurantIndex = tempMainList.length;
+      restaurantToAdd = newRestaurant;
+    } else {
+      restaurantIndex = 0;
+      restaurantToAdd = [newRestaurant];
     }
-    restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
+    this.setMainList(restaurantToAdd).then(function () {
+      console.log('Add restaurant ok ...')
+      //tempMainList.push(newRestaurant);
+      //console.log(tempMainList)
+      //sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
+      $('#addRestaurantModal').modal('toggle');
+      alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
+      $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
+      $('#reviewModal').modal('toggle');
+      for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
+        addRestaurantAddressSelect.remove(i);
+      }
+      restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
+    });
   }
 }
 
@@ -395,8 +397,8 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
     console.log(tempList)
     var mainList = jsonList.main();
     var placeIdTempList = [];
-    if(mainList != null){
-      for(let i = 0;i < mainList.length;i++){
+    if (mainList != null) {
+      for (let i = 0; i < mainList.length; i++) {
         placeIdTempList.push(mainList[i].placeId);
       }
       console.log('Liste des placesId déjà enregistrés : ' + placeIdTempList)
@@ -424,10 +426,10 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
       }
       console.log('Pour le restaurant : ' + restaurantPlaceID)
       if (mainList != null) {
-        if(placeIdTempList.includes(restaurantPlaceID) === false){
+        if (placeIdTempList.includes(restaurantPlaceID) === false) {
           console.log('Le restaurant n\'est pas dans le session Storage, on peut le mettre dans la tempList')
           tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
-        }else{
+        } else {
           console.log('Il semblerait que le restaurant soit déjà enregistré')
         }
       } else {
@@ -435,28 +437,18 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
         tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
       }
     }
-
     if (tempList.length > 0) {
       console.log('Il y a de nouveaux restaurants à enregistrer en session Storage...')
       console.log(tempList.length)
       //jsonList.setPlaces(tempList) // CALL SETPLACES TO SET JSON PLACES LIST
-      jsonList.setMainList(tempList);
-    }else {
+      jsonList.setMainList(tempList).then(jsonList.setNewRestaurants());
+    } else {
       console.log('Le tempList est vide car tous les restaurants sont déjà enregistrés !')
       jsonList.setNewRestaurants();
     }
-
   } else {
-
     console.log('function placeCallback IS NOT OK');
-
-    /*
-    jsonList.deleteFromSessionStorage();
-    restaurantsListDiv.innerHTML = ''; // EMPTY THE RESTAURANTS LIST
-    restaurantsAmount.innerHTML = 'Aucun résultat...';
-    markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-    */
-
+    jsonList.setNewRestaurants();
   }
 }
 function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLBACK
@@ -490,17 +482,10 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
     console.log('function detailsCallback is not ok !');
   }
 }
-
-// ---------- OBJECTS INSTANCES ----------
-//const jsonList = new JsonList('js/restaurantsList.js'); // CREATE JSON LIST INSTANCE WITH RESTAURANTS LIST FILE
-//jsonList.initialize(); // INITIALIZE JSON LIST
-
 // ---------- ONLOAD INIT ----------
 window.onload = function () {
-  //jsonList.setToSessionStorage(); // SET JSON LIST INTO LOCAL STORAGE
   loadMap(); // LOAD THE MAP
 }
-
 // ---------- TRIGGERS ----------
 addReviewForm.addEventListener('submit', function (event) {
   event.preventDefault();
