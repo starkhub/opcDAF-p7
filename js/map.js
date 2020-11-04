@@ -109,13 +109,11 @@ class JsonList {
     this.map;
     this.coords;
     this.service;
-    this.mainlist = [];
-    this.placesList = [];
-    this.reviewsList = []; // NO FUTUR NEED
   }
   initialize() { // SET RESTAURANTS'S JSON LIST INTO THE DOM
     console.log('JsonList.initialize ->')
-    sessionStorage.removeItem('restaurants');
+    this.deleteFromSessionStorage();
+
     let bounds = map.getBounds();
     this.getPlaces(bounds);
   }
@@ -128,16 +126,27 @@ class JsonList {
   }
   setPlaces(items) {
     console.log('JsonList.setPlaces ->')
+    console.log(items)
     this.placesList.push(items);
-    console.log(this.placesList[0])
+
     //this.getReviews(this.list[0])
   }
   setReviews(items) {
     this.reviewsList.push(items)
   }
-  setMainList() {
+  setMainList(items) {
     console.log('JsonList.setMainList ->')
-    console.log(this.placesList[0])
+    if(this.main() === null){
+      console.log('JsonList.setMainList -> Premier enregistrement...')
+      sessionStorage.setItem('restaurants', JSON.stringify(items));
+    }else{
+      console.log('JsonList.setMainList -> Des restaurants sont déjà dans la liste...')
+      let tempMainList = this.main();
+      let tempNewMainList = tempMainList.concat(items);
+      sessionStorage.setItem('restaurants', JSON.stringify(tempNewMainList));
+
+    }
+    this.setNewRestaurants();
   }
   // ---------- RETRIEVERS
   getPlaces(bounds) {
@@ -162,24 +171,30 @@ class JsonList {
   reviews() {
     console.log(this.reviewsList)
   }
+  main() {
+    return JSON.parse(sessionStorage.getItem('restaurants'));
+  }
   // ---------- METHODS
   searchPlacesInThisArea() {
     console.log('JsonList.searchPlacesInThisArea');
     let bounds = map.getBounds();
     this.getPlaces(bounds);
   }
-  deleteFromLocalStorage() {
-    console.log('jsonList.deleteFromLocalStorage')
-    sessionStorage.removeItem('restaurants');
+  deleteFromSessionStorage() {
+    console.log('jsonList.deleteFromSessionStorage')
+    if (sessionStorage.getItem('restaurants') != null) {
+      console.log('List présente dans le session Storage, on la supprime...')
+      sessionStorage.removeItem('restaurants');
+    } else {
+      console.log('Aucune liste dans le session Storage...')
+    }
   }
-  setToLocalStorage() { // PUT THE RESTAURANTS'S LIST INTO LOCAL STORAGE FOR FUTUR ACCESS
-    //sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); // LOCAL STORAGE GET ONLY STRING DATA, NO OBJECTS
-    this.deleteFromLocalStorage();
-    let placesList = this.placesList[0];
-    sessionStorage.setItem('restaurants', JSON.stringify(this.placesList[0]));
-    console.log('JsonList : Go Set To Local Storage End');
+  setToSessionStorage(list) { // PUT THE RESTAURANTS'S LIST INTO LOCAL STORAGE FOR FUTUR ACCESS
 
-    this.setNewRestaurants();
+    //sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); // LOCAL STORAGE GET ONLY STRING DATA, NO OBJECTS
+
+    //this.setNewRestaurants();
+
     /*
     this.map.addListener('idle', function () {
       if (Date.now() > (clickTime + 1000))
@@ -365,22 +380,38 @@ function getHttpResponse() { // RETURN OF THE HTTP REQUEST FOR GEOCODING
     }
   }
 }
+
 function calculateAverage(dividend, divider) { // AS HIS NAME TELL, CALCULTATE THE AVERAGE RATING OF RESTAUTANT
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
-function placeCallback(results, status, pagination) { // GET NEARBY PLACES OF CURRENT LOCATION
+
+function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATION
   console.log('function placeCallback start ->')
   console.log('placeCallback status = ' + status)
+
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     var tempList = [];
+    console.log(tempList)
+    var mainList = jsonList.main();
+    var placeIdTempList = [];
+    if(mainList != null){
+      for(let i = 0;i < mainList.length;i++){
+        placeIdTempList.push(mainList[i].placeId);
+      }
+      console.log('Liste des placesId déjà enregistrés : ' + placeIdTempList)
+    }
+
+    console.log(mainList);
+
     for (var i = 0; i < results.length; i++) {
+
+      var restaurantPlaceID = results[i].place_id;
       let restaurantLng = results[i].geometry.location.lng();
       let restaurantLat = results[i].geometry.location.lat();
       let restaurantName = results[i].name;
       let restaurantAddress = results[i].vicinity;
       let restaurantRating = results[i].rating != null ? results[i].rating : "0";
-      let restaurantPlaceID = results[i].place_id;
       let newRestaurant = {
         "restaurantName": restaurantName,
         "address": restaurantAddress,
@@ -391,17 +422,41 @@ function placeCallback(results, status, pagination) { // GET NEARBY PLACES OF CU
         "reviews": [],
         "placeId": restaurantPlaceID
       }
-      //jsonList.getReviews(restaurantPlaceID); // CALL GETREVIEWS JSON LIST FUNCTION TO GET REVIEWS PUSHED IN REVIEWS JSON LIST IN SAME TIME
-      tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
+      console.log('Pour le restaurant : ' + restaurantPlaceID)
+      if (mainList != null) {
+        if(placeIdTempList.includes(restaurantPlaceID) === false){
+          console.log('Le restaurant n\'est pas dans le session Storage, on peut le mettre dans la tempList')
+          tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
+        }else{
+          console.log('Il semblerait que le restaurant soit déjà enregistré')
+        }
+      } else {
+        console.log('Premières entrées dans le session Storage...')
+        tempList.push(newRestaurant); // PUSH FETCHED RESTAURANTS IN JSON LIST
+      }
     }
-    jsonList.setPlaces(tempList) // CALL SETPLACES TO SET JSON PLACES LIST
-    jsonList.setToLocalStorage();
+
+    if (tempList.length > 0) {
+      console.log('Il y a de nouveaux restaurants à enregistrer en session Storage...')
+      console.log(tempList.length)
+      //jsonList.setPlaces(tempList) // CALL SETPLACES TO SET JSON PLACES LIST
+      jsonList.setMainList(tempList);
+    }else {
+      console.log('Le tempList est vide car tous les restaurants sont déjà enregistrés !')
+      jsonList.setNewRestaurants();
+    }
+
   } else {
-    jsonList.deleteFromLocalStorage();
+
+    console.log('function placeCallback IS NOT OK');
+
+    /*
+    jsonList.deleteFromSessionStorage();
     restaurantsListDiv.innerHTML = ''; // EMPTY THE RESTAURANTS LIST
     restaurantsAmount.innerHTML = 'Aucun résultat...';
     markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-    console.log('function placeCallback IS NOT OK');
+    */
+
   }
 }
 function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLBACK
@@ -442,7 +497,7 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
 
 // ---------- ONLOAD INIT ----------
 window.onload = function () {
-  //jsonList.setToLocalStorage(); // SET JSON LIST INTO LOCAL STORAGE
+  //jsonList.setToSessionStorage(); // SET JSON LIST INTO LOCAL STORAGE
   loadMap(); // LOAD THE MAP
 }
 
@@ -456,7 +511,7 @@ addReviewForm.addEventListener('submit', function (event) {
   jsonList.setNewReview(restaurant, comment, rating);
 });
 
-addRestaurantForm.addEventListener('submit', function(event){
+addRestaurantForm.addEventListener('submit', function (event) {
   event.preventDefault();
   let restaurantName = restaurantNameInput.value;
   let restaurantAddress = addRestaurantAddressSelect.value;
