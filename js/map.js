@@ -186,8 +186,8 @@ class JsonList {
       console.log('Aucune liste dans le session Storage...')
     }
   }
-  setNewRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
-    console.log('JsonList.setNewRestaurants ->')
+  getRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
+    console.log('JsonList.getRestaurants ->')
     let sessionStorageLength = sessionStorage.length;
 
     restaurantsListDiv.innerHTML = ""; // EMPTY THE RESTAURANT CARDS LIST
@@ -227,7 +227,7 @@ class JsonList {
     tempReviewsArray.push({ 'stars': rating, 'comment': comment });
     $('#reviewModal').modal('toggle');
     this.deleteFromSessionStorage();
-    this.setMainList(tempMainList).then(this.setNewRestaurants());
+    this.setMainList(tempMainList).then(this.getRestaurants());
     alert('Merci pour votre commentaire !');
     /*
     console.log(restaurantRatingsArray)
@@ -442,14 +442,14 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
       console.log('Il y a de nouveaux restaurants à enregistrer en session Storage...')
       console.log(tempList.length)
       //jsonList.setPlaces(tempList) // CALL SETPLACES TO SET JSON PLACES LIST
-      jsonList.setMainList(tempList).then(jsonList.setNewRestaurants());
+      jsonList.setMainList(tempList).then(jsonList.getRestaurants());
     } else {
       console.log('Le tempList est vide car tous les restaurants sont déjà enregistrés !')
-      jsonList.setNewRestaurants();
+      jsonList.getRestaurants();
     }
   } else {
     console.log('function placeCallback IS NOT OK');
-    jsonList.setNewRestaurants();
+    jsonList.getRestaurants();
   }
 }
 function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLBACK
