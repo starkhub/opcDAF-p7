@@ -16,7 +16,7 @@ var reviewTextArea = document.getElementById('reviewCommentArea');
 // ---------- OBJECTS ----------
 
 class Restaurant {
-  constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId) {
+  constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId, source) {
     this.name = name,
       this.address = address,
       this.rating = rating,
@@ -25,7 +25,8 @@ class Restaurant {
       this.lng = lng,
       this.streetViewImage = streetViewImage,
       this.index = index,
-      this.placeId = placeId
+      this.placeId = placeId,
+      this.source = source
   }
   setOnMap() {
     console.log('Restaurant.setOnMap : ' + this.name)
@@ -238,7 +239,8 @@ class JsonList {
       "long": parseFloat(restaurantLng),
       "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
       "rating": 0,
-      "reviews": []
+      "reviews": [],
+      "source": "user"
     }
     var restaurantIndex;
     var restaurantToAdd;
@@ -417,7 +419,8 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
         "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
         "rating": restaurantRating,
         "reviews": [],
-        "placeId": restaurantPlaceID
+        "placeId": restaurantPlaceID,
+        "source": "googlePlaces"
       }
       console.log('Pour le restaurant : ' + restaurantPlaceID)
       if (mainList != null) {
