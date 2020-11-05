@@ -13,8 +13,6 @@ var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSe
 var reviewModal = document.getElementById('reviewModal');
 var reviewTextArea = document.getElementById('reviewCommentArea');
 
-var placesIdArr = [];
-
 // ---------- OBJECTS ----------
 
 class Restaurant {
@@ -57,8 +55,6 @@ class Restaurant {
 
       if (map.getBounds().contains(coords)) {
 
-
-
         let marker = new google.maps.Marker({
           position: coords,
           map: map,
@@ -72,8 +68,7 @@ class Restaurant {
             '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
             '<p class="infoWindowRating" id="infoWindowRating"><span class="font-weight-bold">Moyenne des notes : </span>' + this.rating + '</p>' +
             '<h3>Avis clients</h3>' +
-            '<ul id="restaurant-reviews">' +
-            '</ul></div>'
+            '<ul id="restaurant-reviews"></ul></div>'
         });
 
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
@@ -228,13 +223,19 @@ class JsonList {
     console.log('Index du restaurant = ' + restaurant)
     //let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let tempMainList = this.main();
-    let restaurantRatingsArray = tempMainList[restaurant].reviews;
-    console.log(restaurantRatingsArray)
+    let tempReviewsArray = tempMainList[restaurant].reviews;
+    tempReviewsArray.push({ 'stars': rating, 'comment': comment });
     $('#reviewModal').modal('toggle');
+    this.deleteFromSessionStorage();
+    this.setMainList(tempMainList).then(this.setNewRestaurants());
+    alert('Merci pour votre commentaire !');
+    /*
+    console.log(restaurantRatingsArray)
+
     restaurantRatingsArray.push({ 'stars': rating, 'comment': comment });
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     jsonList.setNewRestaurants();
-    alert('Merci pour votre commentaire !');
+    alert('Merci pour votre commentaire !');*/
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
     var newRestaurant = {
@@ -456,28 +457,31 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
   console.log('detailsCallback status = ' + status)
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     var tempList = [];
-    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
-    var restaurantReviews = document.getElementById('restaurant-reviews');
+    var tempMainList = jsonList.main(); // GET RESTAURANTS LIST INTO LOCAL STORAGE
+    var reviewsContainer = document.getElementById('restaurant-reviews');
+    reviewsContainer.innerHTML = "";
+
     let newRestaurantReviews = {
+
       "reviews": place.reviews
     }
     let placeId = place.place_id;
     let index;
-    for (let i = 0; i < restaurantsJsonList.length; i++) {
-      if (restaurantsJsonList[i].placeId === placeId) {
-        index = i;
-        if (restaurantsJsonList[i].reviews == "") {
-          newRestaurantReviews.reviews.forEach(function (item) {
-            restaurantReviews.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
-            restaurantsJsonList[i].reviews.push({ "stars": item.rating, "comment": item.text })
-          });
-          sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList));
 
-        } else {
-          console.log('Les avis sont déjà en session storage !')
+    for (let i = 0; i < tempMainList.length; i++) {
+      if (tempMainList[i].placeId === placeId) {
+        index = i;
+        let reviewsArray = tempMainList[i].reviews;
+        if(reviewsArray.length != 0){
+          reviewsArray.forEach(function (item) {
+            reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.stars + '</span><br /><span><strong>Commentaire</strong> : ' + item.comment + '</span></li><br/><hr>'
+          });
         }
       }
     }
+    newRestaurantReviews.reviews.forEach(function (item) {
+      reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
+    });
   } else {
     console.log('function detailsCallback is not ok !');
   }
