@@ -161,6 +161,39 @@ class JsonList {
     };
     this.service.getDetails(request, detailsCallback); // SEARCH FOR REVIEWS
   }
+  getRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
+  console.log('JsonList.getRestaurants ->')
+  let sessionStorageLength = sessionStorage.length;
+
+  restaurantsListDiv.innerHTML = ""; // EMPTY THE RESTAURANT CARDS LIST
+  markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
+  var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
+
+  var restaurantsIndexArr = [];
+  var restaurantObjectNameArray = [];
+
+  if (sessionStorageLength != 0) {
+    console.log('Restaurants in the list = ' + restaurantsJsonList.length);
+    restaurantsAmount.innerHTML = restaurantsJsonList.length + ' résultats...';
+    for (let i = 0; i < restaurantsJsonList.length; i++) {
+      // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
+      var restaurantName = restaurantsJsonList[i].restaurantName;
+      var restaurantAddress = restaurantsJsonList[i].address;
+      var restaurantRating = restaurantsJsonList[i].rating;
+      var reviewsArray = restaurantsJsonList[i].reviews;
+      var itemLat = restaurantsJsonList[i].lat;
+      var itemLong = restaurantsJsonList[i].long;
+      var streetViewImage = restaurantsJsonList[i].streetViewImage;
+      var placeId = restaurantsJsonList[i].placeId;
+
+      let restaurant = window["restaurant" + i];
+      restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId);
+      //TODO : CHECK IF THE RESTAURANT CARD IS ALREADY ON THE DOM !
+      restaurant.setOnMap();
+
+    } // END FOR
+  }
+}
   // ---------- GETTERS
   places() {
     console.log(this.placesList)
@@ -186,39 +219,6 @@ class JsonList {
       console.log('Aucune liste dans le session Storage...')
     }
   }
-  getRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
-    console.log('JsonList.getRestaurants ->')
-    let sessionStorageLength = sessionStorage.length;
-
-    restaurantsListDiv.innerHTML = ""; // EMPTY THE RESTAURANT CARDS LIST
-    markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
-
-    var restaurantsIndexArr = [];
-    var restaurantObjectNameArray = [];
-
-    if (sessionStorageLength != 0) {
-      console.log('Restaurants in the list = ' + restaurantsJsonList.length);
-      restaurantsAmount.innerHTML = restaurantsJsonList.length + ' résultats...';
-      for (let i = 0; i < restaurantsJsonList.length; i++) {
-        // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
-        var restaurantName = restaurantsJsonList[i].restaurantName;
-        var restaurantAddress = restaurantsJsonList[i].address;
-        var restaurantRating = restaurantsJsonList[i].rating;
-        var reviewsArray = restaurantsJsonList[i].reviews;
-        var itemLat = restaurantsJsonList[i].lat;
-        var itemLong = restaurantsJsonList[i].long;
-        var streetViewImage = restaurantsJsonList[i].streetViewImage;
-        var placeId = restaurantsJsonList[i].placeId;
-
-        let restaurant = window["restaurant" + i];
-        restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId);
-        //TODO : CHECK IF THE RESTAURANT CARD IS ALREADY ON THE DOM !
-        restaurant.setOnMap();
-
-      } // END FOR
-    }
-  }
   setNewReview(restaurant, comment, rating) { // ADD NEW REVIEW INTO LOCAL STORAGE RESTAURANTS LIST
     console.log('Index du restaurant = ' + restaurant)
     //let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
@@ -229,13 +229,6 @@ class JsonList {
     this.deleteFromSessionStorage();
     this.setMainList(tempMainList).then(this.getRestaurants());
     alert('Merci pour votre commentaire !');
-    /*
-    console.log(restaurantRatingsArray)
-
-    restaurantRatingsArray.push({ 'stars': rating, 'comment': comment });
-    sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
-    jsonList.setNewRestaurants();
-    alert('Merci pour votre commentaire !');*/
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
     var newRestaurant = {
@@ -244,6 +237,7 @@ class JsonList {
       "lat": parseFloat(restaurantLat),
       "long": parseFloat(restaurantLng),
       "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
+      "rating": 0,
       "reviews": []
     }
     var restaurantIndex;
