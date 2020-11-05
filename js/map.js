@@ -75,8 +75,9 @@ class Restaurant {
 
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
           console.log('ouverture ' + this.placeId);
-          jsonList.getReviews(this.placeId, this.source);
+
           infowindow.open(map, marker);
+          jsonList.getReviews(this.placeId, this.source, infoWindow);
           clickTime = Date.now();
         });
 
@@ -157,8 +158,9 @@ class JsonList {
     };
     this.service.nearbySearch(request, placeCallback); // SEARCH FOR NEAREST PLACES WITH CALLBACK FUNCTION 
   }
-  getReviews(placeId) {
-    console.log(document.getElementById('restaurant-reviews'))
+  getReviews(placeId, source, infoWindow) {
+    console.log(source)
+    console.log(infoWindow)
 /*
     var request = {
       placeId: placeId
@@ -190,9 +192,10 @@ class JsonList {
       var itemLong = restaurantsJsonList[i].long;
       var streetViewImage = restaurantsJsonList[i].streetViewImage;
       var placeId = restaurantsJsonList[i].placeId;
+      var source = restaurantsJsonList[i].source;
 
       let restaurant = window["restaurant" + i];
-      restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId);
+      restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId, source);
       //TODO : CHECK IF THE RESTAURANT CARD IS ALREADY ON THE DOM !
       restaurant.setOnMap();
 
