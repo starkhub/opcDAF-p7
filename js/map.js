@@ -59,7 +59,8 @@ class Restaurant {
         let marker = new google.maps.Marker({
           position: coords,
           map: map,
-          placeId: this.placeId
+          placeId: this.placeId,
+          source: this.source
         });
         let infowindow = new google.maps.InfoWindow({
           content:
