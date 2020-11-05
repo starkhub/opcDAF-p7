@@ -77,7 +77,9 @@ class Restaurant {
           console.log('ouverture ' + this.placeId);
 
           infowindow.open(map, marker);
-          jsonList.getReviews(this.placeId, this.source, infoWindow);
+
+          jsonList.getReviews(this.placeId, this.source);
+
           clickTime = Date.now();
         });
 
@@ -159,49 +161,55 @@ class JsonList {
     this.service.nearbySearch(request, placeCallback); // SEARCH FOR NEAREST PLACES WITH CALLBACK FUNCTION 
   }
   getReviews(placeId, source, infoWindow) {
-    console.log(source)
-    console.log(infoWindow)
-/*
-    var request = {
-      placeId: placeId
-    };
-    this.service.getDetails(request, detailsCallback); // SEARCH FOR REVIEWS
-*/
+    if(source === "user"){
+      var checkExist = setInterval(function () {
+        if (document.getElementById('restaurant-reviews')) {
+          console.log("Exists!");
+          clearInterval(checkExist);
+          externalFunction(placeId)
+        }
+      }, 100); // check every 100ms
+    }else{
+      var request = {
+        placeId: placeId
+      };
+      this.service.getDetails(request, detailsCallback); // SEARCH FOR REVIEWS
+    }
   }
   getRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
-  console.log('JsonList.getRestaurants ->')
-  let sessionStorageLength = sessionStorage.length;
+    console.log('JsonList.getRestaurants ->')
+    let sessionStorageLength = sessionStorage.length;
 
-  restaurantsListDiv.innerHTML = ""; // EMPTY THE RESTAURANT CARDS LIST
-  markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-  var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
+    restaurantsListDiv.innerHTML = ""; // EMPTY THE RESTAURANT CARDS LIST
+    markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
+    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
 
-  var restaurantsIndexArr = [];
-  var restaurantObjectNameArray = [];
+    var restaurantsIndexArr = [];
+    var restaurantObjectNameArray = [];
 
-  if (sessionStorageLength != 0) {
-    console.log('Restaurants in the list = ' + restaurantsJsonList.length);
-    restaurantsAmount.innerHTML = restaurantsJsonList.length + ' résultats...';
-    for (let i = 0; i < restaurantsJsonList.length; i++) {
-      // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
-      var restaurantName = restaurantsJsonList[i].restaurantName;
-      var restaurantAddress = restaurantsJsonList[i].address;
-      var restaurantRating = restaurantsJsonList[i].rating;
-      var reviewsArray = restaurantsJsonList[i].reviews;
-      var itemLat = restaurantsJsonList[i].lat;
-      var itemLong = restaurantsJsonList[i].long;
-      var streetViewImage = restaurantsJsonList[i].streetViewImage;
-      var placeId = restaurantsJsonList[i].placeId;
-      var source = restaurantsJsonList[i].source;
+    if (sessionStorageLength != 0) {
+      console.log('Restaurants in the list = ' + restaurantsJsonList.length);
+      restaurantsAmount.innerHTML = restaurantsJsonList.length + ' résultats...';
+      for (let i = 0; i < restaurantsJsonList.length; i++) {
+        // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
+        var restaurantName = restaurantsJsonList[i].restaurantName;
+        var restaurantAddress = restaurantsJsonList[i].address;
+        var restaurantRating = restaurantsJsonList[i].rating;
+        var reviewsArray = restaurantsJsonList[i].reviews;
+        var itemLat = restaurantsJsonList[i].lat;
+        var itemLong = restaurantsJsonList[i].long;
+        var streetViewImage = restaurantsJsonList[i].streetViewImage;
+        var placeId = restaurantsJsonList[i].placeId;
+        var source = restaurantsJsonList[i].source;
 
-      let restaurant = window["restaurant" + i];
-      restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId, source);
-      //TODO : CHECK IF THE RESTAURANT CARD IS ALREADY ON THE DOM !
-      restaurant.setOnMap();
+        let restaurant = window["restaurant" + i];
+        restaurant = new Restaurant(restaurantName, restaurantAddress, reviewsArray, restaurantRating, itemLat, itemLong, streetViewImage, i, placeId, source);
+        //TODO : CHECK IF THE RESTAURANT CARD IS ALREADY ON THE DOM !
+        restaurant.setOnMap();
 
-    } // END FOR
+      } // END FOR
+    }
   }
-}
   // ---------- GETTERS
   places() {
     console.log(this.placesList)
@@ -476,7 +484,7 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
       if (tempMainList[i].placeId === placeId) {
         index = i;
         let reviewsArray = tempMainList[i].reviews;
-        if(reviewsArray.length != 0){
+        if (reviewsArray.length != 0) {
           reviewsArray.forEach(function (item) {
             reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.stars + '</span><br /><span><strong>Commentaire</strong> : ' + item.comment + '</span></li><br/><hr>'
           });
@@ -488,6 +496,22 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
     });
   } else {
     console.log('function detailsCallback is not ok !');
+  }
+}
+function externalFunction(placeId) {
+  var tempMainList = jsonList.main(); // GET RESTAURANTS LIST INTO LOCAL STORAGE
+  var reviewsContainer = document.getElementById('restaurant-reviews');
+  reviewsContainer.innerHTML = "";
+  for (let i = 0; i < tempMainList.length; i++) {
+    if (tempMainList[i].placeId === placeId) {
+      index = i;
+      let reviewsArray = tempMainList[i].reviews;
+      if (reviewsArray.length != 0) {
+        reviewsArray.forEach(function (item) {
+          reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.stars + '</span><br /><span><strong>Commentaire</strong> : ' + item.comment + '</span></li><br/><hr>'
+        });
+      }
+    }
   }
 }
 // ---------- ONLOAD INIT ----------
