@@ -75,7 +75,7 @@ class Restaurant {
 
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
           console.log('ouverture ' + this.placeId);
-          jsonList.getReviews(this.placeId);
+          jsonList.getReviews(this.placeId, this.source);
           infowindow.open(map, marker);
           clickTime = Date.now();
         });
@@ -158,10 +158,13 @@ class JsonList {
     this.service.nearbySearch(request, placeCallback); // SEARCH FOR NEAREST PLACES WITH CALLBACK FUNCTION 
   }
   getReviews(placeId) {
+    console.log(document.getElementById('restaurant-reviews'))
+/*
     var request = {
       placeId: placeId
     };
     this.service.getDetails(request, detailsCallback); // SEARCH FOR REVIEWS
+*/
   }
   getRestaurants() { // PUT LIST'S RESTAURANTS ON THE MAP
   console.log('JsonList.getRestaurants ->')
