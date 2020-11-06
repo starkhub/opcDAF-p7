@@ -25,14 +25,14 @@
 		<nav>
 			<div class="row">
 				<div class="col-12 col-md-8 py-5 d-flex flex-column flex-sm-row justify-content-center align-items-center mx-auto">
-					<select class="form-control" id="rating-filter" onchange="jsonList.getRestaurants()">
+					<select class="form-control my-3" id="rating-filter" onchange="jsonList.getRestaurants()">
 						<option value="1">Note de 0 à 1</option>
 						<option value="2">Note de 0 à 2</option>
 						<option value="3">Note de 0 à 3</option>
 						<option value="4">Note de 0 à 4</option>
 						<option selected="selected" value="5">Note de 0 à 5</option>
 					</select>
-					<button class="btn btn-warning ml-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
+					<button class="btn btn-warning ml-3 py-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
 						onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
 				</div>
 			</div>
