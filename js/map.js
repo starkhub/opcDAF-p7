@@ -1,7 +1,8 @@
 // ---------- VARS ----------
 var api_key = config.secret_key; //initialisation clé API à partir d'un fichier config séparé
 var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //init. variables
-var markerIcon = './css/images/user-marker-64.png'; //init. image marker utilisateur
+var userMarkerIcon = './css/images/user-marker-64.png'; //init. image marker utilisateur
+var restaurantMarkerIcon = './css/images/restaurant-marker-32.png'; //init. image marker utilisateur
 var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var restaurantsAmount = document.getElementById('restaurants-amount'); // init. du nombre de restaurants trouvés
@@ -59,13 +60,14 @@ class Restaurant {
         let marker = new google.maps.Marker({
           position: coords,
           map: map,
+          icon: restaurantMarkerIcon,
           placeId: this.placeId,
           source: this.source
         });
         let infowindow = new google.maps.InfoWindow({
           content:
 
-            '<div class="infoWindow"><h2 class="my-5">' + this.name + '</h2>' +
+            '<div class="infoWindow"><h2 class="my-5 text-center">' + this.name + '</h2>' +
             '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
             '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
             '<p class="infoWindowRating" id="infoWindowRating"><span class="font-weight-bold">Moyenne des notes : </span>' + this.rating + '</p>' +
@@ -316,7 +318,7 @@ function initMap() { // GOOGLE MAP INIT
       userMarker = new google.maps.Marker({
         position: pos,
         map: map,
-        icon: markerIcon
+        icon: userMarkerIcon
       });
       mapLat = position.coords.latitude;
       mapLng = position.coords.longitude;
