@@ -496,7 +496,7 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
       newRestaurantReviews.reviews.forEach(function (item) {
         reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
       });
-    }else{
+    }else if(newRestaurantReviews.reviews === undefined && reviewsContainer.innerHTML === ""){
       reviewsContainer.innerHTML += '<p class="text-center">Aucun avis à afficher pour le moment...</p>'
     }
 
