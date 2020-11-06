@@ -10,114 +10,123 @@
 </head>
 
 <body>
-	<div class="container-fluid main-container p-0">
-	<header class="text-center">
-		<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
-		<h2 class="text-white">Tous vos restaurants sur le bout des doigts !</h2>
-		<p class="font-weight-italic text-white">(La recherche permet de retourner un nombre limité de 20 restaurants)</p>
-	</header>
+	<div class="container-fluid main-container">
+		<header class="text-center">
+			<div class="row">
+				<div class="col-12 col-md-8 mx-auto">
+					<img src="css/images/logo.png" alt="Proxi Resto, tous les restaurants au bout des doigts !">
+					<h2 class="text-white">Tous vos restaurants sur le bout des doigts !</h2>
+					<p class="font-italic text-white p-2 mx-auto search-warning-text">La recherche retourne 20
+						restaurants à la fois, merci de bien cibler votre zone de recherche !</p>
+				</div>
+			</div>
+		</header>
 
-	<nav class="py-5 w-50 d-flex flex-row justify-content-center mx-auto">
-		<select class="form-control" id="rating-filter" onchange="jsonList.getRestaurants()">
-			<option value="1">Note de 0 à 1</option>
-			<option value="2">Note de 0 à 2</option>
-			<option value="3">Note de 0 à 3</option>
-			<option value="4">Note de 0 à 4</option>
-			<option selected="selected" value="5">Note de 0 à 5</option>
-		</select>
-		<button class="btn btn-warning ml-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
-			onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
-	</nav>
+		<nav>
+			<div class="row">
+				<div class="col-12 col-md-8 py-5 d-flex flex-column flex-sm-row justify-content-center align-items-center mx-auto">
+					<select class="form-control" id="rating-filter" onchange="jsonList.getRestaurants()">
+						<option value="1">Note de 0 à 1</option>
+						<option value="2">Note de 0 à 2</option>
+						<option value="3">Note de 0 à 3</option>
+						<option value="4">Note de 0 à 4</option>
+						<option selected="selected" value="5">Note de 0 à 5</option>
+					</select>
+					<button class="btn btn-warning ml-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
+						onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
+				</div>
+			</div>
+		</nav>
 
-	<div class="modal fade addReviewModal" id="reviewModal" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2 class="modal-title">Ajouter un commentaire</h2>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+		<div class="modal fade addReviewModal" id="reviewModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title">Ajouter un commentaire</h2>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body py-2">
+						<form id="addReviewForm">
+							<div class="modal-group py-2">
+								<label>Votre note : </label><select class="form-control" id="reviewRating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+							<div class="modal-group py-2">
+								<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"
+									class="form-control" rows="10" cols="50" required></textarea>
+							</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" name="submitReviewButton" class="modalSubmitButton btn btn-success"
+							id="reviewModalButton" form="addReviewForm">Valider</button>
+					</div>
+					</form>
 				</div>
-				<div class="modal-body py-2">
-					<form id="addReviewForm">
-						<div class="modal-group py-2">
-							<label>Votre note : </label><select class="form-control" id="reviewRating">
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-							</select>
-						</div>
-						<div class="modal-group py-2">
-							<label>Votre commentaire : </label><textarea name="reviewComment" id="reviewCommentArea"
-								class="form-control" rows="10" cols="50" required></textarea>
-						</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" name="submitReviewButton" class="modalSubmitButton btn btn-success"
-						id="reviewModalButton" form="addReviewForm">Valider</button>
-				</div>
-				</form>
 			</div>
 		</div>
-	</div>
-	<div class="modal fade addRestaurantModal" id="addRestaurantModal" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2 class="modal-title">Ajouter un restaurant</h2>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+		<div class="modal fade addRestaurantModal" id="addRestaurantModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title">Ajouter un restaurant</h2>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body py-2">
+						<form id="addRestaurantForm">
+							<div class="modal-group">
+								<label for="restaurantName">Choisir le nom du restaurant : </label><input
+									name="restaurantName" class="form-control" id="addRestaurantName" type="text"
+									placeholder="Nom restaurant" required />
+							</div>
+							<div class="modal-group py-2">
+								<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant :
+								</label><select class="form-control" id="addRestaurantAddressSelect"
+									name="addRestaurantAddressSelect"></select>
+							</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" name="addRestaurantButton" class="modalSubmitButton btn btn-success"
+							id="addRestaurantModalButton" form="addRestaurantForm">Valider</button>
+					</div>
+					</form>
 				</div>
-				<div class="modal-body py-2">
-					<form id="addRestaurantForm">
-						<div class="modal-group">
-							<label for="restaurantName">Choisir le nom du restaurant : </label><input
-								name="restaurantName" class="form-control" id="addRestaurantName" type="text"
-								placeholder="Nom restaurant" required />
-						</div>
-						<div class="modal-group py-2">
-							<label for="addRestaurantAddressSelect">Choisir l'adresse du restaurant :
-							</label><select class="form-control" id="addRestaurantAddressSelect"
-								name="addRestaurantAddressSelect"></select>
-						</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" name="addRestaurantButton" class="modalSubmitButton btn btn-success"
-						id="addRestaurantModalButton" form="addRestaurantForm">Valider</button>
-				</div>
-				</form>
 			</div>
 		</div>
+
+		<section class="main-section row pb-5">
+			<div class="col-md-4">
+				<aside>
+					<div id="restaurants-list-title" class="text-center bg-dark text-white py-5">
+						<h2>Les restaurants dans les environs</h2>
+						<h5 id="restaurants-amount"></h5>
+					</div>
+					<div id="restaurants-list">
+					</div>
+				</aside>
+			</div>
+			<div class="col-md-8 map-container">
+				<div id="map"></div>
+			</div>
+		</section>
 	</div>
+		<footer class="bg-dark text-white d-flex flex-column justify-content-center align-items-center">
+			<h5>Copyright 2020 - @ProxyResto</h5>
+		</footer>
 
-	<section class="main-section row mb-5">
-		<div class="col-md-4">
-			<aside>
-				<div id="restaurants-list-title" class="text-center bg-dark text-white py-5">
-					<h2>Les restaurants dans les environs</h2>
-					<h5 id="restaurants-amount"></h5>
-				</div>
-				<div id="restaurants-list">
-				</div>
-			</aside>
-		</div>
-		<div class="col-md-8 map-container pr-2">
-			<div id="map"></div>
-		</div>
-	</section>
+		<script src="js/jquery-3.5.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/map.js"></script>
 
-	<footer class="bg-dark text-white d-flex flex-column justify-content-center align-items-center">
-		<h5>Copyright 2020 - @ProxyResto</h5>
-	</footer>
-
-	<script src="js/jquery-3.5.1.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/config.js"></script>
-	<script src="js/map.js"></script>
-	</div>
 </body>
 
 </html>
