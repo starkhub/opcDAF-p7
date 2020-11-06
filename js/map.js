@@ -102,6 +102,7 @@ class Restaurant {
     } else { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
       console.log('Restaurant have low rating...');
     }
+    restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...';
   }
 }
 class JsonList {
@@ -189,7 +190,6 @@ class JsonList {
 
     if (sessionStorageLength != 0) {
       console.log('Restaurants in the list = ' + restaurantsJsonList.length);
-      restaurantsAmount.innerHTML = restaurantsJsonList.length + ' résultats...';
       for (let i = 0; i < restaurantsJsonList.length; i++) {
         // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
         var restaurantName = restaurantsJsonList[i].restaurantName;
@@ -461,6 +461,7 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
     }
   } else {
     console.log('function placeCallback IS NOT OK');
+    restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...';
     jsonList.getRestaurants();
   }
 }
