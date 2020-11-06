@@ -254,6 +254,7 @@ class JsonList {
       "long": parseFloat(restaurantLng),
       "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
       "rating": 0,
+      "ratingTotal": 0,
       "reviews": [],
       "source": "user"
     }
@@ -420,12 +421,14 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
 
     for (var i = 0; i < results.length; i++) {
 
+      console.log(results[i])
       var restaurantPlaceID = results[i].place_id;
       let restaurantLng = results[i].geometry.location.lng();
       let restaurantLat = results[i].geometry.location.lat();
       let restaurantName = results[i].name;
       let restaurantAddress = results[i].vicinity;
       let restaurantRating = results[i].rating != null ? results[i].rating : "0";
+      let restaurantRatingsTotal = results[i].user_ratings_total != null ? results[i].user_ratings_total : "0";
       let newRestaurant = {
         "restaurantName": restaurantName,
         "address": restaurantAddress,
@@ -433,6 +436,7 @@ function placeCallback(results, status) { // GET NEARBY PLACES OF CURRENT LOCATI
         "long": parseFloat(restaurantLng),
         "streetViewImage": "" + parseFloat(restaurantLat) + "," + parseFloat(restaurantLng) + "",
         "rating": restaurantRating,
+        "ratingTotal": restaurantRatingsTotal,
         "reviews": [],
         "placeId": restaurantPlaceID,
         "source": "googlePlaces"
