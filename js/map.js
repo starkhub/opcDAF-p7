@@ -491,9 +491,15 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
         }
       }
     }
-    newRestaurantReviews.reviews.forEach(function (item) {
-      reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
-    });
+    if(newRestaurantReviews.reviews != undefined){
+      newRestaurantReviews.reviews.forEach(function (item) {
+        reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
+      });
+    }else{
+      reviewsContainer.innerHTML += '<p class="text-center">Aucun avis à afficher pour le moment...</p>'
+    }
+
+
   } else {
     console.log('function detailsCallback is not ok !');
   }
