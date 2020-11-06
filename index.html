@@ -19,10 +19,11 @@
 
 	<nav class="py-5 w-50 d-flex flex-row justify-content-center mx-auto">
 		<select class="form-control" id="rating-filter" onchange="jsonList.getRestaurants()">
-			<option value="2">De 1 à 2 étoiles</option>
-			<option value="3">De 1 à 3 étoiles</option>
-			<option value="4">De 1 à 4 étoiles</option>
-			<option selected="selected" value="5">De 1 à 5 étoiles</option>
+			<option value="1">Note de 0 à 1</option>
+			<option value="2">Note de 0 à 2</option>
+			<option value="3">Note de 0 à 3</option>
+			<option value="4">Note de 0 à 4</option>
+			<option selected="selected" value="5">Note de 0 à 5</option>
 		</select>
 		<button class="btn btn-warning ml-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
 			onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
