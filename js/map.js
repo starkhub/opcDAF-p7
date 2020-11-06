@@ -302,11 +302,16 @@ function initMap() { // GOOGLE MAP INIT
   //alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera pour profiter au mieux des fonctionnalités de l'application !");
   map = new google.maps.Map(document.getElementById('map'), { // NEW MAP INSTANCE
     center: { lat: -34.397, lng: 150.644 },
-    zoom: 17
+    zoom: 17,
+    mapTypeControl: false
   });
 
   infoWindow = new google.maps.InfoWindow; // NEW INFOWINDOW INSTANCE
-
+  // Create the DIV to hold the control and call the CenterControl()
+  // constructor passing in this DIV.
+  const searchControlDiv = document.createElement("div");
+  searchPlacesInThisAreaControl(searchControlDiv, map);
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchControlDiv);
 
   if (navigator.geolocation) { // CHECKING IF BROWSER SUPPORT GEOLOCATION
     console.log('3.1 - Checking for geolocation...')
@@ -531,6 +536,35 @@ function externalFunction(placeId) {
       }
     }
   }
+}
+
+// ---------- MAP CUSTOM CONTROL ----------
+function searchPlacesInThisAreaControl(controlDiv, map){
+  // Set CSS for the control border.
+  const controlUI = document.createElement("div");
+  controlUI.style.backgroundColor = "#fff";
+  controlUI.style.border = "2px solid #fff";
+  controlUI.style.borderRadius = "3px";
+  controlUI.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+  controlUI.style.cursor = "pointer";
+  controlUI.style.marginBottom = "22px";
+  controlUI.style.textAlign = "center";
+  controlUI.title = "Rechercher dans cette zone";
+  controlDiv.appendChild(controlUI);
+  // Set CSS for the control interior.
+  const controlText = document.createElement("div");
+  controlText.style.color = "rgb(25,25,25)";
+  controlText.style.fontFamily = "Roboto,Arial,sans-serif";
+  controlText.style.fontSize = "16px";
+  controlText.style.lineHeight = "38px";
+  controlText.style.paddingLeft = "5px";
+  controlText.style.paddingRight = "5px";
+  controlText.innerHTML = "Rechercher";
+  controlUI.appendChild(controlText);
+  // Setup the click event listeners: simply set the map to Chicago.
+  controlUI.addEventListener("click", () => {
+    jsonList.searchPlacesInThisArea();
+  });
 }
 // ---------- ONLOAD INIT ----------
 window.onload = function () {
