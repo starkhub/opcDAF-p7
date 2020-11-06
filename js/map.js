@@ -240,6 +240,11 @@ class JsonList {
     //let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     let tempMainList = this.main();
     let tempReviewsArray = tempMainList[restaurant].reviews;
+    let oldRatingTotal = Number(tempMainList[restaurant].ratingTotal);
+    let oldRating = Number(tempMainList[restaurant].rating);
+    let newRatingTotal = tempMainList[restaurant].ratingTotal = oldRatingTotal + 1;
+    //rating = nouvelle note, oldRatingTotal = ancien nombre de notes, oldRating = ancienne moyenne, newRatingTotal = nouveau nombre de notes
+    let newRating = tempMainList[restaurant].rating = parseFloat((oldRatingTotal * oldRating + rating) / newRatingTotal).toFixed(2);
     tempReviewsArray.push({ 'stars': rating, 'comment': comment });
     $('#reviewModal').modal('toggle');
     this.deleteFromSessionStorage();
