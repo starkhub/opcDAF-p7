@@ -546,6 +546,8 @@ function searchPlacesInThisAreaControl(controlDiv, map) {
   const controlUI = document.createElement("div");
   controlUI.classList.add('btn');
   controlUI.classList.add('btn-warning');
+  controlUI.classList.add('border');
+  controlUI.classList.add('border-dark');
   controlUI.title = "Rechercher dans cette zone";
   controlDiv.appendChild(controlUI);
   // Set CSS for the control interior.
