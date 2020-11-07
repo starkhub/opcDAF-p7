@@ -6,6 +6,7 @@
 	<meta charset="UTF-8">
 	<title>ProxiResto</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap4-toggle.min.css">
 	<link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -22,18 +23,25 @@
 			</div>
 		</header>
 
-		<nav>
-			<div class="row">
-				<div class="col-12 col-md-8 py-5 d-flex flex-column flex-sm-row justify-content-center align-items-center mx-auto">
-					<select class="form-control my-3" id="rating-filter" onchange="jsonList.getRestaurants()">
-						<option value="1">Note de 0 à 1</option>
-						<option value="2">Note de 0 à 2</option>
-						<option value="3">Note de 0 à 3</option>
-						<option value="4">Note de 0 à 4</option>
-						<option selected="selected" value="5">Note de 0 à 5</option>
-					</select>
-					<button class="btn btn-warning ml-3 py-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
-						onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>
+		<nav class="my-4 py-2">
+			<div class="container">
+				<div class="row flex-column flex-sm-row justify-content-center align-items-center">
+					<div class="col text-center text-sm-right my-2 my-sm-0">
+						<label for="rating-filter"><img src="css/images/filter-32.png" alt="Filtrer les résultats selon les notes des restaurants" /></label>
+						<select class="form-control ml-3" id="rating-filter" onchange="jsonList.getRestaurants()">
+							<option value="1">Note de 0 à 1</option>
+							<option value="2">Note de 0 à 2</option>
+							<option value="3">Note de 0 à 3</option>
+							<option value="4">Note de 0 à 4</option>
+							<option selected="selected" value="5">Note de 0 à 5</option>
+						</select>
+					</div>
+					<div class="col text-center text-sm-left my-2 my-sm-0">
+						<!--<button class="btn btn-warning ml-3 py-3" id="searchPlacesInThisArea" name="searchPlacesInThisArea"
+						onclick="jsonList.searchPlacesInThisArea()">Rechercher dans cette zone</button>-->
+						<label class="font-weight-bold text-white lead mr-3">Ajouter un restaurant</label><input class="ml-3"
+							type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" id="addRestaurantToggle">
+					</div>
 				</div>
 			</div>
 		</nav>
@@ -102,7 +110,7 @@
 			</div>
 		</div>
 
-		<section class="main-section row pb-5">
+		<section class="main-section row pb-5 flex-column-reverse flex-sm-row">
 			<div class="col-md-4">
 				<aside>
 					<div id="restaurants-list-title" class="text-center bg-dark text-white py-5">
@@ -118,14 +126,15 @@
 			</div>
 		</section>
 	</div>
-		<footer class="bg-dark text-white d-flex flex-column justify-content-center align-items-center">
-			<h5>Copyright 2020 - @ProxyResto</h5>
-		</footer>
+	<footer class="bg-dark text-white d-flex flex-column justify-content-center align-items-center">
+		<h5>Copyright 2020 - @ProxyResto</h5>
+	</footer>
 
-		<script src="js/jquery-3.5.1.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/config.js"></script>
-		<script src="js/map.js"></script>
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="js/bootstrap4-toggle.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/config.js"></script>
+	<script src="js/map.js"></script>
 
 </body>
 

@@ -7,6 +7,7 @@ var markers = []; //init. tableau des markers
 var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
 var restaurantsAmount = document.getElementById('restaurants-amount'); // init. du nombre de restaurants trouvés
 var clickTime = Date.now() - 1001; //timer infoWindow
+var addRestaurantToggle = document.getElementById('addRestaurantToggle');
 // ---------- RESTAURANT MODALS VARS ----------
 var restaurantNameInput = document.getElementById('addRestaurantName');
 var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
@@ -164,7 +165,7 @@ class JsonList {
     this.service.nearbySearch(request, placeCallback); // SEARCH FOR NEAREST PLACES WITH CALLBACK FUNCTION 
   }
   getReviews(placeId, source, infoWindow) {
-    if(source === "user"){
+    if (source === "user") {
       var checkExist = setInterval(function () {
         if (document.getElementById('restaurant-reviews')) {
           console.log("Exists!");
@@ -172,7 +173,7 @@ class JsonList {
           externalFunction(placeId)
         }
       }, 100); // check every 100ms
-    }else{
+    } else {
       var request = {
         placeId: placeId
       };
@@ -341,20 +342,21 @@ function initMap() { // GOOGLE MAP INIT
       jsonList.setMap(map, coords);
       jsonList.initialize();
 
-      map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP 
-        let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
-        if (prompt) {
-
-          if (window.XMLHttpRequest) { // COMPATIBILITY CODE
-            httpRequest = new XMLHttpRequest();
+      map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP
+        if(addRestaurantToggle.checked){
+          let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
+          if (prompt) {
+            if (window.XMLHttpRequest) { // COMPATIBILITY CODE
+              httpRequest = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) { // IE 6 & EARLIER
+              httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            console.log('API_CALL_GEOCODE')
+            httpRequest.onreadystatechange = getHttpResponse;
+            httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
+            httpRequest.send();
           }
-          else if (window.ActiveXObject) { // IE 6 & EARLIER
-            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-          }
-          console.log('API_CALL_GEOCODE')
-          httpRequest.onreadystatechange = getHttpResponse;
-          httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
-          httpRequest.send();
         }
       });
     }, function () {
@@ -508,11 +510,11 @@ function detailsCallback(place, status) { // GET REVIEWS OF GIVEN PLACE ID CALLB
         }
       }
     }
-    if(newRestaurantReviews.reviews != undefined){
+    if (newRestaurantReviews.reviews != undefined) {
       newRestaurantReviews.reviews.forEach(function (item) {
         reviewsContainer.innerHTML += '<li><span><strong>Note</strong> : ' + item.rating + '</span><br /><span><strong>Commentaire</strong> : ' + item.text + '</span></li><br/><hr>'
       });
-    }else if(newRestaurantReviews.reviews === undefined && reviewsContainer.innerHTML === ""){
+    } else if (newRestaurantReviews.reviews === undefined && reviewsContainer.innerHTML === "") {
       reviewsContainer.innerHTML += '<p class="text-center">Aucun avis à afficher pour le moment...</p>'
     }
 
@@ -539,16 +541,11 @@ function externalFunction(placeId) {
 }
 
 // ---------- MAP CUSTOM CONTROL ----------
-function searchPlacesInThisAreaControl(controlDiv, map){
+function searchPlacesInThisAreaControl(controlDiv, map) {
   // Set CSS for the control border.
   const controlUI = document.createElement("div");
-  controlUI.style.backgroundColor = "#fff";
-  controlUI.style.border = "2px solid #fff";
-  controlUI.style.borderRadius = "3px";
-  controlUI.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
-  controlUI.style.cursor = "pointer";
-  controlUI.style.marginBottom = "22px";
-  controlUI.style.textAlign = "center";
+  controlUI.classList.add('btn');
+  controlUI.classList.add('btn-warning');
   controlUI.title = "Rechercher dans cette zone";
   controlDiv.appendChild(controlUI);
   // Set CSS for the control interior.
