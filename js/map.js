@@ -103,7 +103,7 @@ class JsonList {
     console.log('JsonList.initialize ->');
     this.deleteFromSessionStorage();
     let bounds = map.getBounds();
-    this.getPlaces(bounds);
+    //this.getPlaces(bounds);
   }
   // ---------- SETTERS
   setMap(map, coords) {
@@ -308,7 +308,6 @@ function initMap() { // GOOGLE MAP INIT
 
       console.log('3.2 - Geolocation Ok...')
       afterInit(map, pos, mapLat, mapLng);
-
       
     }, function () {
       console.log('User denied geolocation...');
@@ -320,14 +319,10 @@ function initMap() { // GOOGLE MAP INIT
       };
       afterInit(map, pos, mapLat, mapLng);
 
-      //handleLocationError(true, infoWindow, map.getCenter());
-
-
     });
   } else { // IF BROWSER DOESN'T SUPPORT GEOLOCATION
     handleLocationError(false, infoWindow, map.getCenter());
   }
-
 }
 function afterInit(map, pos, mapLat, mapLng){
   map.setCenter(pos);
