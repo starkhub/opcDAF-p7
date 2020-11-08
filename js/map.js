@@ -14,6 +14,11 @@ var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSe
 // ---------- REVIEW MODALS VARS ----------
 var reviewModal = document.getElementById('reviewModal');
 var reviewTextArea = document.getElementById('reviewCommentArea');
+//
+var dialog = bootbox.dialog({
+  message: '<p class="text-justify lead mb-0 py-5"><i class="fa fa-spin fa-cog"></i> Merci d\'autoriser la géolocalisation lorsque votre navigateur vous le proposera pour profiter au mieux des fonctionnalités de l\'application !</p>',
+  closeButton: false
+});
 // ---------- OBJECTS ----------
 class Restaurant {
   constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId, source) {
@@ -264,79 +269,95 @@ const jsonList = new JsonList();
 // ---------- FUNCTIONS ----------
 function initMap() { // GOOGLE MAP INIT
   console.log('3 - Load Map Callback => Init Map')
-  //bootbox.alert('<div class="container">Merci d\'autoriser la géolocalisation lorsque votre navigateur vous le proposera pour profiter au mieux des fonctionnalités de l\'application !');
-  var dialog = bootbox.dialog({
-    message: '<p class="text-justify lead mb-0 py-5"><i class="fa fa-spin fa-cog"></i> Merci d\'autoriser la géolocalisation lorsque votre navigateur vous le proposera pour profiter au mieux des fonctionnalités de l\'application !</p>',
-    closeButton: false
-});
   map = new google.maps.Map(document.getElementById('map'), { // NEW MAP INSTANCE
-    center: { lat: -34.397, lng: 150.644 },
+    center: { lat: 48.856614, lng: 2.3522219 },
     zoom: 17,
     mapTypeControl: false
   });
-  infoWindow = new google.maps.InfoWindow; // NEW INFOWINDOW INSTANCE
-  // Create the DIV to hold the control and call the CenterControl()
-  // constructor passing in this DIV.
+  infoWindow = new google.maps.InfoWindow;
   const searchControlDiv = document.createElement("div");
   searchPlacesInThisAreaControl(searchControlDiv, map);
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchControlDiv);
+
   if (navigator.geolocation) { // CHECKING IF BROWSER SUPPORT GEOLOCATION
     console.log('3.1 - Checking for geolocation...')
+    
     navigator.geolocation.getCurrentPosition(function (position) {
+      let mapLat = position.coords.latitude;
+      let mapLng = position.coords.longitude;
       var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
+        lat: mapLat,
+        lng: mapLng
       };
+
       userMarker = new google.maps.Marker({
         position: pos,
         map: map,
         icon: userMarkerIcon
       });
-      mapLat = position.coords.latitude;
-      mapLng = position.coords.longitude;
+
       bounds = new google.maps.LatLngBounds({
         lat: mapLat,
         lng: mapLng
       });
+
       infoWindow.setPosition(pos);
       infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
       infoWindow.open(map);
-      map.setCenter(pos);
-      var coords = new google.maps.LatLng(mapLat, mapLng);
+      
 
       console.log('3.2 - Geolocation Ok...')
-      dialog.modal('hide');
-      jsonList.setMap(map, coords);
-      jsonList.initialize();
-      map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP
-        if(addRestaurantToggle.checked){
-          let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
-          if (prompt) {
-            if (window.XMLHttpRequest) { // COMPATIBILITY CODE
-              httpRequest = new XMLHttpRequest();
-            }
-            else if (window.ActiveXObject) { // IE 6 & EARLIER
-              httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            console.log('API_CALL_GEOCODE');
-            httpRequest.onreadystatechange = getHttpResponse;
-            httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
-            httpRequest.send();
-          }
-        }
-      });
+      afterInit(map, pos, mapLat, mapLng);
+
+      
     }, function () {
-      handleLocationError(true, infoWindow, map.getCenter());
+      console.log('User denied geolocation...');
+      let mapLat = map.getCenter().lat();
+      let mapLng = map.getCenter().lng();
+      var pos = {
+        lat: mapLat,
+        lng: mapLng
+      };
+      afterInit(map, pos, mapLat, mapLng);
+
+      //handleLocationError(true, infoWindow, map.getCenter());
+
+
     });
   } else { // IF BROWSER DOESN'T SUPPORT GEOLOCATION
     handleLocationError(false, infoWindow, map.getCenter());
   }
+
+}
+function afterInit(map, pos, mapLat, mapLng){
+  map.setCenter(pos);
+  var coords = new google.maps.LatLng(mapLat, mapLng);
+  dialog.modal('hide');
+  jsonList.setMap(map, coords);
+  jsonList.initialize();
+
+  map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP
+    if(addRestaurantToggle.checked){
+      let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
+      if (prompt) {
+        if (window.XMLHttpRequest) { // COMPATIBILITY CODE
+          httpRequest = new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject) { // IE 6 & EARLIER
+          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        console.log('API_CALL_GEOCODE');
+        httpRequest.onreadystatechange = getHttpResponse;
+        httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
+        httpRequest.send();
+      }
+    }
+  });
 }
 function checkMarkerInBounds(marker) { // CHECK MARKER'S POSITION
   return map.getBounds().contains(marker.getPosition());
 }
 function handleLocationError(browserHasGeolocation, infoWindow, pos) { // HANDLING ERRORS
-  dialog.modal('hide');
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
     'Erreur : nous ne pouvons pas vous localiser.' :
