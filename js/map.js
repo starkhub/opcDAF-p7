@@ -588,6 +588,11 @@ addRestaurantForm.addEventListener('submit', function (event) {
   jsonList.setNewRestaurant(restaurantName, restaurantAddress, restaurantLat, restaurantLng); // SET NEW RESTAURANT IN THE SESSION STORAGE LIST
 });
 
+$('#addRestaurantToggle').on('change', function (event){
+  if(this.checked){
+    alert('Cliquer n\'importe où sur la carte pour ajouter un restaurant...');
+  }
+});
 $('#reviewModal').on('show.bs.modal', function (event) {
   let button = $(event.relatedTarget) // Button that triggered the modal
   let restaurant = button.data('restaurant') // Extract info from data-* attributes
