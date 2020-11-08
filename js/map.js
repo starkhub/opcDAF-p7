@@ -14,9 +14,9 @@ var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSe
 // ---------- REVIEW MODALS VARS ----------
 var reviewModal = document.getElementById('reviewModal');
 var reviewTextArea = document.getElementById('reviewCommentArea');
-//
+// ---------- INITIAL DIALOG ----------
 var dialog = bootbox.dialog({
-  message: '<p class="text-justify lead mb-0 py-5">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. Nous ne conservons aucunes données personnelles.</p><p class="text-center lead mb-0 py-5">Nous vous souhaitons d\'avance un bon appétit !</p>',
+  message: '<div class="lead p-3"><p class="text-center mb-5">Bienvenue !</p><p class="text-justify">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. <br/>Nous ne conservons aucune donnée personnelle.</p><p class="text-center mt-5">Nous vous souhaitons d\'avance un bon appétit !</p></div>',
   closeButton: false
 });
 // ---------- OBJECTS ----------
@@ -559,7 +559,7 @@ addRestaurantForm.addEventListener('submit', function (event) {
 
 $('#addRestaurantToggle').on('change', function (event) {
   if (this.checked) {
-    alert('Cliquer n\'importe où sur la carte pour ajouter un restaurant...');
+    bootbox.alert('Cliquer n\'importe où sur la carte pour ajouter un restaurant...');
   }
 });
 $('#reviewModal').on('show.bs.modal', function (event) {
