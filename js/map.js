@@ -278,12 +278,13 @@ function initMap() { // GOOGLE MAP INIT
       ]
     }
   ];
-  map = new google.maps.Map(document.getElementById('map'), { // NEW MAP INSTANCE
+  let mapOptions = {
     center: { lat: 48.856614, lng: 2.3522219 },
     zoom: 17,
     mapTypeControl: false,
-    mapOptions: mapStyleArray
-  });
+    styles : mapStyleArray
+  }
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   infoWindow = new google.maps.InfoWindow;
   const searchControlDiv = document.createElement("div");
   searchPlacesInThisAreaControl(searchControlDiv, map);
