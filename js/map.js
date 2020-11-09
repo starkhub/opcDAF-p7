@@ -119,7 +119,7 @@ class JsonList {
     tempReviewsArray.push({ 'stars': rating, 'comment': comment });
     $('#reviewModal').modal('toggle');
     this.deleteFromSessionStorage();
-    this.setMainList(tempMainList).then(this.getRestaurants());
+    this.setMainList(tempMainList);
     bootbox.alert('<div class="lead p-3"><p>Merci pour votre commentaire.</p></div>');
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) {
@@ -253,7 +253,6 @@ function initMap() { // STEP 3 - GOOGLE MAP INIT
   const searchControlDiv = document.createElement("div");
   searchPlacesInThisAreaControl(searchControlDiv, map);
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchControlDiv);
-
   if (navigator.geolocation) { // CHECKING IF BROWSER SUPPORT GEOLOCATION
     navigator.geolocation.getCurrentPosition(function (position) {
       let mapLat = position.coords.latitude;
@@ -275,7 +274,6 @@ function initMap() { // STEP 3 - GOOGLE MAP INIT
       infoWindow.setContent('<h3 class="py-3">Vous êtes ici !</h3>');
       infoWindow.open(map);
       afterInit(map, pos, mapLat, mapLng); //Geolocation is OK
-
     }, function () {
       let mapLat = map.getCenter().lat();
       let mapLng = map.getCenter().lng();
@@ -341,7 +339,7 @@ function getHttpResponse() { //Return Of The Geolocation Request
       }
       $('#addRestaurantModal').modal('toggle');
     } else {
-      alert('Il y a eu un problème avec la requête HTTP.');
+      bootbox.alert('Il y a eu un problème avec la requête HTTP. Contactez un développeur.');
     }
   }
 }
@@ -465,7 +463,7 @@ function searchPlacesInThisAreaControl(controlDiv, map) {
 }
 // ----- ONLOAD INIT
 window.onload = function () {
-  loadMap(); // LOAD THE MAIN MAP
+  loadMap(); // STEP 2 - LOAD THE MAIN MAP
 }
 // ----- TRIGGERS
 addReviewForm.addEventListener('submit', function (event) {//Add Review Form Trigger
