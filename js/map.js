@@ -105,7 +105,7 @@ class JsonList {
   }
   setMainList() { // PUT LIST'S RESTAURANTS ON THE MAP
     markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants')); // GET RESTAURANTS LIST INTO LOCAL STORAGE
+    var restaurantsJsonList = this.getMainlist(); // GET RESTAURANTS LIST INTO LOCAL STORAGE
 
     for (let i = 0; i < restaurantsJsonList.length; i++) {
       // LET INITIALIZE EACH RESTAURANT VARIABLES AND GIVE THEM TO THE RESTAURANT OBJECT
@@ -122,7 +122,7 @@ class JsonList {
     } // END FOR
   }
   setNewReview(restaurant, comment, rating) { // ADD NEW REVIEW INTO LOCAL STORAGE RESTAURANTS LIST
-    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
+    let tempRestaurantsJsonList = this.getMainlist();
     let restaurantRatingsArray = tempRestaurantsJsonList[restaurant].ratings;
     $('#reviewModal').modal('toggle');
     restaurantRatingsArray.push({ 'stars': rating, 'comment': comment });
@@ -131,7 +131,7 @@ class JsonList {
     bootbox.alert('<div class="lead p-3"><p>Merci pour votre commentaire.</p></div>');
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
-    let tempRestaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
+    let tempRestaurantsJsonList = this.getMainlist();
     let restaurantIndex = tempRestaurantsJsonList.length;
     let newRestaurant = {
       "restaurantName": restaurantName,
@@ -144,13 +144,23 @@ class JsonList {
     tempRestaurantsJsonList.push(newRestaurant);
     sessionStorage.setItem('restaurants', JSON.stringify(tempRestaurantsJsonList));
     $('#addRestaurantModal').modal('toggle');
-    alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
-    $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
-    $('#reviewModal').modal('toggle');
+    bootbox.confirm({
+      message: '<div class="lead p-3"><p>Restaurant ajouté, voulez-vous saisir un avis ?</p></div>',
+      locale: "fr",
+      callback: function (result) {
+        if (result) {
+          $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
+          $('#reviewModal').modal('toggle');
+        }
+      }
+    });
     for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
       addRestaurantAddressSelect.remove(i);
     }
     restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
+  }
+  getMainlist(){
+    return JSON.parse(sessionStorage.getItem('restaurants'));
   }
 }
 // ---------- FUNCTIONS ----------
