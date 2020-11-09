@@ -8,6 +8,10 @@
     font-size       : 14px;
   }
 
+  nav{
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
   .main-container {
     background-image     : url('images/background.jpg');
     background-repeat    : no-repeat;
@@ -16,7 +20,13 @@
   }
 
   #rating-filter {
-    max-width:180px;
+    max-width: 180px;
+    display:inline-block;
+  }
+
+  .search-warning-text {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius   : 25px;
   }
 
   footer {
@@ -24,17 +34,13 @@
     width : 100%;
   }
 
-  .main-section {
-    height: 600px;
-  }
-
   aside {
     height: 100%;
   }
 
-  #restaurants-list{
-    max-height:443px;
-    overflow: auto;
+  #restaurants-list {
+    max-height: 443px;
+    overflow  : auto;
   }
 
   .map-container {
