@@ -1,25 +1,24 @@
-// ---------- VARS ----------
-var api_key = config.secret_key; //initialisation clé API à partir d'un fichier config séparé
-var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //init. variables
-var userMarkerIcon = './css/images/user-marker-64.png'; //init. image marker utilisateur
-var restaurantMarkerIcon = './css/images/restaurant-marker-32.png'; //init. image marker utilisateur
-var markers = []; //init. tableau des markers
-var restaurantsListDiv = document.getElementById('restaurants-list'); // init. de la liste des restaurants
-var restaurantsAmount = document.getElementById('restaurants-amount'); // init. du nombre de restaurants trouvés
-var addRestaurantToggle = document.getElementById('addRestaurantToggle');
-var clickTime = Date.now() - 1001; //timer infoWindow
-// ---------- RESTAURANT MODALS VARS ----------
+// VARS
+var api_key = config.secret_key; //Initialize the API KEY from external file
+var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //Initialize main variables
+var userMarkerIcon = './css/images/user-marker-64.png'; //Init. user marker icon
+var restaurantMarkerIcon = './css/images/restaurant-marker-32.png'; //Init. restaurants marker icon
+var markers = []; //Init. markers array
+var restaurantsListDiv = document.getElementById('restaurants-list'); //Init. restaurants list container
+var restaurantsAmount = document.getElementById('restaurants-amount'); //Init. restaurants amount counter
+var addRestaurantToggle = document.getElementById('addRestaurantToggle'); //Init. add new restaurant toggle
+// RESTAURANT MODALS VARS
 var restaurantNameInput = document.getElementById('addRestaurantName');
 var addRestaurantAddressSelect = document.getElementById('addRestaurantAddressSelect');
-// ---------- REVIEW MODALS VARS ----------
+// REVIEW MODALS VARS
 var reviewModal = document.getElementById('reviewModal');
 var reviewTextArea = document.getElementById('reviewCommentArea');
-// ---------- INITIAL DIALOG ----------
+// INITIAL DIALOG
 var dialog = bootbox.dialog({
   message: '<div class="lead p-3"><p class="text-center mb-5">Bienvenue !</p><p class="text-justify">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. <br/>Nous ne conservons aucune donnée personnelle.</p><p class="text-center mt-5">Nous vous souhaitons d\'avance un bon appétit !</p></div>',
   closeButton: false
 });
-// ---------- OBJECTS ----------
+// OBJECTS
 class Restaurant {
   constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId, source) {
     this.name = name,
@@ -72,7 +71,6 @@ class Restaurant {
         marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
           infowindow.open(map, marker);
           jsonList.getReviews(this.placeId, this.source);
-          clickTime = Date.now();
         });
         markers.push(marker); // PUT MARKER INSIDE MARKER'S ARRAY
         console.log('Create Restaurant Card If Not Exist');
