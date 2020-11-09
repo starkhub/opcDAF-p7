@@ -47,7 +47,7 @@ class Restaurant {
         });
         let infowindow = new google.maps.InfoWindow({
           content:
-            '<div class="infoWindow"><h2 class="my-5">' + this.name + '</h2>' +
+            '<div class="infoWindow"><h2 class="my-5 text-center">' + this.name + '</h2>' +
             '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
             '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
             '<p class="infoWindowRating" id="infoWindowRating"><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>' +
