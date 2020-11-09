@@ -1,10 +1,18 @@
-var api_key = config.secret_key; // GOOGLE API KEY !KEEP SECRET!
-var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
-var markerIcon = './css/images/user-marker-64.png';
-var markers = []; // MARKERS ARRAY
-var restaurantsListDiv = document.getElementById('restaurants-list');
-var clickTime = Date.now() - 1001; //TIMER
-//---------- CLASSES ----------
+// ----- VARS
+var api_key = config.secret_key; //Initialize the API KEY from external file
+var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //Initialize main variables
+var userMarkerIcon = './css/images/user-marker-64.png'; //Init. user marker icon
+var restaurantMarkerIcon = './css/images/restaurant-marker-32.png'; //Init. restaurants marker icon
+var markers = []; //Init. markers array
+var restaurantsListDiv = document.getElementById('restaurants-list'); //Init. restaurants list container
+var restaurantsAmount = document.getElementById('restaurants-amount'); //Init. restaurants amount counter
+var clickTime = Date.now() - 1001;
+// INITIAL DIALOG
+var dialog = bootbox.dialog({
+  message: '<div class="lead p-3"><p class="text-center mb-5">Bienvenue !</p><p class="text-justify">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. <br/>Nous ne conservons aucune donnée personnelle.</p><p class="text-center mt-5">Nous vous souhaitons d\'avance un bon appétit !</p></div>',
+  closeButton: false
+});
+// ----- OBJECTS
 class Restaurant {
   constructor(name, address, reviews, lat, lng, streetViewImage, index) {
     this.name = name;
@@ -19,8 +27,8 @@ class Restaurant {
     let ratingsSum = 0;
     let commentsContainer = '<ul class="restaurant-reviews">';
     let restaurantAvgRating;
-    let coords = new google.maps.LatLng(this.lat, this.lng); //ON RECUPERE LES COORDONNEES DU RESTO
-    let restaurantID = document.getElementById(this.name); //On récupère l'ID du restaurant dans la page HTML
+    let coords = new google.maps.LatLng(this.lat, this.lng);
+    let restaurantID = document.getElementById(this.name);
     let ratingFilter = parseInt(document.getElementById('rating-filter').value);
     this.reviews.forEach(
       star => ratingsSum += star.stars
@@ -30,51 +38,49 @@ class Restaurant {
     )
     commentsContainer += '</ul>';
     var ratingsAvg = calculateAverage(ratingsSum, this.reviews.length);
-    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { // FILTER RESTAURANTS BY NOTES
-      if (map.getBounds().contains(coords)) {
+    if (ratingsAvg >= 0 && ratingsAvg <= ratingFilter) { //Rating Filter Check
+      if (map.getBounds().contains(coords)) { //Map Bounds Check
         let marker = new google.maps.Marker({
           position: coords,
-          map: map
+          map: map,
+          icon: restaurantMarkerIcon
         });
         let infowindow = new google.maps.InfoWindow({
           content:
-            '<div class="infoWindow"><h1 class="my-15">' + this.name + '</h1>' +
-            '<p class="infoWindowAddress">' + this.address + '</p>' +
-            '<p class="infoWindowRating" id="infoWindowRating"> Moyenne des notes : ' + ratingsAvg + '</p>' +
+            '<div class="infoWindow"><h2 class="my-5">' + this.name + '</h2>' +
+            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>' +
+            '<p class="infoWindowAddress mt-2">' + this.address + '</p>' +
+            '<p class="infoWindowRating" id="infoWindowRating"><span class="font-weight-bold">Moyenne des notes : </span>' + ratingsAvg + '</p>' +
             '<h3>Avis clients</h3>' +
             '<ul>' +
             commentsContainer
             +
-            '</ul></div>' +
-            '<div class="streeViewImage"><img src="https://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + this.streetViewImage + '&key=' + api_key + '"></div>'
+            '</ul></div>'
         });
-        marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
+        marker.addListener('click', function () { //Listen For Marker Click, Getting Reviews By Clicking
           infowindow.open(map, marker);
           clickTime = Date.now();
         });
-        markers.push(marker); // PUT MARKER INSIDE MARKER'S ARRAY
+        markers.push(marker); //Put Markers Into The Markers Array
         if (!restaurantID) { // CREATE RESTAURANT CARD IF NOT EXIST
-          console.log('Create Restaurant Card If Not Exist');
           let restaurantsListContent = document.createElement('div');
-          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-15');
+          restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2', 'text-center');
           restaurantsListContent.id = this.name;
           restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
             '<p id="restaurantAvgRating' + this.index + '"></p>'
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
         } else { // IF RESTAURANT CARD EXIST, UPDATE THE RATING
-          console.log('The card already exist, update the rating')
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
         }
       } else if (document.getElementById(this.name)) { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
-        console.log('restaurant is out of bounds but was visible before ! Remove it !');
         document.getElementById(this.name).remove();
       }
     } else if (document.getElementById(this.name)) { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
       document.getElementById(this.name).remove();
-      console.log('Restaurant have low rating and was visible before, Remove it !');
     }
+    restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...'; //Update The Counter With Founded Restaurants Amount
   }
 }
 class JsonList {
@@ -86,12 +92,12 @@ class JsonList {
     restaurantsList.src = this.list;
     document.getElementsByTagName('head')[0].appendChild(restaurantsList);
   }
-  setToLocalStorage() {
-    localStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList)); //Le Local Storage ne stock que des valeurs de type String, pas d'objets !
+  setToSessionStorage() {
+    sessionStorage.setItem('restaurants', JSON.stringify(restaurantsJsonList[0].mainList));
   }
-  setNewRestaurants() {
+  setMainList() {
     markers.forEach(item => item.setMap(null)); // REMOVE ALL MARKERS ON THE MAP
-    var restaurantsJsonList = JSON.parse(localStorage.getItem('restaurants'));
+    var restaurantsJsonList = JSON.parse(sessionStorage.getItem('restaurants'));
     for (let i = 0; i < restaurantsJsonList.length; i++) {
       let restaurantName = restaurantsJsonList[i].restaurantName;
       let restaurantAddress = restaurantsJsonList[i].address;
@@ -107,61 +113,74 @@ class JsonList {
 }
 // ---------- FUNCTIONS ----------
 function initMap() {
-  alert("Merci d'autoriser la géolocalisation lorsque votre navigateur vous le proposera afin de profiter de toutes les fonctionnalités de l'application. Aucune donnée personnelle n'est conservée par nos services.");
-  map = new google.maps.Map(document.getElementById('map'), { //Initialisation object Map avec pour paramètre l'ID de la carte côté html
-    center: { lat: -34.397, lng: 150.644 },
-    zoom: 17
-  });
-
+  let mapStyleArray = [
+    {
+      "featureType": "poi.business",
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    }
+  ];
+  let mapOptions = {
+    center: { lat: 48.856614, lng: 2.3522219 },
+    zoom: 17,
+    mapTypeControl: false,
+    styles: mapStyleArray
+  }
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   infoWindow = new google.maps.InfoWindow;
-
-  // Try HTML5 geolocation
   if (navigator.geolocation) {
-
     navigator.geolocation.getCurrentPosition(function (position) {
+      let mapLat = position.coords.latitude;
+      let mapLng = position.coords.longitude;
       var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
+        lat: mapLat,
+        lng: mapLng
       };
       userMarker = new google.maps.Marker({
         position: pos,
         map: map,
-        icon: markerIcon
+        icon: userMarkerIcon
       });
-
-      mapLat = position.coords.latitude;
-      mapLng = position.coords.longitude;
-
       bounds = new google.maps.LatLngBounds({
         lat: mapLat,
         lng: mapLng
       });
-
-      infoWindow.setPosition(pos);//Popup info que l'user peut fermer
-      infoWindow.setContent('Vous êtes ici !');
+      infoWindow.setPosition(pos);
+      infoWindow.setContent('<h3 class="py-3">Vous êtes ici !</h3>');
       infoWindow.open(map);
-      map.setCenter(pos); // CENTER
-      map.addListener('idle', function () {
-        if (Date.now() > (clickTime + 1000))
-          jsonList.setNewRestaurants();
-      });
-
+      afterInit(map, pos); //Geolocation is OK
     }, function () {
-      handleLocationError(true, infoWindow, map.getCenter());
+      let mapLat = map.getCenter().lat();
+      let mapLng = map.getCenter().lng();
+      var pos = {
+        lat: mapLat,
+        lng: mapLng
+      };
+      afterInit(map, pos); //User Deny Geolocation, Initialize With Defaults
     });
   } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+    let mapLat = map.getCenter().lat();
+    let mapLng = map.getCenter().lng();
+    var pos = {
+      lat: mapLat,
+      lng: mapLng
+    };
+    afterInit(map, pos); //Browser Doesn't Support Geolocation, Initialize with defaults
   }
 }
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(browserHasGeolocation ?
-    'Erreur : nous ne pouvons pas vous localiser.' :
-    'Erreur : votre navigateur ne supporte pas la géolocalisation.');
-  infoWindow.open(map);
+function afterInit(map, pos) {
+  dialog.modal('hide');
+  map.setCenter(pos);
+  map.addListener('idle', function () {
+    if (Date.now() > (clickTime + 1000)) //Refresh Restaurants On Map After Drag
+      jsonList.setMainList();
+  });
 }
-function loadjs() { // LOAD CONFIG FILE
+function loadMap() { // LOAD CONFIG FILE
   var loadMap = document.createElement("script");
   loadMap.type = "text/javascript";
   loadMap.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
@@ -171,12 +190,10 @@ function calculateAverage(dividend, divider) {
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
-// ---------- NEW INSTANCE OF JSONLIST ----------
-const jsonList = new JsonList('js/restaurantsList.js'); //Création de l'object Liste JSON
-jsonList.initialize(); //Initialisation de la liste JSON
-// ---------- LOAD JSON LIST TO LOCAL STORAGE AND LOAD THE MAP
-window.onload = function () { //Quand la fenêtre (DOM) est prête
-  jsonList.setToLocalStorage(); //On met dans le Local Storage le contenu du fichier JSON
-  loadjs(); //On charge la carte
+const jsonList = new JsonList('js/restaurantsList.js'); //Create JsonList object with .js JSON list file
+jsonList.initialize(); //Init. The List
+window.onload = function () {
+  jsonList.setToSessionStorage();//Put Json Main List Into Session Storage
+  loadMap();//Load The Map
 
 }

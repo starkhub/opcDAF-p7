@@ -151,6 +151,81 @@ var restaurantsJsonList = [{
                "comment": "Très bon restaurant ouvert le Samedi et personnels très Sympa"
             }
          ]
+      },
+      {
+         "restaurantName": "Comme à Lisbonne",
+         "address": "37 Rue de Roi de Sicile, 75004 Paris",
+         "lat": 48.8566547,
+         "long": 2.3563782,
+         "streetViewImage": "Comme à Lisbone, Paris",
+         "ratings": [
+            {
+               "stars": 5,
+               "comment": "Petit salon de thé/ épicerie fine portugaise atypique et sympathique.  Les pastels de Natas sont vraiment comme à Lisbonne. 😍"
+            },
+            {
+               "stars": 5,
+               "comment": 'Une première fois ❤️ très bon les " Pastéis de Nata" personnel très accueillant, quartier très sympa ... j\'adore Alors à très bientôt'
+            },
+            {
+               "stars": 4,
+               "comment": "Les pasteis qu'ils servent sont un vrai régal. A tester si vous ne connaissez pas cette sorte de  petit flan. Pour avoir goûté les meilleurs de Lisbonne, ce n'est pas encore à la hauteur mais ils sont bien bons quand même."
+            },
+            {
+               "stars": 4,
+               "comment": "Bons pastéis de nata. Le propriétaire est trèèès sympathique !"
+            }
+         ]
+      },
+      {
+         "restaurantName": "Tata Burger",
+         "address": "54 Rue Sainte-Croix de la Bretonnerie, 75004 Paris",
+         "lat": 48.8590086,
+         "long": 2.3539978,
+         "streetViewImage": "Tata Burger, Paris",
+         "ratings": [
+            {
+               "stars": 5,
+               "comment": "Un endroit très agréable ou règne bonne ambiance et bienveillance."
+            },
+            {
+               "stars": 5,
+               "comment": "Très chaleureux, serveur agréable. Carte simple et efficace, de bons produits frais ! Première fois que je m’y rends, j’y retournerai avec plaisir ! Très bon rapport qualité prix !"
+            },
+            {
+               "stars": 4,
+               "comment": "Nous avons passé un super ment entre copines. Repas très bon. Déco sympa et le service génial! Les serveurs sont adorables. Ambiance festive. Je recommande."
+            },
+            {
+               "stars": 4,
+               "comment": "Un lieu original avec une réelle identité LGBT et totalement humoristique. Des plats abordables et un service sympathique."
+            }
+         ]
+      },
+      {
+         "restaurantName": "Les Piétons resto bar tapas Paris 4",
+         "address": "8 Rue des Lombards, 75004 Paris",
+         "lat": 48.859186,
+         "long": 2.3499457,
+         "streetViewImage": "Les Piétons resto bar tapas, Paris",
+         "ratings": [
+            {
+               "stars": 5,
+               "comment": "Une cuisine typique et très bonne. Service rapide et agréable. Salle très animée. Nous avons passé un super moment entre amis. Nous avons adoré !"
+            },
+            {
+               "stars": 2,
+               "comment": "Accueil très moyen et légèrement bordélique voire limite malpoli. Bon je voulais manger des churros. Yeahhhhhh plein de churros avec du chocolat.  Ceci dit Covid oblige les propriétaires étaient stressés je pense."
+            },
+            {
+               "stars": 5,
+               "comment": "Super lieu, d'une rare convivialité ! On voyage avec le personnel, qui est adorable."
+            },
+            {
+               "stars": 5,
+               "comment": "Bar chaleureux, on se croirait en Andalousie ! Plats et cocktails délicieux, et le service est remarquable. Vivement recommandé"
+            }
+         ]
       }
    ]
 }]
