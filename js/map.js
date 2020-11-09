@@ -1,4 +1,4 @@
-// VARS
+// ----- VARS
 var api_key = config.secret_key; //Initialize the API KEY from external file
 var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //Initialize main variables
 var userMarkerIcon = './css/images/user-marker-64.png'; //Init. user marker icon
@@ -18,7 +18,7 @@ var dialog = bootbox.dialog({
   message: '<div class="lead p-3"><p class="text-center mb-5">Bienvenue !</p><p class="text-justify">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. <br/>Nous ne conservons aucune donnée personnelle.</p><p class="text-center mt-5">Nous vous souhaitons d\'avance un bon appétit !</p></div>',
   closeButton: false
 });
-// OBJECTS
+// ----- OBJECTS
 class Restaurant {
   constructor(name, address, reviewsArray, rating, lat, lng, streetViewImage, index, placeId, source) {
     this.name = name,
@@ -39,9 +39,7 @@ class Restaurant {
     var restaurantAvgRating;
     var coords = new google.maps.LatLng(this.lat, this.lng);
     var formatedID = this.name.replace(/ /g, "_");
-    var checkRestaurantID = document.getElementById(formatedID);
-    var ratingFilter = parseInt(document.getElementById('rating-filter').value); // GET THE VALUE OF THE RATING FILTER BUTTON
-
+    var ratingFilter = parseInt(document.getElementById('rating-filter').value);
     this.reviewsArray.forEach(
       star => ratingsSum += star.stars
     );
@@ -49,9 +47,9 @@ class Restaurant {
       comment => ratingsComments += '<li><span><strong>Note</strong> : ' + comment.stars + '</span><br /><span><strong>Commentaire</strong> : ' + comment.comment + '</span></li><br/><hr>'
     );
     ratingsComments += '</ul>';
-    if (this.rating >= 0 && this.rating <= ratingFilter) { // FILTER RESTAURANTS BY NOTES
+    if (this.rating >= 0 && this.rating <= ratingFilter) { //Rating Filter Check
       console.log('The rating is OK, let\'s check the bounds !');
-      if (map.getBounds().contains(coords)) {
+      if (map.getBounds().contains(coords)) { //Map Bounds Check
         let marker = new google.maps.Marker({
           position: coords,
           map: map,
@@ -68,13 +66,12 @@ class Restaurant {
             '<h3>Avis clients</h3>' +
             '<ul id="restaurant-reviews"></ul></div>'
         });
-        marker.addListener('click', function () { // MARKER CLICK EVENT LISTENER
+        marker.addListener('click', function () { //Listen For Marker Click, Getting Reviews By Clicking
           infowindow.open(map, marker);
           jsonList.getReviews(this.placeId, this.source);
         });
-        markers.push(marker); // PUT MARKER INSIDE MARKER'S ARRAY
-        console.log('Create Restaurant Card If Not Exist');
-        let restaurantsListContent = document.createElement('div');
+        markers.push(marker); //Put Markers Into The Markers Array
+        let restaurantsListContent = document.createElement('div'); //Create The Restaurant Card
         restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2', 'text-center');
         restaurantsListContent.id = formatedID;
         restaurantsListContent.innerHTML = '<h2>' + this.name + '</h2>' +
@@ -82,11 +79,7 @@ class Restaurant {
           '<button name="addReviewButton" class="btn btn-warning" id="addReviewButton' + this.index + '" data-restaurant="' + this.index + '" data-toggle="modal" data-target="#reviewModal">Ajouter un avis</button></div>';
         restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
         restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + this.rating + '</p>';
-      } else { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
-        console.log('restaurant is out of bounds...');
       }
-    } else { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
-      console.log('Restaurant have low rating...');
     }
     restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...';
   }
