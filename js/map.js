@@ -222,7 +222,7 @@ class JsonList {
     $('#reviewModal').modal('toggle');
     this.deleteFromSessionStorage();
     this.setMainList(tempMainList).then(this.getRestaurants());
-    alert('Merci pour votre commentaire !');
+    bootbox.alert('<div class="lead p-3"><p>Merci pour votre commentaire.</p></div>');
   }
   setNewRestaurant(restaurantName, restaurantAdress, restaurantLat, restaurantLng) { // ADD NEW RESTAURANT INTO LOCAL STORAGE
     var newRestaurant = {
@@ -249,13 +249,21 @@ class JsonList {
     this.setMainList(restaurantToAdd).then(function () {
       console.log('Add restaurant ok ...');
       $('#addRestaurantModal').modal('toggle');
-      alert('Restaurant ajouté, veuillez ajouter une note sur l\'écran suivant'); // RESTAURANT ADDED, NOW ASK TO USER TO SET REVIEW
-      $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
-      $('#reviewModal').modal('toggle');
+      bootbox.confirm({
+        message: '<div class="lead p-3"><p>Restaurant ajouté, voulez-vous saisir un avis ?</p></div>',
+        locale: "fr",
+        callback: function (result) {
+          if (result) {
+            $('#reviewModalButton').attr('data-restaurant', restaurantIndex);
+            $('#reviewModal').modal('toggle');
+          }
+        }
+      });
       for (let i = 9; i >= 0; i--) { // REMOVE SELECT OPTIONS IN MODAL
         addRestaurantAddressSelect.remove(i);
       }
       restaurantNameInput.value = ''; // RESET RESTAURANT NAME VALUE
+      jsonList.searchPlacesInThisArea();
     });
   }
 }
@@ -282,7 +290,7 @@ function initMap() { // GOOGLE MAP INIT
     center: { lat: 48.856614, lng: 2.3522219 },
     zoom: 17,
     mapTypeControl: false,
-    styles : mapStyleArray
+    styles: mapStyleArray
   }
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
   infoWindow = new google.maps.InfoWindow;
@@ -313,7 +321,7 @@ function initMap() { // GOOGLE MAP INIT
       });
 
       infoWindow.setPosition(pos);
-      infoWindow.setContent('<h3 class="pady-25">Vous êtes ici !</h3>');
+      infoWindow.setContent('<h3 class="py-3">Vous êtes ici !</h3>');
       infoWindow.open(map);
 
 
@@ -350,19 +358,25 @@ function afterInit(map, pos, mapLat, mapLng) {
 
   map.addListener('click', function (mapsMouseEvent) { // ADD RESTAURANT WITH A CLICK ON THE MAP
     if (addRestaurantToggle.checked) {
-      let prompt = confirm('Voulez-vous ajouter un nouveau restaurant ?');
-      if (prompt) {
-        if (window.XMLHttpRequest) { // COMPATIBILITY CODE
-          httpRequest = new XMLHttpRequest();
+      bootbox.confirm({
+        message: '<div class="lead p-3"><p>Voulez-vous ajouter un restaurant ici ?</p></div>',
+        locale: "fr",
+        callback: function (result) {
+          if (result) {
+            if (window.XMLHttpRequest) { // COMPATIBILITY CODE
+              httpRequest = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) { // IE 6 & EARLIER
+              httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            console.log('API_CALL_GEOCODE');
+            httpRequest.onreadystatechange = getHttpResponse;
+            httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
+            httpRequest.send();
+          }
         }
-        else if (window.ActiveXObject) { // IE 6 & EARLIER
-          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        console.log('API_CALL_GEOCODE');
-        httpRequest.onreadystatechange = getHttpResponse;
-        httpRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + mapsMouseEvent.latLng.lat() + ',' + mapsMouseEvent.latLng.lng() + '&key=' + api_key + '', true);
-        httpRequest.send();
-      }
+      });
+
     }
   });
 }
@@ -559,7 +573,7 @@ addRestaurantForm.addEventListener('submit', function (event) {
 
 $('#addRestaurantToggle').on('change', function (event) {
   if (this.checked) {
-    bootbox.alert('Cliquer n\'importe où sur la carte pour ajouter un restaurant...');
+    bootbox.alert('<div class="lead p-3"><p>Cliquer n\'importe où sur la carte pour ajouter un restaurant...</p></div>');
   }
 });
 $('#reviewModal').on('show.bs.modal', function (event) {
