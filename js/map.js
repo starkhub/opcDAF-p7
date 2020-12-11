@@ -1,18 +1,15 @@
-// ----- VARS
 var api_key = config.secret_key; //Initialize the API KEY from external file
-var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng; //Initialize main variables
-var userMarkerIcon = './css/images/user-marker-64.png'; //Init. user marker icon
-var restaurantMarkerIcon = './css/images/restaurant-marker-32.png'; //Init. restaurants marker icon
-var markers = []; //Init. markers array
-var restaurantsListDiv = document.getElementById('restaurants-list'); //Init. restaurants list container
-var restaurantsAmount = document.getElementById('restaurants-amount'); //Init. restaurants amount counter
+var restaurantsList, map, infoWindow, marker, bounds, mapLat, mapLng;
+var userMarkerIcon = './css/images/user-marker-64.png';
+var restaurantMarkerIcon = './css/images/restaurant-marker-32.png';
+var markers = [];
+var restaurantsListDiv = document.getElementById('restaurants-list');
+var restaurantsAmount = document.getElementById('restaurants-amount');
 var clickTime = Date.now() - 1001;
-// INITIAL DIALOG
-var dialog = bootbox.dialog({
+var welcomeMessage = bootbox.dialog({
   message: '<div class="lead p-3"><p class="text-center mb-5">Bienvenue !</p><p class="text-justify">Nous vous conseillons d\'accepter la demande de localisation afin d\'obtenir une expérience d\'utilisation optimale. <br/>Nous ne conservons aucune donnée personnelle.</p><p class="text-center mt-5">Nous vous souhaitons d\'avance un bon appétit !</p></div>',
   closeButton: false
 });
-// ----- OBJECTS
 class Restaurant {
   constructor(name, address, reviews, lat, lng, streetViewImage, index) {
     this.name = name;
@@ -57,11 +54,11 @@ class Restaurant {
             +
             '</ul></div>'
         });
-        marker.addListener('click', function () { //Listen For Marker Click, Getting Reviews By Clicking
+        marker.addListener('click', function () {
           infowindow.open(map, marker);
           clickTime = Date.now();
         });
-        markers.push(marker); //Put Markers Into The Markers Array
+        markers.push(marker);
         if (!restaurantID) { // CREATE RESTAURANT CARD IF NOT EXIST
           let restaurantsListContent = document.createElement('div');
           restaurantsListDiv.appendChild(restaurantsListContent).classList.add('restaurant-file', 'my-2', 'card', 'p-2', 'text-center');
@@ -74,13 +71,13 @@ class Restaurant {
           restaurantAvgRating = document.getElementById('restaurantAvgRating' + this.index);
           restaurantAvgRating.innerHTML = '<p><strong>Moyenne des notes</strong> : ' + ratingsAvg + '</p>';
         }
-      } else if (document.getElementById(this.name)) { // IF RESTAURANT'S OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
+      } else if (document.getElementById(this.name)) { // IF RESTAURANT IS OUT OF BOUNDS AND WAS VIBIBLE BEFORE, REMOVE IT
         document.getElementById(this.name).remove();
       }
     } else if (document.getElementById(this.name)) { // IF RESTAURANT HAVE LOW RATING AND WAS VISIBLE BEFORE, REMOVE IT
       document.getElementById(this.name).remove();
     }
-    restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...'; //Update The Counter With Founded Restaurants Amount
+    restaurantsAmount.innerHTML = document.querySelectorAll("#restaurants-list div").length + ' résultats...'; // Update The Counter With Founded Restaurants Amount
   }
 }
 class JsonList {
@@ -111,8 +108,7 @@ class JsonList {
     }
   }
 }
-// ---------- FUNCTIONS ----------
-function initMap() {
+function initializeMap() {
   let mapStyleArray = [
     {
       "featureType": "poi.business",
@@ -152,7 +148,7 @@ function initMap() {
       infoWindow.setPosition(pos);
       infoWindow.setContent('<h3 class="py-3">Vous êtes ici !</h3>');
       infoWindow.open(map);
-      afterInit(map, pos); //Geolocation is OK
+      loadMap(map, pos);
     }, function () {
       let mapLat = map.getCenter().lat();
       let mapLng = map.getCenter().lng();
@@ -160,7 +156,7 @@ function initMap() {
         lat: mapLat,
         lng: mapLng
       };
-      afterInit(map, pos); //User Deny Geolocation, Initialize With Defaults
+      loadMap(map, pos); //User Deny Geolocation, Initialize With Defaults
     });
   } else {
     let mapLat = map.getCenter().lat();
@@ -169,31 +165,30 @@ function initMap() {
       lat: mapLat,
       lng: mapLng
     };
-    afterInit(map, pos); //Browser Doesn't Support Geolocation, Initialize with defaults
+    loadMap(map, pos); //Browser Doesn't Support Geolocation, Initialize with defaults
   }
 }
 function afterInit(map, pos) {
-  dialog.modal('hide');
+  welcomeMessage.modal('hide');
   map.setCenter(pos);
   map.addListener('idle', function () {
     if (Date.now() > (clickTime + 1000)) //Refresh Restaurants On Map After Drag
       jsonList.setMainList();
   });
 }
-function loadMap() { // LOAD CONFIG FILE
-  var loadMap = document.createElement("script");
-  loadMap.type = "text/javascript";
-  loadMap.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initMap";
-  document.body.appendChild(loadMap);
+function callMapApi() {
+  var mapApiCall = document.createElement("script");
+  mapApiCall.type = "text/javascript";
+  mapApiCall.src = "https://maps.googleapis.com/maps/api/js?key=" + api_key + "&maptype=roadmap&callback=initializeMap";
+  document.body.appendChild(mapApiCall);
 }
 function calculateAverage(dividend, divider) {
   let result = parseFloat(dividend / divider).toFixed(2);
   return result;
 }
-const jsonList = new JsonList('js/restaurantsList.js'); //Create JsonList object with .js JSON list file
-jsonList.initialize(); //Init. The List
+const jsonList = new JsonList('js/restaurantsList.js');
+jsonList.initialize();
 window.onload = function () {
-  jsonList.setToSessionStorage();//Put Json Main List Into Session Storage
-  loadMap();//Load The Map
-
+  jsonList.setToSessionStorage();
+  callMapApi();
 }
