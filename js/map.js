@@ -168,7 +168,7 @@ function initializeMap() {
     loadMap(map, pos); //Browser Doesn't Support Geolocation, Initialize with defaults
   }
 }
-function afterInit(map, pos) {
+function loadMap(map, pos) {
   welcomeMessage.modal('hide');
   map.setCenter(pos);
   map.addListener('idle', function () {
